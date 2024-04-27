@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "preventbuild",
+  "version": "${version}",
+  "name": "PreventBuild",
+  "description": "A simple mod that should be useful in building, especially in maparts",
+  "authors": [
+    "Redheris"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/preventbuild/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "rh.preventbuild.client.PreventBuildClient"
+    ],
+    "main": [
+      "rh.preventbuild.PreventBuild"
+    ],
+    "modmenu": [
+      "rh.preventbuild.ModMenuIntegration"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.14.21",
+    "minecraft": "1.20.*"
+  }
+}

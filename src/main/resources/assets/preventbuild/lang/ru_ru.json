@@ -1,0 +1,32 @@
+{
+	"category.preventbuild": "Prevent Build",
+	"key.preventbuild.openConfigScreen": "Открыть экран конфигурации",
+	"key.preventbuild.toggleMod": "Включить/Выключить",
+	"key.preventbuild.addCurrentBreakY": "Добавить высоту в запрет разрушения",
+	"key.preventbuild.addCurrentPlaceY": "Добавить высоту в запрет установки",
+	"key.preventbuild.keyBind_addCurrentPlaceY": "Добавить текущую высоту в список запрета установки",
+
+	"text.autoconfig.preventbuild.title": "PreventBuild",
+	"text.autoconfig.preventbuild.option.enabled": "§7Предотвращать что-либо",
+	"text.autoconfig.preventbuild.option.blockCarpets": "§fУстановка §7блоков типа ковра на ковёр",
+	"text.autoconfig.preventbuild.option.blockStripping": "§fОбтёсывание §7любых брёвен/древесины",
+	"text.autoconfig.preventbuild.option.doBlockBreakY": "§fРазрушение §7на высотах",
+	"text.autoconfig.preventbuild.option.breakY": "§fРазрушение §7блоков на следующих высотах:",
+	"text.autoconfig.preventbuild.option.doBlockPlaceY": "§fУстановка §7на высотах",
+	"text.autoconfig.preventbuild.option.placeY": "§fУстановка §7блоков на следующих высотах:",
+	"text.autoconfig.preventbuild.option.blockBreakBlocks": "§fРазрушение §7перечисленных блоков",
+	"text.autoconfig.preventbuild.option.breakBlocks": "§fРазрушение §7блоков с ID:",
+
+	"text.autoconfig.preventbuild.option.breakY.@Tooltip": "§7Пример: §f0,4,10,-3,20",
+	"text.autoconfig.preventbuild.option.placeY.@Tooltip": "§7Пример: §f0,4,10,-3,20",
+	"text.autoconfig.preventbuild.option.breakBlocks.@Tooltip": "§7Пример: §fstone,oak_planks,warped_stem",
+
+	"preventbuild.togglemod.true": "§7Мод §aвключён",
+	"preventbuild.togglemod.false": "§7Мод §cвыключён",
+	"preventbuild.exception.incorrect_list_format": "§cНекорректный формат данных в строке §7%d §cв конфиге",
+
+	"title.examplemod.config": "PreventBuild",
+
+	"preventbuild.add_to_break_list": "§7Высота §a%d §7была добавлена в список предотвращения разрушения",
+	"preventbuild.add_to_place_list": "§7Высота §a%d §7была добавлена в список предотвращения установки"
+}
