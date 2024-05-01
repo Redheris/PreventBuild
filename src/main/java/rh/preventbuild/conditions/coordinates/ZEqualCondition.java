@@ -10,7 +10,7 @@ public class ZEqualCondition implements ICondtition {
     private final ConditionType type = ConditionType.FINAL;
     private final int z;
 
-    ZEqualCondition(int z) {
+    public ZEqualCondition(int z) {
         this.z = z;
     }
     @Override

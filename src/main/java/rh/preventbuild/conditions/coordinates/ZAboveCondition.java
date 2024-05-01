@@ -10,7 +10,7 @@ public class ZAboveCondition implements ICondtition {
     private final ConditionType type = ConditionType.FINAL;
     private final int z;
 
-    ZAboveCondition(int z) {
+    public ZAboveCondition(int z) {
         this.z = z;
     }
     @Override

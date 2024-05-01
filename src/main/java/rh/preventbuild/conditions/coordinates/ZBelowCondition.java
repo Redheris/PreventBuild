@@ -11,7 +11,7 @@ public class ZBelowCondition implements ICondtition {
     private final ConditionType type = ConditionType.FINAL;
     private final int z;
 
-    ZBelowCondition(int z) {
+    public ZBelowCondition(int z) {
         this.z = z;
     }
     @Override

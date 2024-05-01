@@ -11,7 +11,7 @@ public class XBelowCondition implements ICondtition {
     private final ConditionType type = ConditionType.FINAL;
     private final int x;
 
-    XBelowCondition(int x) {
+    public XBelowCondition(int x) {
         this.x = x;
     }
     @Override

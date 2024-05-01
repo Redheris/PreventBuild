@@ -11,7 +11,7 @@ public class XWithinCondition implements ICondtition {
     private final int x_start;
     private final int x_end;
 
-    XWithinCondition(int x_start, int x_end) {
+    public XWithinCondition(int x_start, int x_end) {
         this.x_start = x_start;
         this.x_end = x_end;
     }

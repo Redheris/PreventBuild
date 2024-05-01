@@ -11,7 +11,7 @@ public class YWithinCondition implements ICondtition {
     private final int y_start;
     private final int y_end;
 
-    YWithinCondition(int y_start, int y_end) {
+    public YWithinCondition(int y_start, int y_end) {
         this.y_start = y_start;
         this.y_end = y_end;
     }

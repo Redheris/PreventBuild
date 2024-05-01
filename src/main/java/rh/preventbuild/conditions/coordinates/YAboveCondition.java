@@ -10,7 +10,7 @@ public class YAboveCondition implements ICondtition {
     private final ConditionType type = ConditionType.FINAL;
     private final int y;
 
-    YAboveCondition(int y) {
+    public YAboveCondition(int y) {
         this.y = y;
     }
     @Override

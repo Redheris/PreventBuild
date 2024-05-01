@@ -10,7 +10,7 @@ public class XAboveCondition implements ICondtition {
     private final ConditionType type = ConditionType.FINAL;
     private final int x;
 
-    XAboveCondition(int x) {
+    public XAboveCondition(int x) {
         this.x = x;
     }
     @Override

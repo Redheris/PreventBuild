@@ -10,7 +10,7 @@ public class XEqualCondition implements ICondtition {
     private final ConditionType type = ConditionType.FINAL;
     private final int x;
 
-    XEqualCondition(int x) {
+    public XEqualCondition(int x) {
         this.x = x;
     }
     @Override

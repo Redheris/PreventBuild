@@ -10,7 +10,7 @@ public class YEqualCondition implements ICondtition {
     private final ConditionType type = ConditionType.FINAL;
     private final int y;
 
-    YEqualCondition(int y) {
+    public YEqualCondition(int y) {
         this.y = y;
     }
     @Override

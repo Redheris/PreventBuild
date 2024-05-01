@@ -10,7 +10,7 @@ public class YBelowCondition implements ICondtition {
     private final ConditionType type = ConditionType.FINAL;
     private final int y;
 
-    YBelowCondition(int y) {
+    public YBelowCondition(int y) {
         this.y = y;
     }
     @Override

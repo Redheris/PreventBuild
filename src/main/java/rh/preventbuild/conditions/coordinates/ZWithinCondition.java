@@ -11,7 +11,7 @@ public class ZWithinCondition implements ICondtition {
     private final int z_start;
     private final int z_end;
 
-    ZWithinCondition(int z_start, int z_end) {
+    public ZWithinCondition(int z_start, int z_end) {
         this.z_start = z_start;
         this.z_end = z_end;
     }
