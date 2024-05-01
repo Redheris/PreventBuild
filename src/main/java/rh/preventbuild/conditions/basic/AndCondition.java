@@ -9,17 +9,18 @@ import rh.preventbuild.conditions.ICondtition;
 
 public class AndCondition implements ICondtition {
     private final ConditionType type = ConditionType.FINAL;
-    private final ICondtition nestedCondition;
-    private final ICondtition nestedCondition2;
+    private final ICondtition[] nestedConditions;
 
-    public AndCondition(ICondtition left, ICondtition right) {
-        this.nestedCondition = left;
-        this.nestedCondition2 = right;
+    public AndCondition(ICondtition... conditions) {
+        this.nestedConditions = conditions;
     }
     @Override
     public boolean check(CheckType type, PlayerEntity player, BlockHitResult hitResult, int height) {
-        return ConditionHandler.checkCondition(type, nestedCondition, player, hitResult)
-                && ConditionHandler.checkCondition(type, nestedCondition2, player, hitResult);
+        for (ICondtition condition : nestedConditions) {
+            if (!ConditionHandler.checkCondition(type, condition, player, hitResult))
+                return false;
+        }
+        return true;
     }
 
     @Override

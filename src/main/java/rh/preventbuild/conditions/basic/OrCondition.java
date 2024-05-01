@@ -9,17 +9,18 @@ import rh.preventbuild.conditions.ICondtition;
 
 public class OrCondition implements ICondtition {
     private final ConditionType type = ConditionType.FINAL;
-    private final ICondtition nestedCondition;
-    private final ICondtition nestedCondition2;
+    private final ICondtition[] nestedConditions;
 
-    public OrCondition(ICondtition left, ICondtition right, int height) {
-        this.nestedCondition = left;
-        this.nestedCondition2 = right;
+    public OrCondition(ICondtition... conditions) {
+        this.nestedConditions = conditions;
     }
     @Override
     public boolean check(CheckType type, PlayerEntity player, BlockHitResult hitResult, int height) {
-        return ConditionHandler.checkCondition(type, nestedCondition, player, hitResult)
-                || ConditionHandler.checkCondition(type, nestedCondition2, player, hitResult);
+        for (ICondtition condition : nestedConditions) {
+            if (ConditionHandler.checkCondition(type, condition, player, hitResult))
+                return true;
+        }
+        return false;
     }
     @Override
     public ConditionType getType() {
