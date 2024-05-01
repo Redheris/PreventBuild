@@ -15,7 +15,7 @@ public class AndCondition implements ICondtition {
         this.nestedConditions = conditions;
     }
     @Override
-    public boolean check(CheckType type, PlayerEntity player, BlockHitResult hitResult, int height) {
+    public boolean check(CheckType type, PlayerEntity player, BlockHitResult hitResult, int x, int y, int z) {
         for (ICondtition condition : nestedConditions) {
             if (!ConditionHandler.checkCondition(type, condition, player, hitResult))
                 return false;

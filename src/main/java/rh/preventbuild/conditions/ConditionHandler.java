@@ -7,11 +7,11 @@ public class ConditionHandler {
     public static boolean checkCondition(CheckType type, ICondtition condition, PlayerEntity player, BlockHitResult hitResult) {
         int height;
         if (type == CheckType.PLACE)
-            height = getPlacingY((BlockHitResult) hitResult);
+            height = getPlacingY(hitResult);
         else
             height = hitResult.getBlockPos().getY();
 
-        boolean res = condition.check(type, player, hitResult, height);
+        boolean res = condition.check(type, player, hitResult, 0, height, 0);
         if (condition.getType() == ConditionType.ADDITIONAL) {
             return res && checkCondition(type, condition.getNestedCondition(), player, hitResult);
         }

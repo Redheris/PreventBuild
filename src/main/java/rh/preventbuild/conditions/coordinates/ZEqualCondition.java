@@ -1,27 +1,23 @@
-package rh.preventbuild.conditions.basic;
+package rh.preventbuild.conditions.coordinates;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import rh.preventbuild.conditions.CheckType;
-import rh.preventbuild.conditions.ConditionHandler;
 import rh.preventbuild.conditions.ConditionType;
 import rh.preventbuild.conditions.ICondtition;
 
-public class OrCondition implements ICondtition {
+public class ZEqualCondition implements ICondtition {
     private final ConditionType type = ConditionType.FINAL;
-    private final ICondtition[] nestedConditions;
+    private final int z;
 
-    public OrCondition(ICondtition... conditions) {
-        this.nestedConditions = conditions;
+    ZEqualCondition(int z) {
+        this.z = z;
     }
     @Override
     public boolean check(CheckType type, PlayerEntity player, BlockHitResult hitResult, int x, int y, int z) {
-        for (ICondtition condition : nestedConditions) {
-            if (ConditionHandler.checkCondition(type, condition, player, hitResult))
-                return true;
-        }
-        return false;
+        return z == this.z;
     }
+
     @Override
     public ConditionType getType() {
         return type;

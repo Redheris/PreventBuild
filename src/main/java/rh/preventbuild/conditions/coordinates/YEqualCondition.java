@@ -1,4 +1,4 @@
-package rh.preventbuild.conditions.heights;
+package rh.preventbuild.conditions.coordinates;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
@@ -14,8 +14,8 @@ public class YEqualCondition implements ICondtition {
         this.y = y;
     }
     @Override
-    public boolean check(CheckType type, PlayerEntity player, BlockHitResult hitResult, int height) {
-        return height == y;
+    public boolean check(CheckType type, PlayerEntity player, BlockHitResult hitResult, int x, int y, int z) {
+        return y == this.y;
     }
 
     @Override

@@ -10,10 +10,10 @@ public class NullCondition implements ICondtition {
 
     public ConditionType type = ConditionType.NULL;
 
-    public NullCondition() {};
+    public NullCondition() {}
 
     @Override
-    public boolean check(CheckType type, PlayerEntity player, BlockHitResult hitResult, int height) {
+    public boolean check(CheckType type, PlayerEntity player, BlockHitResult hitResult, int x, int y, int z) {
         return true;
     }
 

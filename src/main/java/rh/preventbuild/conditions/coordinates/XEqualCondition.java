@@ -1,4 +1,4 @@
-package rh.preventbuild.conditions.heights;
+package rh.preventbuild.conditions.coordinates;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
@@ -6,16 +6,16 @@ import rh.preventbuild.conditions.CheckType;
 import rh.preventbuild.conditions.ConditionType;
 import rh.preventbuild.conditions.ICondtition;
 
-public class YAboveCondition implements ICondtition {
+public class XEqualCondition implements ICondtition {
     private final ConditionType type = ConditionType.FINAL;
-    private final int y;
+    private final int x;
 
-    YAboveCondition(int y) {
-        this.y = y;
+    XEqualCondition(int x) {
+        this.x = x;
     }
     @Override
-    public boolean check(CheckType type, PlayerEntity player, BlockHitResult hitResult, int height) {
-        return height > y;
+    public boolean check(CheckType type, PlayerEntity player, BlockHitResult hitResult, int x, int y, int z) {
+        return x == this.x;
     }
 
     @Override

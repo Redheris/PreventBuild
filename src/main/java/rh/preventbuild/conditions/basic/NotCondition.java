@@ -14,7 +14,7 @@ public class NotCondition implements ICondtition {
         this.nestedCondition = condition;
     }
     @Override
-    public boolean check(CheckType type, PlayerEntity player, BlockHitResult hitResult, int height) {
+    public boolean check(CheckType type, PlayerEntity player, BlockHitResult hitResult, int x, int y, int z) {
         return !ConditionHandler.checkCondition(type, nestedCondition, player, hitResult);
     }
     @Override
