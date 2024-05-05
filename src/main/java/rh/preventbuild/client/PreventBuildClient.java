@@ -10,8 +10,8 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.CarpetBlock;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,11 +24,18 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.lwjgl.glfw.GLFW;
 import rh.preventbuild.BlockingLists;
 import rh.preventbuild.PreventBuild;
 import rh.preventbuild.PreventBuildConfig;
+import rh.preventbuild.conditions.ConditionHandler;
+import rh.preventbuild.conditions.ICondtition;
+import rh.preventbuild.conditions.basic.AndCondition;
+import rh.preventbuild.conditions.basic.NotCondition;
+import rh.preventbuild.conditions.basic.OrCondition;
+import rh.preventbuild.conditions.coordinates.*;
 
 @Environment(EnvType.CLIENT)
 public class PreventBuildClient implements ClientModInitializer {
@@ -37,6 +44,18 @@ public class PreventBuildClient implements ClientModInitializer {
     private static KeyBinding keyBind_toggleMod;
     private static KeyBinding keyBind_addCurrentBreakY;
     private static KeyBinding keyBind_addCurrentPlaceY;
+
+    private ICondtition testCondition =
+            new OrCondition(
+                    new AndCondition(
+                            new YAboveCondition(80),
+                            new NotCondition(
+                                    new YWithinCondition(82, 85)
+                            )
+                    ),
+                    new YEqualCondition(77),
+                    new XWithinCondition(998, 1002)
+            );
 
     @Override
     public void onInitializeClient() {
@@ -134,6 +153,10 @@ public class PreventBuildClient implements ClientModInitializer {
                 if (PreventBuild.config.blockCarpets && used instanceof CarpetBlock
                         && hitedBlock instanceof CarpetBlock)
                     return ActionResult.FAIL;
+                if (world.isClient)
+                    MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
+                            Text.literal(""+ConditionHandler.checkCondition(testCondition, player, hitResult))
+                    );
 
                 if (PreventBuild.config.doBlockPlaceY && BlockingLists.getPlaceY().contains(getPlacingY(hitResult))
                     && (hand == Hand.MAIN_HAND && player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof BlockItem
@@ -146,6 +169,10 @@ public class PreventBuildClient implements ClientModInitializer {
         AttackBlockCallback.EVENT.register((PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction) ->
         {
             if (PreventBuild.config.enabled) {
+                if (world.isClient)
+                    MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
+                            Text.literal(""+ConditionHandler.checkCondition(testCondition, player, pos))
+                    );
                 if (PreventBuild.config.doBlockBreakY && BlockingLists.getBreakY().contains(pos.getY()))
                     return ActionResult.FAIL;
                 if (PreventBuild.config.blockBreakBlocks

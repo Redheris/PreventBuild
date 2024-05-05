@@ -3,6 +3,7 @@ package rh.preventbuild.conditions;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 public class ConditionHandler {
     public static boolean checkCondition(ICondtition condition, PlayerEntity player, BlockPos pos) {
@@ -14,19 +15,22 @@ public class ConditionHandler {
     }
 
     public static boolean checkCondition(ICondtition condition, PlayerEntity player, BlockHitResult hitResult) {
-        BlockPos pos = hitResult.getBlockPos();
-        boolean res = condition.check(player, pos.getX(), getPlacingY(hitResult), pos.getZ());
+        BlockPos pos = getPlacingPos(hitResult.getBlockPos(), hitResult.getSide());;
+        boolean res = condition.check(player, pos.getX(), pos.getY(), pos.getZ());
         if (condition.getType() == ConditionType.ADDITIONAL) {
             return res && checkCondition(condition.getNestedCondition(), player, hitResult);
         }
         return res;
     }
 
-    private static int getPlacingY(BlockHitResult hitResult){
-        return switch (hitResult.getSide()) {
-            case UP -> hitResult.getBlockPos().getY() + 1;
-            case DOWN -> hitResult.getBlockPos().getY() - 1;
-            default -> hitResult.getBlockPos().getY();
+    private static BlockPos getPlacingPos(BlockPos pos, Direction side){
+        return switch (side) {
+            case UP -> new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
+            case DOWN -> new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ());
+            case SOUTH -> new BlockPos(pos.getX(), pos.getY(), pos.getZ() + 1);
+            case NORTH -> new BlockPos(pos.getX(), pos.getY(), pos.getZ() - 1);
+            case WEST -> new BlockPos(pos.getX() - 1, pos.getY(), pos.getZ());
+            case EAST -> new BlockPos(pos.getX() + 1, pos.getY(), pos.getZ());
         };
     }
 }
