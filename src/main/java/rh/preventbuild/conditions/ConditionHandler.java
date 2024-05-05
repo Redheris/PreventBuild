@@ -2,18 +2,22 @@ package rh.preventbuild.conditions;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
 
 public class ConditionHandler {
-    public static boolean checkCondition(CheckType type, ICondtition condition, PlayerEntity player, BlockHitResult hitResult) {
-        int height;
-        if (type == CheckType.PLACE)
-            height = getPlacingY(hitResult);
-        else
-            height = hitResult.getBlockPos().getY();
-
-        boolean res = condition.check(type, player, hitResult, 0, height, 0);
+    public static boolean checkCondition(ICondtition condition, PlayerEntity player, BlockPos pos) {
+        boolean res = condition.check(player, pos.getX(), pos.getY(), pos.getZ());
         if (condition.getType() == ConditionType.ADDITIONAL) {
-            return res && checkCondition(type, condition.getNestedCondition(), player, hitResult);
+            return res && checkCondition(condition.getNestedCondition(), player, pos);
+        }
+        return res;
+    }
+
+    public static boolean checkCondition(ICondtition condition, PlayerEntity player, BlockHitResult hitResult) {
+        BlockPos pos = hitResult.getBlockPos();
+        boolean res = condition.check(player, pos.getX(), getPlacingY(hitResult), pos.getZ());
+        if (condition.getType() == ConditionType.ADDITIONAL) {
+            return res && checkCondition(condition.getNestedCondition(), player, hitResult);
         }
         return res;
     }

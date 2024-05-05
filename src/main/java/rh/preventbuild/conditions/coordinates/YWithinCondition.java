@@ -1,8 +1,6 @@
 package rh.preventbuild.conditions.coordinates;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.hit.BlockHitResult;
-import rh.preventbuild.conditions.CheckType;
 import rh.preventbuild.conditions.ConditionType;
 import rh.preventbuild.conditions.ICondtition;
 
@@ -16,7 +14,7 @@ public class YWithinCondition implements ICondtition {
         this.y_end = y_end;
     }
     @Override
-    public boolean check(CheckType type, PlayerEntity player, BlockHitResult hitResult, int x, int y, int z) {
+    public boolean check(PlayerEntity player, int x, int y, int z) {
         return y_start <= y && y <= y_end;
     }
 

@@ -6,7 +6,11 @@ import rh.preventbuild.conditions.basic.NullCondition;
 
 public interface ICondtition {
 
-    boolean check(CheckType type, PlayerEntity player, BlockHitResult hitResult, int x, int y, int z);
+    boolean check(PlayerEntity player, int x, int y, int z);
+
+    default boolean check(PlayerEntity player, int x, int y, int z, BlockHitResult hitResult) {
+        return check(player, x, y, z);
+    };
 
     ConditionType getType();
 
