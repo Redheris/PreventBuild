@@ -1,12 +1,9 @@
 package rh.preventbuild.conditions.coordinates;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.hit.BlockHitResult;
-import rh.preventbuild.conditions.ConditionType;
 import rh.preventbuild.conditions.ICondtition;
 
 public class XAboveCondition implements ICondtition {
-    private final ConditionType type = ConditionType.FINAL;
     private final int x;
 
     public XAboveCondition(int x) {
@@ -17,8 +14,4 @@ public class XAboveCondition implements ICondtition {
         return x > this.x;
     }
 
-    @Override
-    public ConditionType getType() {
-        return type;
-    }
 }

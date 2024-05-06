@@ -1,11 +1,9 @@
 package rh.preventbuild.conditions.coordinates;
 
 import net.minecraft.entity.player.PlayerEntity;
-import rh.preventbuild.conditions.ConditionType;
 import rh.preventbuild.conditions.ICondtition;
 
 public class YAboveCondition implements ICondtition {
-    private final ConditionType type = ConditionType.FINAL;
     private final int y;
 
     public YAboveCondition(int y) {
@@ -16,8 +14,4 @@ public class YAboveCondition implements ICondtition {
         return y > this.y;
     }
 
-    @Override
-    public ConditionType getType() {
-        return type;
-    }
 }

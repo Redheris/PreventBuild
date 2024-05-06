@@ -4,11 +4,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import rh.preventbuild.conditions.ConditionHandler;
-import rh.preventbuild.conditions.ConditionType;
 import rh.preventbuild.conditions.ICondtition;
 
 public class AndCondition implements ICondtition {
-    private final ConditionType type = ConditionType.FINAL;
     private final ICondtition[] nestedConditions;
 
     public AndCondition(ICondtition... conditions) {
@@ -30,10 +28,5 @@ public class AndCondition implements ICondtition {
                 return false;
         }
         return true;
-    }
-
-    @Override
-    public ConditionType getType() {
-        return type;
     }
 }

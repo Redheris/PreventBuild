@@ -7,20 +7,12 @@ import net.minecraft.util.math.Direction;
 
 public class ConditionHandler {
     public static boolean checkCondition(ICondtition condition, PlayerEntity player, BlockPos pos) {
-        boolean res = condition.check(player, pos.getX(), pos.getY(), pos.getZ());
-        if (condition.getType() == ConditionType.ADDITIONAL) {
-            return res && checkCondition(condition.getNestedCondition(), player, pos);
-        }
-        return res;
+        return condition.check(player, pos.getX(), pos.getY(), pos.getZ());
     }
 
     public static boolean checkCondition(ICondtition condition, PlayerEntity player, BlockHitResult hitResult) {
         BlockPos pos = getPlacingPos(hitResult.getBlockPos(), hitResult.getSide());;
-        boolean res = condition.check(player, pos.getX(), pos.getY(), pos.getZ());
-        if (condition.getType() == ConditionType.ADDITIONAL) {
-            return res && checkCondition(condition.getNestedCondition(), player, hitResult);
-        }
-        return res;
+        return condition.check(player, pos.getX(), pos.getY(), pos.getZ());
     }
 
     private static BlockPos getPlacingPos(BlockPos pos, Direction side){

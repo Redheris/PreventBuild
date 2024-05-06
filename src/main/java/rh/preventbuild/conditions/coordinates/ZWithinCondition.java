@@ -1,11 +1,9 @@
 package rh.preventbuild.conditions.coordinates;
 
 import net.minecraft.entity.player.PlayerEntity;
-import rh.preventbuild.conditions.ConditionType;
 import rh.preventbuild.conditions.ICondtition;
 
 public class ZWithinCondition implements ICondtition {
-    private final ConditionType type = ConditionType.FINAL;
     private final int z_start;
     private final int z_end;
 
@@ -18,8 +16,4 @@ public class ZWithinCondition implements ICondtition {
         return z_start <= z && z <= z_end;
     }
 
-    @Override
-    public ConditionType getType() {
-        return type;
-    }
 }
