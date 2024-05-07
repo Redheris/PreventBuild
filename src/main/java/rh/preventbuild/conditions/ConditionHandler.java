@@ -14,7 +14,7 @@ public class ConditionHandler {
      * @param  pos        the position to check
      * @return            the result of the condition check
      */
-    public static boolean checkCondition(ICondtition condition, PlayerEntity player, BlockPos pos) {
+    public static boolean checkCondition(ICondition condition, PlayerEntity player, BlockPos pos) {
         return condition.check(player, pos.getX(), pos.getY(), pos.getZ());
     }
     /**
@@ -25,7 +25,7 @@ public class ConditionHandler {
      * @param  hitResult   the block hit result
      * @return             the result of the condition check
      */
-    public static boolean checkCondition(ICondtition condition, PlayerEntity player, BlockHitResult hitResult) {
+    public static boolean checkCondition(ICondition condition, PlayerEntity player, BlockHitResult hitResult) {
         BlockPos pos = getPlacingPos(hitResult.getBlockPos(), hitResult.getSide());;
         return condition.check(player, pos.getX(), pos.getY(), pos.getZ());
     }

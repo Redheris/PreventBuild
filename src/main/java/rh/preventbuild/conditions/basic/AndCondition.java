@@ -4,17 +4,17 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import rh.preventbuild.conditions.ConditionHandler;
-import rh.preventbuild.conditions.ICondtition;
+import rh.preventbuild.conditions.ICondition;
 
-public class AndCondition implements ICondtition {
-    private final ICondtition[] nestedConditions;
+public class AndCondition implements ICondition {
+    private final ICondition[] nestedConditions;
 
-    public AndCondition(ICondtition... conditions) {
+    public AndCondition(ICondition... conditions) {
         this.nestedConditions = conditions;
     }
     @Override
     public boolean check(PlayerEntity player, int x, int y, int z) {
-        for (ICondtition condition : nestedConditions) {
+        for (ICondition condition : nestedConditions) {
             if (!ConditionHandler.checkCondition(condition, player, BlockPos.ofFloored(x, y, z)))
                 return false;
         }
@@ -23,7 +23,7 @@ public class AndCondition implements ICondtition {
 
     @Override
     public boolean check(PlayerEntity player, int x, int y, int z, BlockHitResult hitResult) {
-        for (ICondtition condition : nestedConditions) {
+        for (ICondition condition : nestedConditions) {
             if (!ConditionHandler.checkCondition(condition, player, hitResult))
                 return false;
         }
@@ -32,7 +32,7 @@ public class AndCondition implements ICondtition {
     @Override
     public String getString() {
         String str = "and: \n{";
-        for (ICondtition nestedCondition : nestedConditions)
+        for (ICondition nestedCondition : nestedConditions)
             str += "\n-> " + nestedCondition.getString();
         str += "\n}";
         return str;

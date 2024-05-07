@@ -31,7 +31,7 @@ import rh.preventbuild.PreventBuild;
 import rh.preventbuild.PreventBuildConfig;
 import rh.preventbuild.conditions.ConditionConfig;
 import rh.preventbuild.conditions.ConditionHandler;
-import rh.preventbuild.conditions.ICondtition;
+import rh.preventbuild.conditions.ICondition;
 import rh.preventbuild.conditions.basic.AndCondition;
 import rh.preventbuild.conditions.basic.NotCondition;
 import rh.preventbuild.conditions.basic.OrCondition;
@@ -46,7 +46,7 @@ public class PreventBuildClient implements ClientModInitializer {
     private static KeyBinding keyBind_addCurrentPlaceY;
     private static KeyBinding keyBind_testConfig;
 
-    private ICondtition testCondition =
+    private ICondition testCondition =
             new OrCondition(
                     new AndCondition(
                             new YAboveCondition(80),
@@ -141,7 +141,7 @@ public class PreventBuildClient implements ClientModInitializer {
                 }
 
                 while (keyBind_testConfig.wasPressed()) {
-                    ICondtition cond = ConditionConfig.getConditionFromConfig("testCondition");
+                    ICondition cond = ConditionConfig.getConditionFromConfig("testCondition");
                     System.out.println(cond);
                     testCondition = cond;
                     System.out.println(testCondition.getString());
@@ -214,9 +214,9 @@ public class PreventBuildClient implements ClientModInitializer {
         - "Break block A under block B"
         - "Place on levels A,B,..."                 +
         - "Break on levels A,B,..."                 +
-        - "Place/Break on levels between A and B"
+        - "Place/Break on levels between A and B"   +
         - Stripping any logs and wood               +
     - Extra future plan:
         - Create a visual UI for configuration preventing conditions
-        - Add an ability to save configurations to switch between them and share with other players(clients)
+        - Add an ability to save configurations to switch between them and share with other players(clients)    +
  */

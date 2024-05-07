@@ -1,12 +1,9 @@
 package rh.preventbuild.conditions;
 
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 
-import java.nio.file.Path;
-
-public interface ICondtition {
+public interface ICondition {
     /**
      * Check of breaking block
      * */

@@ -19,15 +19,15 @@ public class ConditionConfig {
     private static final Path conditionsDirPath = FabricLoader.getInstance().getConfigDir().resolve("preventbuild/conditions");
     private static final Logger LOGGER = LogManager.getLogger("PBConditionConfig");
     private final String name;
-    private ICondtition condition;
+    private ICondition condition;
 
     public ConditionConfig(String filename) {
-        ICondtition condition = getConditionFromConfig(filename);
+        ICondition condition = getConditionFromConfig(filename);
         String name = getName(filename);
         this.name = name;
         this.condition = condition;
     }
-    public ConditionConfig(String name, ICondtition condition) {
+    public ConditionConfig(String name, ICondition condition) {
         this.name = name;
         this.condition = condition;
     }
@@ -52,13 +52,13 @@ public class ConditionConfig {
         return new ConditionConfig(name, new NullCondition());
     }
 
-    public static ICondtition getConditionFromConfig(String filename) {
+    public static ICondition getConditionFromConfig(String filename) {
         try {
             File file = conditionsDirPath.resolve( filename + ".json").toFile();
             Object o = new JSONParser().parse(new FileReader(file));
             JSONObject config = (JSONObject) o;
             LOGGER.info("Reading condition file: " + conditionsDirPath);
-            ICondtition cond =  read(config);
+            ICondition cond =  read(config);
             LOGGER.info("Successfully read config file: " + filename + ".json");
             return cond;
         } catch (IOException e) {
@@ -89,13 +89,13 @@ public class ConditionConfig {
      * @param  config	the JSON object containing the configuration
      * @return         	the condition generated from the JSON object
      */
-    private static ICondtition read(JSONObject config) {
+    private static ICondition read(JSONObject config) {
         for (Object elemName : config.keySet()) {
             if (elemName.equals("name")) continue;
             if (Arrays.asList("and", "or", "not").contains(elemName)) {
                 JSONObject elemJSON = (JSONObject) config.get(elemName);
                 int ind = 0;
-                ICondtition[] conditions = new ICondtition[elemJSON.size()];
+                ICondition[] conditions = new ICondition[elemJSON.size()];
                 for (Object condName : elemJSON.keySet()) {
                     Object cond = elemJSON.get(condName);
                     if (cond instanceof JSONObject) {
@@ -157,7 +157,7 @@ public class ConditionConfig {
         return name;
     }
 
-    public ICondtition getConditionFromConfig() {
+    public ICondition getCondition() {
         return condition;
     }
     /** Check of breaking block */

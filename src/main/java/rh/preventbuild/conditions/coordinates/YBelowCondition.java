@@ -1,9 +1,9 @@
 package rh.preventbuild.conditions.coordinates;
 
 import net.minecraft.entity.player.PlayerEntity;
-import rh.preventbuild.conditions.ICondtition;
+import rh.preventbuild.conditions.ICondition;
 
-public class YBelowCondition implements ICondtition {
+public class YBelowCondition implements ICondition {
     private final int y;
 
     public YBelowCondition(int y) {

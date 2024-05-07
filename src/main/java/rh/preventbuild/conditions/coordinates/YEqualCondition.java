@@ -1,11 +1,11 @@
 package rh.preventbuild.conditions.coordinates;
 
 import net.minecraft.entity.player.PlayerEntity;
-import rh.preventbuild.conditions.ICondtition;
+import rh.preventbuild.conditions.ICondition;
 
 import java.util.Arrays;
 
-public class YEqualCondition implements ICondtition {
+public class YEqualCondition implements ICondition {
     private final int[] y;
 
     public YEqualCondition(int[] y) {

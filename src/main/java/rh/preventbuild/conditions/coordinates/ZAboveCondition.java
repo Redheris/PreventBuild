@@ -1,9 +1,9 @@
 package rh.preventbuild.conditions.coordinates;
 
 import net.minecraft.entity.player.PlayerEntity;
-import rh.preventbuild.conditions.ICondtition;
+import rh.preventbuild.conditions.ICondition;
 
-public class ZAboveCondition implements ICondtition {
+public class ZAboveCondition implements ICondition {
     private final int z;
 
     public ZAboveCondition(int z) {

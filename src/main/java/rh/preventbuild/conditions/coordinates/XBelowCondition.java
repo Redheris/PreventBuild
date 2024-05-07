@@ -2,9 +2,9 @@
 package rh.preventbuild.conditions.coordinates;
 
 import net.minecraft.entity.player.PlayerEntity;
-import rh.preventbuild.conditions.ICondtition;
+import rh.preventbuild.conditions.ICondition;
 
-public class XBelowCondition implements ICondtition {
+public class XBelowCondition implements ICondition {
     private final int x;
 
     public XBelowCondition(int x) {

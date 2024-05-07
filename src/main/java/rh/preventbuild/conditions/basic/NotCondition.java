@@ -4,11 +4,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import rh.preventbuild.conditions.ConditionHandler;
-import rh.preventbuild.conditions.ICondtition;
+import rh.preventbuild.conditions.ICondition;
 
-public class NotCondition implements ICondtition {
-    private final ICondtition nestedCondition;
-    public NotCondition(ICondtition condition) {
+public class NotCondition implements ICondition {
+    private final ICondition nestedCondition;
+    public NotCondition(ICondition condition) {
         this.nestedCondition = condition;
     }
     @Override

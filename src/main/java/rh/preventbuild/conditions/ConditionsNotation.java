@@ -4,7 +4,7 @@ import rh.preventbuild.conditions.basic.*;
 import rh.preventbuild.conditions.coordinates.*;
 
 public class ConditionsNotation {
-    public static ICondtition createCondition(String name, ICondtition[] conds) {
+    public static ICondition createCondition(String name, ICondition[] conds) {
         return switch (name) {
             case "and" -> new AndCondition(conds);
             case "or" -> new OrCondition(conds);
@@ -13,7 +13,7 @@ public class ConditionsNotation {
         };
     }
 
-    public static ICondtition createCondition(String name, int[] nums) {
+    public static ICondition createCondition(String name, int[] nums) {
         return switch (name) {
             case "xEqual" -> new XEqualCondition(nums);
             case "xAbove" -> new XAboveCondition(nums[0]);
@@ -31,7 +31,7 @@ public class ConditionsNotation {
         };
     }
 
-//    public static ICondtition createCondition(String name, String... names) {
+//    public static ICondition createCondition(String name, String... names) {
 //        return switch (name) {
 //            case "blockEqual" -> new BlockEqualCondition(names[0]);
 //            case "blockAbove" -> new BlockAboveCondition(names[0]);
