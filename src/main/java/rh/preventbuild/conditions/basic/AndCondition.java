@@ -29,4 +29,12 @@ public class AndCondition implements ICondtition {
         }
         return true;
     }
+    @Override
+    public String getString() {
+        String str = "and: \n{";
+        for (ICondtition nestedCondition : nestedConditions)
+            str += "\n-> " + nestedCondition.getString();
+        str += "\n}";
+        return str;
+    }
 }

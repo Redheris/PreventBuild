@@ -19,4 +19,8 @@ public class NotCondition implements ICondtition {
     public boolean check(PlayerEntity player, int x, int y, int z, BlockHitResult hitResult) {
         return !ConditionHandler.checkCondition(nestedCondition, player, hitResult);
     }
+    @Override
+    public String getString() {
+        return "not: {" + nestedCondition.getString() + "}";
+    }
 }

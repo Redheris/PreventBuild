@@ -3,15 +3,17 @@ package rh.preventbuild.conditions.coordinates;
 import net.minecraft.entity.player.PlayerEntity;
 import rh.preventbuild.conditions.ICondtition;
 
-public class ZEqualCondition implements ICondtition {
-    private final int z;
+import java.util.Arrays;
 
-    public ZEqualCondition(int z) {
+public class ZEqualCondition implements ICondtition {
+    private final int[] z;
+
+    public ZEqualCondition(int[] z) {
         this.z = z;
     }
     @Override
     public boolean check(PlayerEntity player, int x, int y, int z) {
-        return z == this.z;
+        return Arrays.stream(this.z).anyMatch(i -> i == z);
     }
 
 }

@@ -8,7 +8,11 @@ public class NullCondition implements ICondtition {
 
     @Override
     public boolean check(PlayerEntity player, int x, int y, int z) {
-        return true;
+        return false;
     }
 
+    @Override
+    public String getString() {
+        return "False";
+    }
 }

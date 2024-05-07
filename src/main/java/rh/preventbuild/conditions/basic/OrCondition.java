@@ -28,4 +28,13 @@ public class OrCondition implements ICondtition {
         }
         return false;
     }
+    @Override
+    public String getString() {
+        String str = "or: \n{";
+        for (ICondtition nestedCondition : nestedConditions)
+            str += "\n-> " + nestedCondition.getString();
+        str += "}";
+        str += "\n}\n";
+        return str;
+    }
 }

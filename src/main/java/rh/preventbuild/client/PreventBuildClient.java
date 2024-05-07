@@ -24,12 +24,12 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.lwjgl.glfw.GLFW;
 import rh.preventbuild.BlockingLists;
 import rh.preventbuild.PreventBuild;
 import rh.preventbuild.PreventBuildConfig;
+import rh.preventbuild.conditions.ConditionConfig;
 import rh.preventbuild.conditions.ConditionHandler;
 import rh.preventbuild.conditions.ICondtition;
 import rh.preventbuild.conditions.basic.AndCondition;
@@ -44,6 +44,7 @@ public class PreventBuildClient implements ClientModInitializer {
     private static KeyBinding keyBind_toggleMod;
     private static KeyBinding keyBind_addCurrentBreakY;
     private static KeyBinding keyBind_addCurrentPlaceY;
+    private static KeyBinding keyBind_testConfig;
 
     private ICondtition testCondition =
             new OrCondition(
@@ -53,7 +54,7 @@ public class PreventBuildClient implements ClientModInitializer {
                                     new YWithinCondition(82, 85)
                             )
                     ),
-                    new YEqualCondition(77),
+                    new YEqualCondition(new int[] { 77 }),
                     new XWithinCondition(998, 1002)
             );
 
@@ -85,6 +86,13 @@ public class PreventBuildClient implements ClientModInitializer {
                 "key.preventbuild.addCurrentPlaceY", // Ключ перевода имени привязки ключей
                 InputUtil.Type.KEYSYM, // Тип привязки клавиш, KEYSYM для клавиатуры, MOUSE для мыши.
                 InputUtil.UNKNOWN_KEY.getCode(), // Ключевой код ключа
+                "category.preventbuild" // Ключ перевода категории привязки ключей.
+        ));
+
+        keyBind_testConfig = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.preventbuild.testConfig", // Ключ перевода имени привязки ключей
+                InputUtil.Type.KEYSYM, // Тип привязки клавиш, KEYSYM для клавиатуры, MOUSE для мыши.
+                GLFW.GLFW_KEY_C, // Ключевой код ключа
                 "category.preventbuild" // Ключ перевода категории привязки ключей.
         ));
 
@@ -130,6 +138,13 @@ public class PreventBuildClient implements ClientModInitializer {
 //                    System.out.println(BlockingLists.getPlaceY());
                     client.inGameHud.getChatHud().addMessage(Text.translatable("preventbuild.add_to_place_list", y));
 
+                }
+
+                while (keyBind_testConfig.wasPressed()) {
+                    ICondtition cond = ConditionConfig.getConditionFromConfig("testCondition");
+                    System.out.println(cond);
+                    testCondition = cond;
+                    System.out.println(testCondition.getString());
                 }
             }
         });
