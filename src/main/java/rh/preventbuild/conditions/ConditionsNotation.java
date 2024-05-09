@@ -1,6 +1,8 @@
 package rh.preventbuild.conditions;
 
 import rh.preventbuild.conditions.advanced.AxeStrippingCondition;
+import rh.preventbuild.conditions.advanced.CarpetOnCarpetCondition;
+import rh.preventbuild.conditions.advanced.DoubleSlabCondition;
 import rh.preventbuild.conditions.basic.*;
 import rh.preventbuild.conditions.blocks.BlockAboveCondition;
 import rh.preventbuild.conditions.blocks.BlockAdjacentCondition;
@@ -49,8 +51,8 @@ public class ConditionsNotation {
     public static ICondition createCondition(String name) {
         return switch (name) {
             case "axeStripping" -> new AxeStrippingCondition();
-//            case "CarpetOnCarpet" -> new CarpetOnCarpetCondition();
-//            case "DoubleSlab" -> new DoubleSlabCondition();
+            case "carpetOnCarpet" -> new CarpetOnCarpetCondition();
+            case "doubleSlab" -> new DoubleSlabCondition();
             default -> new NullCondition();
         };
     }
