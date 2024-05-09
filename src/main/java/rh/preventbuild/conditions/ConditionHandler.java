@@ -26,18 +26,7 @@ public class ConditionHandler {
      * @return             the result of the condition check
      */
     public static boolean checkCondition(ICondition condition, PlayerEntity player, BlockHitResult hitResult) {
-        BlockPos pos = getPlacingPos(hitResult.getBlockPos(), hitResult.getSide());;
+        BlockPos pos = hitResult.getBlockPos().offset(hitResult.getSide());
         return condition.check(player, pos.getX(), pos.getY(), pos.getZ());
-    }
-
-    private static BlockPos getPlacingPos(BlockPos pos, Direction side){
-        return switch (side) {
-            case UP -> new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
-            case DOWN -> new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ());
-            case SOUTH -> new BlockPos(pos.getX(), pos.getY(), pos.getZ() + 1);
-            case NORTH -> new BlockPos(pos.getX(), pos.getY(), pos.getZ() - 1);
-            case WEST -> new BlockPos(pos.getX() - 1, pos.getY(), pos.getZ());
-            case EAST -> new BlockPos(pos.getX() + 1, pos.getY(), pos.getZ());
-        };
     }
 }
