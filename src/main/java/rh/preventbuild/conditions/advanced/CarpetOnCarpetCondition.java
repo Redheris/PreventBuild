@@ -6,7 +6,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import rh.preventbuild.conditions.ICondition;
 
 public class CarpetOnCarpetCondition implements ICondition {
@@ -19,6 +18,6 @@ public class CarpetOnCarpetCondition implements ICondition {
     @Override
     public boolean check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         Block block = player.getWorld().getBlockState(new BlockPos(x, y - 1, z)).getBlock();
-        return hitResult.getSide() == Direction.UP && block instanceof CarpetBlock;
+        return block instanceof CarpetBlock;
     }
 }
