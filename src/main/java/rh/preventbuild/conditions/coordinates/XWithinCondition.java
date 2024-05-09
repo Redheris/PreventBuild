@@ -1,6 +1,7 @@
 package rh.preventbuild.conditions.coordinates;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Hand;
 import rh.preventbuild.conditions.ICondition;
 
 public class XWithinCondition implements ICondition {
@@ -12,7 +13,7 @@ public class XWithinCondition implements ICondition {
         this.x_end = x_end;
     }
     @Override
-    public boolean check(PlayerEntity player, int x, int y, int z) {
+    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
         return x_start <= x && x <= x_end;
     }
 

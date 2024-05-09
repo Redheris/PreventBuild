@@ -1,6 +1,7 @@
 package rh.preventbuild.conditions.coordinates;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Hand;
 import rh.preventbuild.conditions.ICondition;
 
 public class YAboveCondition implements ICondition {
@@ -10,7 +11,7 @@ public class YAboveCondition implements ICondition {
         this.y = y;
     }
     @Override
-    public boolean check(PlayerEntity player, int x, int y, int z) {
+    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
         return y > this.y;
     }
 

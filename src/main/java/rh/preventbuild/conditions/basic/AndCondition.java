@@ -1,6 +1,7 @@
 package rh.preventbuild.conditions.basic;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import rh.preventbuild.conditions.ConditionHandler;
@@ -13,18 +14,18 @@ public class AndCondition implements ICondition {
         this.nestedConditions = conditions;
     }
     @Override
-    public boolean check(PlayerEntity player, int x, int y, int z) {
+    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
         for (ICondition condition : nestedConditions) {
-            if (!ConditionHandler.checkCondition(condition, player, BlockPos.ofFloored(x, y, z)))
+            if (!ConditionHandler.checkCondition(condition, player, hand, BlockPos.ofFloored(x, y, z)))
                 return false;
         }
         return true;
     }
 
     @Override
-    public boolean check(PlayerEntity player, int x, int y, int z, BlockHitResult hitResult) {
+    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         for (ICondition condition : nestedConditions) {
-            if (!ConditionHandler.checkCondition(condition, player, hitResult))
+            if (!ConditionHandler.checkCondition(condition, player, hand, hitResult))
                 return false;
         }
         return true;

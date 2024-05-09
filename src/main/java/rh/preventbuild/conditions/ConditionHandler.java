@@ -1,21 +1,24 @@
 package rh.preventbuild.conditions;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 
 public class ConditionHandler {
     /**
      * Check the condition for breaking block.
      *
-     * @param  condition  the condition to check
-     * @param  player     the player entity
-     * @param  pos        the position to check
-     * @return            the result of the condition check
+     * @param condition the condition to check
+     * @param player    the player entity
+     * @param hand
+     * @param pos       the position to check
+     * @return the result of the condition check
      */
-    public static boolean checkCondition(ICondition condition, PlayerEntity player, BlockPos pos) {
-        return condition.check(player, pos.getX(), pos.getY(), pos.getZ());
+    public static boolean checkCondition(ICondition condition, PlayerEntity player, Hand hand, BlockPos pos) {
+        return condition.check(player, hand, pos.getX(), pos.getY(), pos.getZ());
     }
     /**
      * Check the condition for placing a block.
@@ -25,8 +28,8 @@ public class ConditionHandler {
      * @param  hitResult   the block hit result
      * @return             the result of the condition check
      */
-    public static boolean checkCondition(ICondition condition, PlayerEntity player, BlockHitResult hitResult) {
+    public static boolean checkCondition(ICondition condition, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
         BlockPos pos = hitResult.getBlockPos().offset(hitResult.getSide());
-        return condition.check(player, pos.getX(), pos.getY(), pos.getZ());
+        return condition.check(player, hand, pos.getX(), pos.getY(), pos.getZ(), hitResult);
     }
 }

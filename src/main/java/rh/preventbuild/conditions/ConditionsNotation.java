@@ -1,6 +1,11 @@
 package rh.preventbuild.conditions;
 
+import rh.preventbuild.conditions.advanced.AxeStrippingCondition;
 import rh.preventbuild.conditions.basic.*;
+import rh.preventbuild.conditions.blocks.BlockAboveCondition;
+import rh.preventbuild.conditions.blocks.BlockAdjacentCondition;
+import rh.preventbuild.conditions.blocks.BlockBelowCondition;
+import rh.preventbuild.conditions.blocks.BlockEqualCondition;
 import rh.preventbuild.conditions.coordinates.*;
 
 public class ConditionsNotation {
@@ -31,13 +36,22 @@ public class ConditionsNotation {
         };
     }
 
-//    public static ICondition createCondition(String name, String... names) {
-//        return switch (name) {
-//            case "blockEqual" -> new BlockEqualCondition(names[0]);
-//            case "blockAbove" -> new BlockAboveCondition(names[0]);
-//            case "blockBelow" -> new BlockBelowCondition(names[0]);
-//            case "blockAdjacent" -> new BlockAdjacentCondition(names[0]);
-//            default -> new NullCondition();
-//        };
-//    }
+    public static ICondition createCondition(String name, String... names) {
+        return switch (name) {
+            case "blockEqual" -> new BlockEqualCondition(names);
+            case "blockAbove" -> new BlockAboveCondition(names);
+            case "blockBelow" -> new BlockBelowCondition(names);
+            case "blockAdjacent" -> new BlockAdjacentCondition(names);
+            default -> new NullCondition();
+        };
+    }
+
+    public static ICondition createCondition(String name) {
+        return switch (name) {
+            case "axeStripping" -> new AxeStrippingCondition();
+//            case "CarpetOnCarpet" -> new CarpetOnCarpetCondition();
+//            case "DoubleSlab" -> new DoubleSlabCondition();
+            default -> new NullCondition();
+        };
+    }
 }

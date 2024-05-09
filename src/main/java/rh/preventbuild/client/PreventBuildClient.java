@@ -32,10 +32,8 @@ import rh.preventbuild.PreventBuildConfig;
 import rh.preventbuild.conditions.ConditionConfig;
 import rh.preventbuild.conditions.ConditionHandler;
 import rh.preventbuild.conditions.ICondition;
-import rh.preventbuild.conditions.basic.AndCondition;
-import rh.preventbuild.conditions.basic.NotCondition;
+import rh.preventbuild.conditions.advanced.AxeStrippingCondition;
 import rh.preventbuild.conditions.basic.OrCondition;
-import rh.preventbuild.conditions.coordinates.*;
 
 @Environment(EnvType.CLIENT)
 public class PreventBuildClient implements ClientModInitializer {
@@ -48,14 +46,15 @@ public class PreventBuildClient implements ClientModInitializer {
 
     private ICondition testCondition =
             new OrCondition(
-                    new AndCondition(
-                            new YAboveCondition(80),
-                            new NotCondition(
-                                    new YWithinCondition(82, 85)
-                            )
-                    ),
-                    new YEqualCondition(new int[] { 77 }),
-                    new XWithinCondition(998, 1002)
+//                    new AndCondition(
+//                            new YAboveCondition(80),
+//                            new NotCondition(
+//                                    new YWithinCondition(82, 85)
+//                            )
+//                    ),
+//                    new YEqualCondition(new int[] { 77 }),
+//                    new XWithinCondition(998, 1002)
+                    new AxeStrippingCondition()
             );
 
     @Override
@@ -162,15 +161,19 @@ public class PreventBuildClient implements ClientModInitializer {
                 Block used = Block.getBlockFromItem(usedItem);
                 Block hitedBlock = world.getBlockState(hitResult.getBlockPos()).getBlock();
 
-                if (PreventBuild.config.blockStripping && usedItem instanceof AxeItem)
+                if (PreventBuild.config.blockStripping && usedItem instanceof AxeItem) {
+                    MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
+                            Text.literal("cheeeck")
+                    );
                     return ActionResult.FAIL;
+                }
 
                 if (PreventBuild.config.blockCarpets && used instanceof CarpetBlock
                         && hitedBlock instanceof CarpetBlock)
                     return ActionResult.FAIL;
                 if (world.isClient)
                     MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
-                            Text.literal(""+ConditionHandler.checkCondition(testCondition, player, hitResult))
+                            Text.literal(""+ConditionHandler.checkCondition(testCondition, player, hand, hitResult))
                     );
 
                 if (PreventBuild.config.doBlockPlaceY && BlockingLists.getPlaceY().contains(getPlacingY(hitResult))
@@ -186,7 +189,7 @@ public class PreventBuildClient implements ClientModInitializer {
             if (PreventBuild.config.enabled) {
                 if (world.isClient)
                     MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
-                            Text.literal(""+ConditionHandler.checkCondition(testCondition, player, pos))
+                            Text.literal(""+ConditionHandler.checkCondition(testCondition, player, hand, pos))
                     );
                 if (PreventBuild.config.doBlockBreakY && BlockingLists.getBreakY().contains(pos.getY()))
                     return ActionResult.FAIL;
