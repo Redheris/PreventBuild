@@ -1,6 +1,7 @@
 package rh.preventbuild.client;
 
 
+import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -29,6 +30,7 @@ import org.lwjgl.glfw.GLFW;
 import rh.preventbuild.BlockingLists;
 import rh.preventbuild.PreventBuild;
 import rh.preventbuild.PreventBuildConfig;
+import rh.preventbuild.client.gui.conditions.ConditionsConfigGui;
 import rh.preventbuild.conditions.ConditionConfig;
 import rh.preventbuild.conditions.ConditionHandler;
 import rh.preventbuild.conditions.ICondition;
@@ -99,7 +101,8 @@ public class PreventBuildClient implements ClientModInitializer {
             if (client.player != null) {
 
                 while (keyBind_openConfigScreen.wasPressed()) {
-                    client.setScreen(AutoConfig.getConfigScreen(PreventBuildConfig.class, client.currentScreen).get());
+//                    client.setScreen(AutoConfig.getConfigScreen(PreventBuildConfig.class, client.currentScreen).get());
+                    client.setScreen(new CottonClientScreen(new ConditionsConfigGui()));
                 }
 
                 while (keyBind_toggleMod.wasPressed()) {
