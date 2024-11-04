@@ -70,31 +70,31 @@ public class PreventBuildClient implements ClientModInitializer {
         ));
 
         keyBind_toggleMod = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.preventbuild.toggleMod", // Ключ перевода имени привязки ключей
-                InputUtil.Type.KEYSYM, // Тип привязки клавиш, KEYSYM для клавиатуры, MOUSE для мыши.
-                GLFW.GLFW_KEY_R, // Ключевой код ключа
-                "category.preventbuild" // Ключ перевода категории привязки ключей.
+                "key.preventbuild.toggleMod",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_R,
+                "category.preventbuild"
         ));
 
         keyBind_addCurrentBreakY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.preventbuild.addCurrentBreakY", // Ключ перевода имени привязки ключей
-                InputUtil.Type.KEYSYM, // Тип привязки клавиш, KEYSYM для клавиатуры, MOUSE для мыши.
-                InputUtil.UNKNOWN_KEY.getCode(), // Ключевой код ключа
-                "category.preventbuild" // Ключ перевода категории привязки ключей.
+                "key.preventbuild.addCurrentBreakY",
+                InputUtil.Type.KEYSYM,
+                InputUtil.UNKNOWN_KEY.getCode(),
+                "category.preventbuild"
         ));
 
         keyBind_addCurrentPlaceY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.preventbuild.addCurrentPlaceY", // Ключ перевода имени привязки ключей
-                InputUtil.Type.KEYSYM, // Тип привязки клавиш, KEYSYM для клавиатуры, MOUSE для мыши.
-                InputUtil.UNKNOWN_KEY.getCode(), // Ключевой код ключа
-                "category.preventbuild" // Ключ перевода категории привязки ключей.
+                "key.preventbuild.addCurrentPlaceY",
+                InputUtil.Type.KEYSYM,
+                InputUtil.UNKNOWN_KEY.getCode(),
+                "category.preventbuild"
         ));
 
         keyBind_testConfig = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.preventbuild.testConfig", // Ключ перевода имени привязки ключей
-                InputUtil.Type.KEYSYM, // Тип привязки клавиш, KEYSYM для клавиатуры, MOUSE для мыши.
-                GLFW.GLFW_KEY_C, // Ключевой код ключа
-                "category.preventbuild" // Ключ перевода категории привязки ключей.
+                "key.preventbuild.testConfig",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_C,
+                "category.preventbuild"
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {

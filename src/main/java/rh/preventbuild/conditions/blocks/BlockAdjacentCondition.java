@@ -3,17 +3,25 @@ package rh.preventbuild.conditions.blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import rh.preventbuild.conditions.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
 
 import java.util.Arrays;
 
 public class BlockAdjacentCondition implements ICondition {
-
     private final String[] blocks;
+    private final ConditionCategory category;
 
-    public BlockAdjacentCondition(String[] blocks) {
+    public BlockAdjacentCondition(ConditionCategory category, String[] blocks) {
+        this.category = category;
         this.blocks = blocks;
     }
+
+    @Override
+    public ConditionCategory getCategory() {
+        return category;
+    }
+
     @Override
     public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
         for (int i = -1; i <= 1; i++) {

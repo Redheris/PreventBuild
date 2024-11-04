@@ -5,6 +5,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 
 public interface ICondition {
+    ConditionCategory getCategory();
     /**
      * Check of breaking block
      * */

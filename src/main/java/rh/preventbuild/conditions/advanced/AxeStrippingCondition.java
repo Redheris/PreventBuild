@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
+import rh.preventbuild.conditions.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
 
 import java.util.ArrayList;
@@ -14,6 +15,11 @@ import java.util.List;
 
 public class AxeStrippingCondition implements ICondition {
     protected static final List<Block> STRIPPABLE_BLOCKS;
+
+    @Override
+    public ConditionCategory getCategory() {
+        return ConditionCategory.OTHER;
+    }
 
     @Override
     public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
