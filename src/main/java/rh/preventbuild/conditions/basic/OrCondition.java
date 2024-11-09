@@ -20,6 +20,10 @@ public class OrCondition implements ICondition {
         return ConditionCategory.LOGIC;
     }
 
+    public ICondition getNestedConditions(int number) {
+        return nestedConditions[number];
+    }
+
     @Override
     public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
         for (ICondition condition : nestedConditions) {
@@ -38,10 +42,9 @@ public class OrCondition implements ICondition {
     }
     @Override
     public String getString() {
-        String str = "or: \n{";
+        String str = "or:\n{";
         for (ICondition nestedCondition : nestedConditions)
             str += "\n-> " + nestedCondition.getString();
-        str += "}";
         str += "\n}\n";
         return str;
     }

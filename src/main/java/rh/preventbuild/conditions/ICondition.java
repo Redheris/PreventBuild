@@ -7,12 +7,12 @@ import net.minecraft.util.hit.BlockHitResult;
 public interface ICondition {
     ConditionCategory getCategory();
     /**
-     * Check of breaking block
+     * Check of breaking action
      * */
     boolean check(PlayerEntity player, Hand hand, int x, int y, int z);
 
     /**
-     * Check of placing block
+     * Check of placing action
      * */
     default boolean check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         return check(player, hand, x, y, z);

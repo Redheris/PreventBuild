@@ -1,5 +1,6 @@
 package rh.preventbuild;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
@@ -13,157 +14,88 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
+import rh.preventbuild.conditions.ConditionConfig;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
+import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class PreventBuild implements ModInitializer {
 
-    public static PreventBuildConfig config = new PreventBuildConfig();
-
-//    private void genLab(ServerPlayerEntity player) {
-//        int xPos = (int) player.getPos().getX();
-//        int yPos = (int) player.getPos().getY();
-//        int zPos = (int) player.getPos().getZ();
-//        System.out.println("Hi!" + xPos + " " + yPos + " " + zPos);
-//
-//
-//        boolean[][] lab = new boolean[17][17];
-//        int uniqCounter = 1;
-//
-//        // Step1.  First line
-//        int[] setNumber = new int[16];
-//        Arrays.fill(setNumber, 0);
-//
-//        // Шаги. находящиеся в цикле (2+)
-//        for (int i = 0; i < 17; i+=2) {
-//            // Step 2. Unique sets
-//            for (int j = 0; j < setNumber.length; ++j) {
-//                if (setNumber[j] == 0)
-//                    setNumber[j] = uniqCounter++;
-//            }
-//
-//            Random rand = new Random();
-//            // Step 3. Right walls
-//            for (int j = 0; j < lab[i].length - 1; ++j) {
-//                if (rand.nextInt(3) == 0) {
-//                    lab[i][j + 1] = true;
-//                    j++;
-//                } else setNumber[j + 1] = setNumber[j];
-//            }
-//            // Step 4. Bottom walls
-//            boolean wallLine = false;
-//            for (int j = 0; j < lab[i].length - 1; ++j) {
-//
-//                boolean check = false;
-//                for (int n = 0; n < setNumber.length; ++n) {
-//                    if (n != j && setNumber[n] == setNumber[j] && !lab[i + 1][j]) {
-//                        check = true;
-//                        break;
-//                    }
-//                }
-//                if (!check) continue;
-//
-//                if (rand.nextInt(3) == 0) {
-//                    lab[i + 1][j] = true;
-//                    wallLine = true;
-//                }
-//            }
-////            if (wallLine && i < lab.length - 2) i++;
-//
-//            // Step 5
-//            // 5A. New line
-//            if (i < lab.length - 3) {
-//                lab[i + 2] = lab[i];
-//                Arrays.fill(lab[i], false);
-//                for (int j = 0; j < lab[i].length; ++j) {
-//                    if (lab[i+1][j])
-//                        setNumber[j] = 0;
-//                }
-//            }
-//            // 5B. Complete the lab
-//            else {
-//                for (int j = 0; j < lab[i].length - 1; ++j){
-//                    if (setNumber[j] != setNumber[j + 2] && lab[i][j + 1]) {
-//                        lab[i][j + 1] = false;
-//                        setNumber[j + 1] = setNumber[j];
-//                        setNumber[j + 2] = setNumber[j];
-//                    }
-//                }
-//                for (int j = 0; j < lab[i].length; ++j)
-//                    lab[i + 1][j] = true;
-//            }
-//        }
-//
-//
-//        ServerWorld world = (ServerWorld) player.getWorld();
-//
-//        int xOld = xPos;
-//
-//        for (boolean[] i : lab) {
-//            for (boolean j : i) {
-////                System.out.print((j ? block : air) + " ");
-//                if (j)
-//                    world.setBlockState(new BlockPos(xPos, yPos, zPos), Blocks.OAK_PLANKS.getDefaultState());
-//                xPos++;
-//            }
-//            xPos = xOld;
-//            zPos++;
-//        }
-//    }
-
-//    static void emptyArr(boolean[] a) {
-//        for (boolean i : a)
-//            i = false;
-//    }
-
+    public static PreventBuildConfig oldConfig = new PreventBuildConfig();
+    public static ConditionConfig config;
 
     @Override
     public void onInitialize() {
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("rh")
+            .executes(context -> {
+                context.getSource().sendMessage(Text.literal("Called /rh with no arguments"));
+                return 1;
+            })
+            .then(literal("help")
                 .executes(context -> {
-                    // For versions below 1.19, replace "Text.literal" with "new LiteralText".
-                    context.getSource().sendMessage(Text.literal("Called /rh with no arguments"));
-                    if (context.getSource().getPlayer() != null) {
-
-                        ServerPlayerEntity player = context.getSource().getPlayer();
-                        if (player.getActiveItem() != null)
-                            MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(
-                                    Text.translatable(player.getMainHandStack().getItem().getTranslationKey() + "\n"
-                                            + Blocks.STONE.getTranslationKey())
-                            );
-
-//                        genLab(player);
-                    }
-
+                    context.getSource().sendMessage(Text.literal("/rh help - вывести список команд"));
+                    context.getSource().sendMessage(Text.literal("/rh config load <name> - обновить конфиг name"));
+                    context.getSource().sendMessage(Text.literal("/rh config save <name> - обновить конфиг name"));
                     return 1;
-                })));
-
+                })
+            )
+            .then(literal("config")
+                .executes(context -> {
+                    context.getSource().sendMessage(Text.literal("Type /rh help to see a list of all commands"));
+                    return 1;
+                })
+                .then(literal("load")
+                    .then(argument("name", StringArgumentType.word())
+                        .executes(context -> {
+                            String name = context.getArgument("name", String.class);
+                            context.getSource().sendMessage(Text.literal("Loading config file \"" + name + "\""));
+                            try {
+                                config = new ConditionConfig(name);
+                                context.getSource().sendMessage(
+                                        Text.literal("Successfully loaded config \"" + config.getName() + "\"")
+                                );
+//                                System.out.println(config.getCondition().getString());
+                            }
+                            catch (Exception e) {
+                                context.getSource().sendMessage(
+                                        Text.literal("Произошла ошибка при чтении конфига, " +
+                                                           "для подробностей откройте логи клиента")
+                                );
+                                System.out.println("Unexpected error while loading config file:\n" + e.getMessage());
+                            }
+                            return 1;
+                        })
+                    )
+                )
+            )
+        ));
 
         AutoConfig.register(PreventBuildConfig.class, JanksonConfigSerializer::new);
-        config = AutoConfig.getConfigHolder(PreventBuildConfig.class).getConfig();
+        oldConfig = AutoConfig.getConfigHolder(PreventBuildConfig.class).getConfig();
 
         AutoConfig.getConfigHolder(PreventBuildConfig.class).registerLoadListener((configHolder, preventBuildConfig) -> {
 
-            regIntList(BlockingLists.getBreakY(), config.breakY, "breakY");
-            regIntList(BlockingLists.getPlaceY(), config.placeY, "placeY");
-            regBlockList(BlockingLists.getBreakBlocks(), config.breakBlocks);
+            regIntList(BlockingLists.getBreakY(), oldConfig.breakY, "breakY");
+            regIntList(BlockingLists.getPlaceY(), oldConfig.placeY, "placeY");
+            regBlockList(BlockingLists.getBreakBlocks(), oldConfig.breakBlocks);
 
             return ActionResult.CONSUME;
         });
 
         AutoConfig.getConfigHolder(PreventBuildConfig.class).registerSaveListener((configHolder, preventBuildConfig) -> {
 
-            config = AutoConfig.getConfigHolder(PreventBuildConfig.class).getConfig();
+            oldConfig = AutoConfig.getConfigHolder(PreventBuildConfig.class).getConfig();
 
-            regIntList(BlockingLists.getBreakY(), config.breakY, "breakY");
-            regIntList(BlockingLists.getPlaceY(), config.placeY, "placeY");
-            regBlockList(BlockingLists.getBreakBlocks(), config.breakBlocks);
+            regIntList(BlockingLists.getBreakY(), oldConfig.breakY, "breakY");
+            regIntList(BlockingLists.getPlaceY(), oldConfig.placeY, "placeY");
+            regBlockList(BlockingLists.getBreakBlocks(), oldConfig.breakBlocks);
 
             return ActionResult.CONSUME;
         });

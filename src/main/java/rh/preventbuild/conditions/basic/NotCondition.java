@@ -29,6 +29,6 @@ public class NotCondition implements ICondition {
     }
     @Override
     public String getString() {
-        return "not: {" + nestedCondition.getString() + "}";
+        return "not: {\n" + nestedCondition.getString() + "\n}";
     }
 }
