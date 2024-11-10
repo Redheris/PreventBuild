@@ -35,25 +35,27 @@ public class ConditionConfig {
     private static final Path conditionsDirPath = FabricLoader.getInstance().getConfigDir().resolve("preventbuild/conditions");
     private static final Logger LOGGER = LogManager.getLogger("PBConditionConfig");
     private final String name;
-    private OrCondition condition;
-    private ICondition breakCondition;
-    private ICondition placeCondition;
-    private ICondition otherCondition;
+    private ICondition breakCondition= new NullCondition();
+    private ICondition placeCondition= new NullCondition();
+    private ICondition otherCondition= new NullCondition();
     private boolean enabled = true;
 
     public ConditionConfig(String filename) {
         ConditionConfig config = getConditionFromConfig(filename);
         this.name = config.name;
-        this.condition = config.condition;
+        this.breakCondition = config.breakCondition;
+        this.placeCondition = config.placeCondition;
+        this.otherCondition = config.otherCondition;
     }
-    public ConditionConfig(String name, OrCondition condition) {
+    public ConditionConfig(String name, ICondition breakCondition, ICondition placeCondition, ICondition otherCondition) {
         this.name = name;
-        this.condition = condition;
+        this.breakCondition = breakCondition;
+        this.placeCondition = placeCondition;
+        this.otherCondition = otherCondition;
     }
     public ConditionConfig(String name, String filename) throws IOException {
         createConfigFile(name, filename);
         this.name = name;
-        this.condition = new OrCondition(new NullCondition());
     }
 
     private ConditionConfig createConfigFile(String name, String filename) throws IOException {
@@ -68,15 +70,11 @@ public class ConditionConfig {
 
         printWriter.close();
         fileWriter.close();
-        return new ConditionConfig(name, new OrCondition(new NullCondition()));
+        return new ConditionConfig(name, filename);
     }
 
     public static ConditionConfig getConditionFromConfig(String filename) {
-//      File file = conditionsDirPath.resolve( filename + ".json").toFile();
-//      Object o = new JSONParser().parse(new FileReader(file));
-//      JSONObject config = (JSONObject) o;
         LOGGER.info("Reading condition file: " + conditionsDirPath);
-//      ICondition cond = read(conditionsDirPath.resolve( filename + ".json"));
         ConditionConfig config = read(conditionsDirPath.resolve( filename + ".cfg"));
         System.out.println("test string");
         assert config != null;
@@ -108,8 +106,10 @@ public class ConditionConfig {
             String[] configLines = new Scanner(configPath.toFile()).useDelimiter("\\Z").next().split("\n");
             String configurationName = "Unnamed Configuration";
             boolean isEnabled = true;
-            ICondition[] mainConditionParts = new ICondition[3];
-            Arrays.fill(mainConditionParts, new NullCondition());
+
+            ICondition breakCondition = new NullCondition();
+            ICondition placeCondition = new NullCondition();
+            ICondition otherCondition = new NullCondition();
 
             for (int i = 0; i < configLines.length; i++) {
                 int tabLevel = getTabLevel(configLines[i]);
@@ -124,72 +124,24 @@ public class ConditionConfig {
                     String[] configPart = cutTabLevel(Arrays.copyOfRange(configLines, i - 1, configLines.length));
                     switch (configPart[0].trim()) {
                         case "break:":
-                            mainConditionParts[0] = readLogicalCondition(ConditionCategory.BREAK, configPart);
+                            breakCondition = readLogicalCondition(ConditionCategory.BREAK, configPart);
                             break;
                         case "place:":
-                            mainConditionParts[1] = readLogicalCondition(ConditionCategory.PLACE, configPart);
+                            placeCondition = readLogicalCondition(ConditionCategory.PLACE, configPart);
                             break;
                         case "other:":
-                            mainConditionParts[2] = readLogicalCondition(OTHER, configPart);
+                            otherCondition = readLogicalCondition(OTHER, configPart);
                             break;
                     }
                     i += configPart.length - 2;
                 }
             }
 
-            System.out.println("Success");
-
-            return new ConditionConfig(configurationName, new OrCondition(mainConditionParts)).setEnabled(isEnabled);
+            return new ConditionConfig(configurationName, breakCondition, placeCondition, otherCondition).setEnabled(isEnabled);
 
         } catch (FileNotFoundException exception) {
             LOGGER.error(exception.getMessage());
         }
-
-        // DELETE
-//        try {
-//            FileInputStream fstream = new FileInputStream(configPath.toFile());
-//            DataInputStream in = new DataInputStream(fstream);
-//            BufferedReader buffReader = new BufferedReader(new InputStreamReader(in));
-//            String strLine = buffReader.readLine();
-//            int lineNumber = 0;
-//
-//            String configurationName = "Unnamed Configuration";
-//            int tabLevel = 0;
-//            ConditionCategory currentCategory;
-//            ICondition condition = new NullCondition();
-//            ArrayList<ICondition> orConditions = new ArrayList<>();
-//            boolean tabulationEnd = true;
-//
-//            do {
-//                tabulationEnd = false;
-//                if (tabLevel == 0) {
-//                    if (strLine.startsWith("name:"))
-//                        configurationName = strLine.substring(5).trim();
-//                    else if (strLine.startsWith("build:"))
-//                        currentCategory = ConditionCategory.BREAK;
-//                    else if (strLine.startsWith("place:"))
-//                        currentCategory = ConditionCategory.PLACE;
-//                    else if (strLine.startsWith("other:"))
-//                        currentCategory = ConditionCategory.OTHER;
-//                }
-//                else {
-//                    tabLevel = getTabLevel(strLine);
-//                    if (strLine.trim().startsWith("or:")) {
-//                        ArrayList<ICondition> conditions = new ArrayList<>();
-//
-//                        tabulationEnd = true;
-//                    }
-//                }
-//                if (getTabLevel(strLine) < tabLevel) {
-//
-//                }
-//            } while (tabulationEnd || (strLine = buffReader.readLine()) != null);
-//
-//            in.close();
-//            return new ConditionConfig(configurationName, condition);
-//        } catch (Exception e) {
-//            LOGGER.error("Error: " + e.getMessage());
-//        }
         return null;
     }
 
@@ -212,6 +164,8 @@ public class ConditionConfig {
                         conditions[i] = new XEqualCondition(category, new int[]{Integer.parseInt(values[i].trim())});
                     }
                 }
+                if (conditions.length == 1)
+                    return conditions[0];
                 return new OrCondition(conditions);
             }
             case "y:": {
@@ -226,6 +180,8 @@ public class ConditionConfig {
                         conditions[i] = new YEqualCondition(category, new int[]{Integer.parseInt(values[i].trim())});
                     }
                 }
+                if (conditions.length == 1)
+                    return conditions[0];
                 return new OrCondition(conditions);
             }
             case "z:": {
@@ -240,6 +196,8 @@ public class ConditionConfig {
                         conditions[i] = new ZEqualCondition(category, new int[]{Integer.parseInt(values[i].trim())});
                     }
                 }
+                if (conditions.length == 1)
+                    return conditions[0];
                 return new OrCondition(conditions);
             }
             case "x=:": return new XEqualCondition(category, new int[]{Integer.parseInt(value)});
@@ -348,10 +306,11 @@ public class ConditionConfig {
                     conditionsRes[i] = conditions.get(i);
                 }
 
+                if (conditionsRes.length == 1)
+                    return conditionsRes[0];
                 if (lines[0].trim().startsWith("and:"))
                     return new AndCondition(conditionsRes);
-                else
-                    return new OrCondition(conditionsRes);
+                return new OrCondition(conditionsRes);
             }
             default: return new NullCondition();
         }
@@ -401,24 +360,15 @@ public class ConditionConfig {
 
     public ICondition getCondition(ConditionCategory category) {
         return switch (category) {
-            case BREAK -> condition.getNestedConditions(0);
-            case PLACE -> condition.getNestedConditions(1);
-            case OTHER -> condition.getNestedConditions(2);
-            default -> condition;
+            case BREAK -> breakCondition;
+            case PLACE -> placeCondition;
+            case OTHER -> otherCondition;
+            default -> new NullCondition();
         };
     }
 
     public ICondition getCondition() {
-        return condition;
-    }
-
-    /** Check of breaking action */
-    public boolean check(PlayerEntity player, Hand hand, BlockPos pos) {
-        return ConditionHandler.checkCondition(condition, player, hand, pos);
-    }
-    /** Check of placing action */
-    public boolean check(PlayerEntity player, Hand hand, BlockHitResult hitResult) {
-        return ConditionHandler.checkCondition(condition, player, hand, hitResult);
+        return new OrCondition(breakCondition, placeCondition, otherCondition);
     }
 
     private static int getTabLevel(String line) {
