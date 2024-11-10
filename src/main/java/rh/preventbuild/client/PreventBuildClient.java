@@ -6,21 +6,31 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.block.Block;
+import net.minecraft.block.ChestBlock;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.lwjgl.glfw.GLFW;
 import rh.preventbuild.PreventBuild;
 import rh.preventbuild.conditions.ConditionCategory;
+import rh.preventbuild.conditions.entities.ClickThroughCondition;
+import rh.preventbuild.conditions.entities.IEntityCondition;
 
 @Environment(EnvType.CLIENT)
 public class PreventBuildClient implements ClientModInitializer {
@@ -91,13 +101,22 @@ public class PreventBuildClient implements ClientModInitializer {
             }
             return ActionResult.PASS;
         });
-    }
-    private int getPlacingY(BlockHitResult hitResult){
-        return switch (hitResult.getSide()) {
-            case UP -> hitResult.getBlockPos().getY() + 1;
-            case DOWN -> hitResult.getBlockPos().getY() - 1;
-            default -> hitResult.getBlockPos().getY();
-        };
+
+        UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            if (PreventBuild.config != null && PreventBuild.config.isEnabled()) {
+                return ((IEntityCondition)(PreventBuild.config.getCondition(ConditionCategory.INTERACT_ENTITY)))
+                        .check(ConditionCategory.INTERACT_ENTITY, player, world, hand, entity, hitResult);
+            }
+            return ActionResult.PASS;
+        });
+
+        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            if (PreventBuild.config != null && PreventBuild.config.isEnabled()) {
+                return ((IEntityCondition)(PreventBuild.config.getCondition(ConditionCategory.INTERACT_ENTITY)))
+                        .check(ConditionCategory.ATTACK_ENTITY, player, world, hand, entity, hitResult);
+            }
+            return ActionResult.PASS;
+        });
     }
 }
 /* TODO:

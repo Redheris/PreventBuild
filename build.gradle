@@ -14,10 +14,6 @@ repositories {
     // for more information about repositories.
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com/releases/" }
-    maven {
-        name = "CottonMC"
-        url = "https://server.bbkr.space/artifactory/libs-release"
-    }
 }
 
 dependencies {
@@ -28,7 +24,6 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation include("io.github.cottonmc:LibGui:8.1.1+1.20.1")
 
     modApi "com.terraformersmc:modmenu:7.0.1"
     modApi "me.shedaniel.cloth:cloth-config-fabric:11.0.99"

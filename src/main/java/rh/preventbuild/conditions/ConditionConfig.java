@@ -1,10 +1,6 @@
 package rh.preventbuild.conditions;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
@@ -22,6 +18,9 @@ import rh.preventbuild.conditions.blocks.BlockAdjacentCondition;
 import rh.preventbuild.conditions.blocks.BlockBelowCondition;
 import rh.preventbuild.conditions.blocks.BlockEqualCondition;
 import rh.preventbuild.conditions.coordinates.*;
+import rh.preventbuild.conditions.entities.ClickThroughCondition;
+import rh.preventbuild.conditions.entities.IEntityCondition;
+import rh.preventbuild.conditions.entities.NullEntityCondition;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -29,15 +28,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import static rh.preventbuild.conditions.ConditionCategory.OTHER;
+import static rh.preventbuild.conditions.ConditionCategory.*;
 
 public class ConditionConfig {
     private static final Path conditionsDirPath = FabricLoader.getInstance().getConfigDir().resolve("preventbuild/conditions");
     private static final Logger LOGGER = LogManager.getLogger("PBConditionConfig");
     private final String name;
-    private ICondition breakCondition= new NullCondition();
-    private ICondition placeCondition= new NullCondition();
-    private ICondition otherCondition= new NullCondition();
+    private ICondition breakCondition = new NullCondition();
+    private ICondition placeCondition = new NullCondition();
+    private ICondition otherCondition = new NullCondition();
+    private IEntityCondition interactCondition;
+    private IEntityCondition attackCondition;
     private boolean enabled = true;
 
     public ConditionConfig(String filename) {
@@ -46,12 +47,17 @@ public class ConditionConfig {
         this.breakCondition = config.breakCondition;
         this.placeCondition = config.placeCondition;
         this.otherCondition = config.otherCondition;
+        this.interactCondition = config.interactCondition;
+        this.attackCondition = config.attackCondition;
     }
-    public ConditionConfig(String name, ICondition breakCondition, ICondition placeCondition, ICondition otherCondition) {
+    public ConditionConfig(String name, ICondition breakCondition, ICondition placeCondition, ICondition otherCondition,
+                           IEntityCondition interactCondition, IEntityCondition attackCondition) {
         this.name = name;
         this.breakCondition = breakCondition;
         this.placeCondition = placeCondition;
         this.otherCondition = otherCondition;
+        this.interactCondition = interactCondition;
+        this.attackCondition = attackCondition;
     }
     public ConditionConfig(String name, String filename) throws IOException {
         createConfigFile(name, filename);
@@ -110,6 +116,8 @@ public class ConditionConfig {
             ICondition breakCondition = new NullCondition();
             ICondition placeCondition = new NullCondition();
             ICondition otherCondition = new NullCondition();
+            IEntityCondition interactCondition = new NullEntityCondition();
+            IEntityCondition attackCondition = new NullEntityCondition();
 
             for (int i = 0; i < configLines.length; i++) {
                 int tabLevel = getTabLevel(configLines[i]);
@@ -132,12 +140,20 @@ public class ConditionConfig {
                         case "other:":
                             otherCondition = readLogicalCondition(OTHER, configPart);
                             break;
+                        case "interactEntity:":
+                            interactCondition = (IEntityCondition) readLogicalCondition(INTERACT_ENTITY, configPart);
+                            break;
+                        case "attackEntity:":
+                            attackCondition = (IEntityCondition) readLogicalCondition(ATTACK_ENTITY, configPart);
+                            break;
                     }
                     i += configPart.length - 2;
                 }
             }
 
-            return new ConditionConfig(configurationName, breakCondition, placeCondition, otherCondition).setEnabled(isEnabled);
+            return new ConditionConfig(
+                    configurationName, breakCondition, placeCondition, otherCondition, interactCondition, attackCondition
+            ).setEnabled(isEnabled);
 
         } catch (FileNotFoundException exception) {
             LOGGER.error(exception.getMessage());
@@ -270,6 +286,15 @@ public class ConditionConfig {
             case "stripWood": return new AxeStrippingCondition();
             case "carpetOnCarpet": return new CarpetOnCarpetCondition(category);
             case "doubleSlab": return new DoubleSlabCondition(category);
+            case "clickThrough": return new ClickThroughCondition(1);
+            case "clickThroughWhen:": {
+                int sneaking_mode = switch (value.trim()) {
+                    case "standing" -> 1;
+                    case "sneaking" -> 2;
+                    default -> 0;
+                };
+                return new ClickThroughCondition(sneaking_mode);
+            }
         }
 
         return new NullCondition();
@@ -287,6 +312,7 @@ public class ConditionConfig {
             case "break:":
             case "place:":
             case "other:":
+            case "interactEntity:":
             case "or:": {
                 ArrayList<ICondition> conditions = new ArrayList<>();
                 String[] condLines = Arrays.copyOfRange(lines, 1, lines.length);
@@ -363,12 +389,14 @@ public class ConditionConfig {
             case BREAK -> breakCondition;
             case PLACE -> placeCondition;
             case OTHER -> otherCondition;
+            case INTERACT_ENTITY -> interactCondition;
+            case ATTACK_ENTITY -> attackCondition;
             default -> new NullCondition();
         };
     }
 
     public ICondition getCondition() {
-        return new OrCondition(breakCondition, placeCondition, otherCondition);
+        return new OrCondition(breakCondition, placeCondition, otherCondition, interactCondition, attackCondition);
     }
 
     private static int getTabLevel(String line) {

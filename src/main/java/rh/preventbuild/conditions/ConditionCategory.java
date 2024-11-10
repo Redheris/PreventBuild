@@ -4,5 +4,7 @@ public enum ConditionCategory {
     LOGIC,
     BREAK,
     PLACE,
-    OTHER
+    OTHER,
+    ATTACK_ENTITY,
+    INTERACT_ENTITY
 }
