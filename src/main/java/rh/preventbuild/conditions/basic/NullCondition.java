@@ -19,7 +19,7 @@ public class NullCondition implements ICondition {
     }
 
     @Override
-    public String getString() {
-        return "False";
+    public String getString(int tabs) {
+        return "|\t".repeat(tabs) + "False";
     }
 }

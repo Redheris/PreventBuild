@@ -38,11 +38,10 @@ public class AndCondition implements ICondition {
         return true;
     }
     @Override
-    public String getString() {
-        String str = "and: \n{";
+    public String getString(int tabs) {
+        StringBuilder str = new StringBuilder("|\t".repeat(tabs) + "and:");
         for (ICondition nestedCondition : nestedConditions)
-            str += "\n-> " + nestedCondition.getString();
-        str += "\n}";
-        return str;
+            str.append("\n").append(nestedCondition.getString(tabs + 1));
+        return str.toString();
     }
 }

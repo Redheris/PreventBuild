@@ -22,7 +22,11 @@ public interface ICondition {
      * Mostly debug string to print the condition.
      * It is more useful and convenient to use the debug mode
      */
+    default String getString(int tabs) {
+        return "|\t".repeat(tabs) + this.getClass().getSimpleName();
+    }
+
     default String getString() {
-        return this.getClass().getSimpleName();
+        return getString(0);
     }
 }

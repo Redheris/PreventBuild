@@ -28,7 +28,7 @@ public class NotCondition implements ICondition {
         return !ConditionHandler.checkCondition(nestedCondition, player, hand, hitResult);
     }
     @Override
-    public String getString() {
-        return "not: {\n" + nestedCondition.getString() + "\n}";
+    public String getString(int tabs) {
+        return "|\t".repeat(tabs) + "not:\n" + nestedCondition.getString(tabs + 1);
     }
 }

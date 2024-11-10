@@ -5,22 +5,13 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.argument.BlockStateArgumentType;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.BlockPos;
 import rh.preventbuild.conditions.ConditionConfig;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Random;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -61,7 +52,7 @@ public class PreventBuild implements ModInitializer {
                                 context.getSource().sendMessage(
                                         Text.literal("Successfully loaded config \"" + config.getName() + "\"")
                                 );
-//                                System.out.println(config.getCondition().getString());
+                                System.out.println("\nname:" + config.getName() + "\n" + config.getCondition().getString());
                             }
                             catch (Exception e) {
                                 context.getSource().sendMessage(
@@ -107,7 +98,7 @@ public class PreventBuild implements ModInitializer {
 
         String s = configList.replaceAll(", ", ",");
 
-        if (s.length() == 0) {
+        if (s.isEmpty()) {
             blockList.clear();
             return;
         }
@@ -139,7 +130,7 @@ public class PreventBuild implements ModInitializer {
 
         String s = configList.replaceAll(", ", ",");
 
-        if(s.length() == 0) {
+        if(s.isEmpty()) {
             blockList.clear();
             return;
         }
@@ -174,7 +165,7 @@ public class PreventBuild implements ModInitializer {
             return false;
         }
         try {
-            double d = Integer.parseInt(str);
+            Integer.parseInt(str);
         } catch (NumberFormatException e) {
             return false;
         }

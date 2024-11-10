@@ -41,11 +41,10 @@ public class OrCondition implements ICondition {
         return false;
     }
     @Override
-    public String getString() {
-        String str = "or:\n{";
+    public String getString(int tabs) {
+        StringBuilder str = new StringBuilder("|\t".repeat(tabs) + "or:");
         for (ICondition nestedCondition : nestedConditions)
-            str += "\n-> " + nestedCondition.getString();
-        str += "\n}\n";
-        return str;
+            str.append("\n").append(nestedCondition.getString(tabs + 1));
+        return str.toString();
     }
 }
