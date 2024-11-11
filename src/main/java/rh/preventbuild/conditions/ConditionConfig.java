@@ -6,9 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import rh.preventbuild.conditions.advanced.AxeStrippingCondition;
-import rh.preventbuild.conditions.advanced.CarpetOnCarpetCondition;
-import rh.preventbuild.conditions.advanced.DoubleSlabCondition;
+import rh.preventbuild.conditions.advanced.*;
 import rh.preventbuild.conditions.basic.AndCondition;
 import rh.preventbuild.conditions.basic.NotCondition;
 import rh.preventbuild.conditions.basic.NullCondition;
@@ -164,7 +162,7 @@ public class ConditionConfig {
     private static ICondition readCondition(ConditionCategory category, String line) {
         line = line.trim();
         String key = line.substring(0, line.indexOf(":") + 1);
-        String value = line.substring(line.indexOf(":") + 1);
+        String value = line.substring(line.indexOf(":") + 1).trim();
         if (key.isEmpty())
             key = line;
         switch (key) {
@@ -295,6 +293,9 @@ public class ConditionConfig {
                 };
                 return new ClickThroughCondition(sneaking_mode);
             }
+            case "isSneaking:": return new IsSneakingCondition(Boolean.parseBoolean(value));
+            case "dimension:": return new DimensionCondition(value);
+            case "hand:": return new HandTypeCondition(value);
         }
 
         return new NullCondition();
@@ -426,5 +427,9 @@ public class ConditionConfig {
 
     private static String[] cutTabLevel(String str) {
         return cutTabLevel(str.split("\n"));
+    }
+
+    public void switchEnabled() {
+        this.enabled = !this.enabled;
     }
 }

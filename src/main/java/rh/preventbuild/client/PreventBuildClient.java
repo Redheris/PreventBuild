@@ -9,27 +9,18 @@ import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.minecraft.block.Block;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.lwjgl.glfw.GLFW;
 import rh.preventbuild.PreventBuild;
 import rh.preventbuild.conditions.ConditionCategory;
-import rh.preventbuild.conditions.entities.ClickThroughCondition;
 import rh.preventbuild.conditions.entities.IEntityCondition;
 
 @Environment(EnvType.CLIENT)
@@ -124,10 +115,7 @@ public class PreventBuildClient implements ClientModInitializer {
     - Multi configs
     - New conditions:
         - "Place block A by RMB on block B"
-        - "Dimension"
-        - "IsSneaking"
         - "Item"
-        - "Main hand or Offhand"
     -
     - Extra future plan:
         - Create a visual UI for configuration preventing conditions

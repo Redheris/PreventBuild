@@ -43,9 +43,9 @@ public class PreventBuild implements ModInitializer {
                     return 1;
                 })
                 .then(literal("load")
-                    .then(argument("name", StringArgumentType.word())
+                    .then(argument("filename", StringArgumentType.word())
                         .executes(context -> {
-                            String name = context.getArgument("name", String.class);
+                            String name = context.getArgument("filename", String.class);
                             context.getSource().sendMessage(Text.literal("Loading config file \"" + name + "\""));
                             try {
                                 config = new ConditionConfig(name);
@@ -61,6 +61,19 @@ public class PreventBuild implements ModInitializer {
                                 );
                                 System.out.println("Unexpected error while loading config file:\n" + e.getMessage());
                             }
+                            return 1;
+                        })
+                    )
+                )
+                .then(literal("switch")
+                    .then(argument("name", StringArgumentType.word())
+                        .executes(context -> {
+                            String name = context.getArgument("name", String.class);
+                            config.switchEnabled();
+                            if (config.isEnabled())
+                                context.getSource().sendMessage(Text.literal("Config \"" + name + "\" is active now"));
+                            else
+                                context.getSource().sendMessage(Text.literal("Config \"" + name + "\" is inactive now"));
                             return 1;
                         })
                     )
