@@ -7,18 +7,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import rh.preventbuild.conditions.advanced.*;
-import rh.preventbuild.conditions.basic.AndCondition;
-import rh.preventbuild.conditions.basic.NotCondition;
-import rh.preventbuild.conditions.basic.NullCondition;
-import rh.preventbuild.conditions.basic.OrCondition;
-import rh.preventbuild.conditions.blocks.BlockAboveCondition;
-import rh.preventbuild.conditions.blocks.BlockAdjacentCondition;
-import rh.preventbuild.conditions.blocks.BlockBelowCondition;
-import rh.preventbuild.conditions.blocks.BlockEqualCondition;
+import rh.preventbuild.conditions.basic.*;
+import rh.preventbuild.conditions.blocks.*;
 import rh.preventbuild.conditions.coordinates.*;
 import rh.preventbuild.conditions.entities.ClickThroughCondition;
 import rh.preventbuild.conditions.entities.IEntityCondition;
 import rh.preventbuild.conditions.entities.NullEntityCondition;
+import rh.preventbuild.conditions.items.HeldItemCondition;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -281,7 +276,28 @@ public class ConditionConfig {
                         values[i] = "block.minecraft." + values[i];
                 return new BlockAdjacentCondition(category, values);
             }
+            case "lookingAt:": {
+                String[] values = value.split(",");
+                for (int i = 0; i < values.length; i++)
+                    if (!values[i].contains("."))
+                        values[i] = "block.minecraft." + values[i];
+                return new LookingAtBlockCondition(values);
+            }
+            case "item:": {
+                String[] values = value.split(",");
+                for (int i = 0; i < values.length; i++)
+                    if (!values[i].contains("."))
+                        values[i] = "item.minecraft." + values[i];
+                return new HeldItemCondition(values);
+            }
             case "stripWood": return new AxeStrippingCondition();
+            case "stripWoodExcept:": {
+                String[] values = value.split(",");
+                for (int i = 0; i < values.length; i++)
+                    if (!values[i].contains("."))
+                        values[i] = "block.minecraft." + values[i];
+                return new AxeStrippingCondition(values);
+            }
             case "carpetOnCarpet": return new CarpetOnCarpetCondition(category);
             case "doubleSlab": return new DoubleSlabCondition(category);
             case "clickThrough": return new ClickThroughCondition(1);

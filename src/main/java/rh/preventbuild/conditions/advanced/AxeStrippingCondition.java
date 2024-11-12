@@ -15,6 +15,15 @@ import java.util.List;
 
 public class AxeStrippingCondition implements ICondition {
     protected static final List<Block> STRIPPABLE_BLOCKS;
+    private final String[] blacklist;
+
+    public AxeStrippingCondition() {
+        this.blacklist = null;
+    }
+
+    public AxeStrippingCondition(String[] blacklist) {
+        this.blacklist = blacklist;
+    }
 
     @Override
     public ConditionCategory getCategory() {
@@ -29,6 +38,9 @@ public class AxeStrippingCondition implements ICondition {
     @Override
     public boolean check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         Block lookingAt = player.getWorld().getBlockState(hitResult.getBlockPos()).getBlock();
+        if (blacklist != null && Arrays.stream(blacklist).anyMatch(i -> i.equalsIgnoreCase(lookingAt.getTranslationKey()))) {
+            return false;
+        }
         return player.getStackInHand(hand).getItem() instanceof AxeItem && STRIPPABLE_BLOCKS.contains(lookingAt);
     }
 
