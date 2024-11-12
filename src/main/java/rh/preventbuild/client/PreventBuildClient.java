@@ -73,6 +73,8 @@ public class PreventBuildClient implements ClientModInitializer {
 
         UseBlockCallback.EVENT.register((PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) ->
         {
+            if (!player.getWorld().isClient)
+                return ActionResult.PASS;
             if (PreventBuild.config != null && PreventBuild.config.isEnabled()) {
                 BlockPos pos = hitResult.getBlockPos().offset(hitResult.getSide());
 
@@ -94,6 +96,8 @@ public class PreventBuildClient implements ClientModInitializer {
         });
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            if (!player.getWorld().isClient)
+                return ActionResult.PASS;
             if (PreventBuild.config != null && PreventBuild.config.isEnabled()) {
                 return ((IEntityCondition)(PreventBuild.config.getCondition(ConditionCategory.INTERACT_ENTITY)))
                         .check(ConditionCategory.INTERACT_ENTITY, player, world, hand, entity, hitResult);
@@ -102,6 +106,8 @@ public class PreventBuildClient implements ClientModInitializer {
         });
 
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            if (!player.getWorld().isClient)
+                return ActionResult.PASS;
             if (PreventBuild.config != null && PreventBuild.config.isEnabled()) {
                 return ((IEntityCondition)(PreventBuild.config.getCondition(ConditionCategory.INTERACT_ENTITY)))
                         .check(ConditionCategory.ATTACK_ENTITY, player, world, hand, entity, hitResult);

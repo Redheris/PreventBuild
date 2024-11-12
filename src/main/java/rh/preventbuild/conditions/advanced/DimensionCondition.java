@@ -22,8 +22,6 @@ public class DimensionCondition implements ICondition {
 
     @Override
     public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
-        if (player.getWorld().isClient)
-            return player.getWorld().getDimensionKey().getValue().toString().equals(dimension_id);
-        return false;
+        return player.getWorld().getDimensionKey().getValue().toString().equals(dimension_id);
     }
 }

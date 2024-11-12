@@ -52,9 +52,8 @@ public class ClickThroughCondition implements IEntityCondition {
                 Direction hitDirection = entity.getHorizontalFacing();
                 BlockHitResult blockHitResult = new BlockHitResult(chestPos, hitDirection, pos, false);
                 assert MinecraftClient.getInstance().interactionManager != null;
-                if (world.isClient())
-                    return MinecraftClient.getInstance().interactionManager.interactBlock((ClientPlayerEntity)player, hand, blockHitResult);
-                return ActionResult.FAIL;
+
+                return MinecraftClient.getInstance().interactionManager.interactBlock((ClientPlayerEntity)player, hand, blockHitResult);
             }
         }
         return ActionResult.PASS;
