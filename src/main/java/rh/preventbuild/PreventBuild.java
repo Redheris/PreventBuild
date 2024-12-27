@@ -9,102 +9,49 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import rh.preventbuild.conditions.ConditionConfig;
+import rh.preventbuild.conditions.basic.OrCondition;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
+import static rh.preventbuild.PreventBuildConfig.condConfigsHandler;
 
 public class PreventBuild implements ModInitializer {
 
     public static PreventBuildConfig oldConfig = new PreventBuildConfig();
-    public static ConditionConfig config;
+//    public static ConditionConfig config;
 
     @Override
     public void onInitialize() {
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("rh")
-            .executes(context -> {
-                context.getSource().sendMessage(Text.literal("Called /rh with no arguments"));
-                return 1;
-            })
-            .then(literal("help")
-                .executes(context -> {
-                    context.getSource().sendMessage(Text.literal("/rh help - вывести список команд"));
-                    context.getSource().sendMessage(Text.literal("/rh config load <name> - обновить конфиг name"));
-                    context.getSource().sendMessage(Text.literal("/rh config save <name> - обновить конфиг name"));
-                    return 1;
-                })
-            )
-            .then(literal("config")
-                .executes(context -> {
-                    context.getSource().sendMessage(Text.literal("Type /rh help to see a list of all commands"));
-                    return 1;
-                })
-                .then(literal("load")
-                    .then(argument("filename", StringArgumentType.word())
-                        .executes(context -> {
-                            String name = context.getArgument("filename", String.class);
-                            context.getSource().sendMessage(Text.literal("Loading config file \"" + name + "\""));
-                            try {
-                                config = new ConditionConfig(name);
-                                context.getSource().sendMessage(
-                                        Text.literal("Successfully loaded config \"" + config.getName() + "\"")
-                                );
-                                System.out.println("\nname:" + config.getName() + "\n" + config.getCondition().getString());
-                            }
-                            catch (Exception e) {
-                                context.getSource().sendMessage(
-                                        Text.literal("Произошла ошибка при чтении конфига, " +
-                                                           "для подробностей откройте логи клиента")
-                                );
-                                System.out.println("Unexpected error while loading config file:\n" + e.getMessage());
-                            }
-                            return 1;
-                        })
-                    )
-                )
-                .then(literal("switch")
-                    .then(argument("name", StringArgumentType.word())
-                        .executes(context -> {
-                            String name = context.getArgument("name", String.class);
-                            config.switchEnabled();
-                            if (config.isEnabled())
-                                context.getSource().sendMessage(Text.literal("Config \"" + name + "\" is active now"));
-                            else
-                                context.getSource().sendMessage(Text.literal("Config \"" + name + "\" is inactive now"));
-                            return 1;
-                        })
-                    )
-                )
-            )
-        ));
 
-        AutoConfig.register(PreventBuildConfig.class, JanksonConfigSerializer::new);
-        oldConfig = AutoConfig.getConfigHolder(PreventBuildConfig.class).getConfig();
 
-        AutoConfig.getConfigHolder(PreventBuildConfig.class).registerLoadListener((configHolder, preventBuildConfig) -> {
-
-            regIntList(BlockingLists.getBreakY(), oldConfig.breakY, "breakY");
-            regIntList(BlockingLists.getPlaceY(), oldConfig.placeY, "placeY");
-            regBlockList(BlockingLists.getBreakBlocks(), oldConfig.breakBlocks);
-
-            return ActionResult.CONSUME;
-        });
-
-        AutoConfig.getConfigHolder(PreventBuildConfig.class).registerSaveListener((configHolder, preventBuildConfig) -> {
-
-            oldConfig = AutoConfig.getConfigHolder(PreventBuildConfig.class).getConfig();
-
-            regIntList(BlockingLists.getBreakY(), oldConfig.breakY, "breakY");
-            regIntList(BlockingLists.getPlaceY(), oldConfig.placeY, "placeY");
-            regBlockList(BlockingLists.getBreakBlocks(), oldConfig.breakBlocks);
-
-            return ActionResult.CONSUME;
-        });
-
-        AutoConfig.getConfigHolder(PreventBuildConfig.class).load();
+//        AutoConfig.register(PreventBuildConfig.class, JanksonConfigSerializer::new);
+//        oldConfig = AutoConfig.getConfigHolder(PreventBuildConfig.class).getConfig();
+//
+//        AutoConfig.getConfigHolder(PreventBuildConfig.class).registerLoadListener((configHolder, preventBuildConfig) -> {
+//
+//            regIntList(BlockingLists.getBreakY(), oldConfig.breakY, "breakY");
+//            regIntList(BlockingLists.getPlaceY(), oldConfig.placeY, "placeY");
+//            regBlockList(BlockingLists.getBreakBlocks(), oldConfig.breakBlocks);
+//
+//            return ActionResult.CONSUME;
+//        });
+//
+//        AutoConfig.getConfigHolder(PreventBuildConfig.class).registerSaveListener((configHolder, preventBuildConfig) -> {
+//
+//            oldConfig = AutoConfig.getConfigHolder(PreventBuildConfig.class).getConfig();
+//
+//            regIntList(BlockingLists.getBreakY(), oldConfig.breakY, "breakY");
+//            regIntList(BlockingLists.getPlaceY(), oldConfig.placeY, "placeY");
+//            regBlockList(BlockingLists.getBreakBlocks(), oldConfig.breakBlocks);
+//
+//            return ActionResult.CONSUME;
+//        });
+//
+//        AutoConfig.getConfigHolder(PreventBuildConfig.class).load();
     }
 
     private void regIntList(ArrayList<Integer> blockList, String configList, String listName) {

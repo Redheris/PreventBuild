@@ -3,9 +3,6 @@ package rh.preventbuild.conditions;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import rh.preventbuild.conditions.advanced.*;
 import rh.preventbuild.conditions.basic.*;
 import rh.preventbuild.conditions.blocks.*;
@@ -32,7 +29,6 @@ public class ConditionConfig {
     private ICondition otherCondition = new NullCondition();
     private IEntityCondition interactCondition;
     private IEntityCondition attackCondition;
-    private boolean enabled = true;
 
     public ConditionConfig(String filename) {
         ConditionConfig config = getConditionFromConfig(filename);
@@ -52,48 +48,15 @@ public class ConditionConfig {
         this.interactCondition = interactCondition;
         this.attackCondition = attackCondition;
     }
-    public ConditionConfig(String name, String filename) throws IOException {
-        createConfigFile(name, filename);
-        this.name = name;
-    }
-
-    private ConditionConfig createConfigFile(String name, String filename) throws IOException {
-        String path = conditionsDirPath.toString();
-        FileWriter fileWriter = new FileWriter(path + "/" + filename);
-        PrintWriter printWriter = new PrintWriter(fileWriter);
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("name", name);
-
-        printWriter.print(jsonObject);
-
-        printWriter.close();
-        fileWriter.close();
-        return new ConditionConfig(name, filename);
-    }
 
     public static ConditionConfig getConditionFromConfig(String filename) {
         LOGGER.info("Reading condition file: " + conditionsDirPath);
         ConditionConfig config = read(conditionsDirPath.resolve( filename + ".cfg"));
-        System.out.println("test string");
         assert config != null;
         LOGGER.info("Successfully read config \"" + config.name + "\" from file: " + filename + ".cfg");
         return config;
     }
-    public static String getName(String filename) {
-        try {
-            File file = conditionsDirPath.resolve( filename + ".json").toFile();
-            Object o = new JSONParser().parse(new FileReader(file));
-            JSONObject config = (JSONObject) o;
-            return (String) config.get("name");
-        } catch (IOException e) {
-            LOGGER.error("Failed to read config file: " + filename + ". Check if this file exists");
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
-            LOGGER.error("Failed to parse config file: " + filename + ". Check if it has valid JSON");
-            throw new RuntimeException(e);
-        }
-    }
+
     /**
      * A function that reads a config file and generates a condition config based on the content.
      *
@@ -104,7 +67,6 @@ public class ConditionConfig {
         try {
             String[] configLines = new Scanner(configPath.toFile()).useDelimiter("\\Z").next().split("\n");
             String configurationName = "Unnamed Configuration";
-            boolean isEnabled = true;
 
             ICondition breakCondition = new NullCondition();
             ICondition placeCondition = new NullCondition();
@@ -118,8 +80,6 @@ public class ConditionConfig {
                 if (tabLevel == 0) {
                     if (line.startsWith("name:"))
                         configurationName = line.substring(5).trim();
-                    else if (line.startsWith("enabled:"))
-                        isEnabled = Boolean.parseBoolean(line.substring(8).trim());
                 }
                 else {
                     String[] configPart = cutTabLevel(Arrays.copyOfRange(configLines, i - 1, configLines.length));
@@ -146,7 +106,7 @@ public class ConditionConfig {
 
             return new ConditionConfig(
                     configurationName, breakCondition, placeCondition, otherCondition, interactCondition, attackCondition
-            ).setEnabled(isEnabled);
+            );
 
         } catch (FileNotFoundException exception) {
             LOGGER.error(exception.getMessage());
@@ -160,7 +120,8 @@ public class ConditionConfig {
         String value = line.substring(line.indexOf(":") + 1).trim();
         if (key.isEmpty())
             key = line;
-        switch (key) {
+
+        switch (key) { // TODO: Rewrite to some "conditions registry" format
             case "x:": {
                 String[] values = value.split(",");
                 ICondition[] conditions = new ICondition[values.length];
@@ -363,40 +324,6 @@ public class ConditionConfig {
         return readLogicalCondition(category, configPart.split("\n"));
     }
 
-    private ConditionConfig setEnabled(boolean isEnabled) {
-        this.enabled = isEnabled;
-        return this;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void update() {
-        ConditionConfig newConfig = getConditionFromConfig(this.name);
-//        this.condition = newConfig.getCondition();
-    }
-
-    public void save() {
-        try {
-            String path = conditionsDirPath.toString();
-            FileWriter fileWriter = new FileWriter(path + "/" + this.name);
-            PrintWriter printWriter = new PrintWriter(fileWriter);
-
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("name", name);
-
-            printWriter.print(jsonObject);
-
-            printWriter.close();
-            fileWriter.close();
-        }
-        catch (IOException e) {
-            LOGGER.error("Failed to save config file: " + this.name);
-            throw new RuntimeException(e);
-        }
-    }
-
     public String getName() {
         return name;
     }
@@ -443,9 +370,5 @@ public class ConditionConfig {
 
     private static String[] cutTabLevel(String str) {
         return cutTabLevel(str.split("\n"));
-    }
-
-    public void switchEnabled() {
-        this.enabled = !this.enabled;
     }
 }
