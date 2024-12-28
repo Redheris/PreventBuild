@@ -1,23 +1,19 @@
 package rh.preventbuild.client;
 
 
-import me.shedaniel.autoconfig.AutoConfig;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CarpetBlock;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -25,156 +21,198 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import org.lwjgl.glfw.GLFW;
-import rh.preventbuild.BlockingLists;
-import rh.preventbuild.PreventBuild;
 import rh.preventbuild.PreventBuildConfig;
+import rh.preventbuild.conditions.ConditionCategory;
+import rh.preventbuild.conditions.ConditionConfig;
+import rh.preventbuild.conditions.entities.IEntityCondition;
+
+import java.util.Map;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 @Environment(EnvType.CLIENT)
 public class PreventBuildClient implements ClientModInitializer {
 
-    private static KeyBinding keyBind_openConfigScreen;
-    private static KeyBinding keyBind_toggleMod;
-    private static KeyBinding keyBind_addCurrentBreakY;
-    private static KeyBinding keyBind_addCurrentPlaceY;
+    public static ConditionConfig config;
 
     @Override
     public void onInitializeClient() {
+        PreventBuildConfig.loadOreDictionary();
+        PreventBuildConfig.loadConditionConfigs();
 
-        keyBind_openConfigScreen = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.preventbuild.openConfigScreen", // Ключ перевода имени привязки ключей
-                InputUtil.Type.KEYSYM, // Тип привязки клавиш, KEYSYM для клавиатуры, MOUSE для мыши.
-                GLFW.GLFW_KEY_V, // Ключевой код ключа
-                "category.preventbuild" // Ключ перевода категории привязки ключей.
-        ));
-
-        keyBind_toggleMod = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.preventbuild.toggleMod", // Ключ перевода имени привязки ключей
-                InputUtil.Type.KEYSYM, // Тип привязки клавиш, KEYSYM для клавиатуры, MOUSE для мыши.
-                GLFW.GLFW_KEY_R, // Ключевой код ключа
-                "category.preventbuild" // Ключ перевода категории привязки ключей.
-        ));
-
-        keyBind_addCurrentBreakY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.preventbuild.addCurrentBreakY", // Ключ перевода имени привязки ключей
-                InputUtil.Type.KEYSYM, // Тип привязки клавиш, KEYSYM для клавиатуры, MOUSE для мыши.
-                InputUtil.UNKNOWN_KEY.getCode(), // Ключевой код ключа
-                "category.preventbuild" // Ключ перевода категории привязки ключей.
-        ));
-
-        keyBind_addCurrentPlaceY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.preventbuild.addCurrentPlaceY", // Ключ перевода имени привязки ключей
-                InputUtil.Type.KEYSYM, // Тип привязки клавиш, KEYSYM для клавиатуры, MOUSE для мыши.
-                InputUtil.UNKNOWN_KEY.getCode(), // Ключевой код ключа
-                "category.preventbuild" // Ключ перевода категории привязки ключей.
-        ));
-
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (client.player != null) {
-
-                while (keyBind_openConfigScreen.wasPressed()) {
-                    client.setScreen(AutoConfig.getConfigScreen(PreventBuildConfig.class, client.currentScreen).get());
-                }
-
-                while (keyBind_toggleMod.wasPressed()) {
-                    PreventBuild.config.enabled = !PreventBuild.config.enabled;
-                    AutoConfig.getConfigHolder(PreventBuildConfig.class).getConfig().enabled = PreventBuild.config.enabled;
-                    AutoConfig.getConfigHolder(PreventBuildConfig.class).save();
-                    client.inGameHud.getChatHud().addMessage(Text.translatable("preventbuild.togglemod." + PreventBuild.config.enabled));
-                }
-
-                while (keyBind_addCurrentBreakY.wasPressed()) {
-                    int y = client.player.getBlockY();
-
-                    if (BlockingLists.getBreakY().contains(y))
-                        break;
-
-                    if(!PreventBuild.config.breakY.isEmpty())
-                        PreventBuild.config.breakY += ",";
-                    PreventBuild.config.breakY += y;
-                    AutoConfig.getConfigHolder(PreventBuildConfig.class).save();
-//                    System.out.println(BlockingLists.getBreakY());
-                    client.inGameHud.getChatHud().addMessage(Text.translatable("preventbuild.add_to_break_list", y));
-                }
-
-                while (keyBind_addCurrentPlaceY.wasPressed()) {
-                    int y = client.player.getBlockY();
-
-                    if (BlockingLists.getPlaceY().contains(y))
-                        break;
-
-                    if(!PreventBuild.config.placeY.isEmpty())
-                        PreventBuild.config.placeY += ",";
-                    PreventBuild.config.placeY += y;
-
-                    AutoConfig.getConfigHolder(PreventBuildConfig.class).save();
-//                    System.out.println(BlockingLists.getPlaceY());
-                    client.inGameHud.getChatHud().addMessage(Text.translatable("preventbuild.add_to_place_list", y));
-
-                }
-            }
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            final LiteralCommandNode<FabricClientCommandSource> pbNode = dispatcher.register(ClientCommandManager.literal("pb")
+                    .executes(context -> {
+                        context.getSource().getPlayer().sendMessage(Text.literal("§cВызван /pb без аргументов"), false);
+                        return 1;
+                    })
+                    .then(literal("help")
+                            .executes(context -> {
+                                context.getSource().getPlayer().sendMessage(Text.literal("§aPreventBuild commands:"), false);
+                                context.getSource().getPlayer().sendMessage(Text.literal("/pb help - вывести список команд"), false);
+                                context.getSource().getPlayer().sendMessage(Text.literal("/pb config list - вывести список конфигов"), false);
+                                context.getSource().getPlayer().sendMessage(Text.literal("/pb config load <name> - обновить конфиг name"), false);
+                                context.getSource().getPlayer().sendMessage(Text.literal("/pb config save <name> - обновить конфиг name"), false);
+                                context.getSource().getPlayer().sendMessage(Text.literal("/pb config update - обновить список конфигов"), false);
+                                return 1;
+                            })
+                    )
+                    .then(literal("config")
+                            .executes(context -> {
+                                context.getSource().getPlayer().sendMessage(Text.literal("§3Напишите /rh help для получения списка команд"), false);
+                                return 1;
+                            })
+                            .then(literal("load")
+                                    .then(argument("filename", StringArgumentType.word())
+                                            .executes(context -> {
+                                                String name = context.getArgument("filename", String.class);
+                                                context.getSource().getPlayer().sendMessage(Text.literal("§3Загрузка конфиг-файла \"" + name + "\""), false);
+                                                try {
+                                                    config = new ConditionConfig(name);
+                                                    context.getSource().getPlayer().sendMessage(
+                                                            Text.literal("§aУспешно загружен конфиг §3\"" + config.getName() + "\""),
+                                                            false
+                                                    );
+                                                    System.out.println("\nname:" + config.getName() + "\n" + config.getCondition().getString());
+                                                } catch (Exception e) {
+                                                    context.getSource().getPlayer().sendMessage(
+                                                            Text.literal("§cПроизошла ошибка при чтении конфига, " +
+                                                                    "для подробностей откройте логи клиента"),
+                                                            false
+                                                    );
+                                                    System.out.println("Unexpected error while loading config file:\n" + e.getMessage());
+                                                }
+                                                return 1;
+                                            })
+                                    )
+                            )
+                            .then(literal("list")
+                                    .executes(context -> {
+                                        Map<String, Boolean> configs = PreventBuildConfig.getConfigsList();
+                                        if (configs.isEmpty()) {
+                                            context.getSource().getPlayer().sendMessage(Text.literal("§3Не найдено конфигов"), false);
+                                        }
+                                        for (String config : configs.keySet()) {
+                                            context.getSource().getPlayer().sendMessage(Text.literal(
+                                                    "§3\"" + config + "\" : " + (configs.get(config) ? "§aактивен" : "§cнеактивен")),
+                                                    false
+                                            );
+                                        }
+                                        return 1;
+                                    })
+                            )
+                            .then(literal("switch")
+                                    .then(argument("name", StringArgumentType.word())
+                                            .suggests((context, builder) -> {
+                                                for (String config : PreventBuildConfig.getConfigsList().keySet()) {
+                                                    builder.suggest(config.replace(" ", "_"));
+                                                }
+                                                return builder.buildFuture();
+                                            })
+                                            .executes(context -> {
+                                                String name = context.getArgument("name", String.class).replace("_", " ");
+                                                if (PreventBuildConfig.switchConfigEnabled(name) == -1) {
+                                                    context.getSource().getPlayer().sendMessage(
+                                                            Text.literal("§3Конфиг \"" + name + "\" не найден"),
+                                                            false);
+                                                    return 0;
+                                                }
+                                                if (PreventBuildConfig.isConfigEnabled(name))
+                                                    context.getSource().getPlayer().sendMessage(
+                                                            Text.literal("§3Конфиг \"" + name + "\" теперь §aактивен"),
+                                                            false
+                                                    );
+                                                else
+                                                    context.getSource().getPlayer().sendMessage(
+                                                            Text.literal("§3Конфиг \"" + name + "\" теперь §cнеактивен"),
+                                                            false
+                                                    );
+                                                return 1;
+                                            })
+                                    )
+                            )
+                            .then(literal("update")
+                                    .executes(context -> {
+                                        PreventBuildConfig.loadOreDictionary();
+                                        PreventBuildConfig.loadConditionConfigs();
+                                        context.getSource().getPlayer().sendMessage(Text.literal("§3Конфиги обновлены"), true);
+                                        return 1;
+                                    })
+                            )
+                    )
+            );
+            dispatcher.register(literal("preventbuild").redirect(pbNode));
         });
-
-
-
-
-
-
 
         UseBlockCallback.EVENT.register((PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) ->
         {
-            if (PreventBuild.config.enabled) {
-                Item usedItem = player.getStackInHand(hand).getItem();
-                Block used = Block.getBlockFromItem(usedItem);
-                Block hitedBlock = world.getBlockState(hitResult.getBlockPos()).getBlock();
+            if (!player.getWorld().isClient)
+                return ActionResult.PASS;
 
-                if (PreventBuild.config.blockStripping && usedItem instanceof AxeItem)
-                    return ActionResult.FAIL;
+            for (String configName : PreventBuildConfig.getConfigsList().keySet()) {
+                ConditionConfig config = PreventBuildConfig.getConditionConfig(configName);
+                if (config != null && PreventBuildConfig.isConfigEnabled(configName)) {
+                    BlockPos pos = hitResult.getBlockPos().offset(hitResult.getSide());
 
-                if (PreventBuild.config.blockCarpets && used instanceof CarpetBlock
-                        && hitedBlock instanceof CarpetBlock)
-                    return ActionResult.FAIL;
-
-                if (PreventBuild.config.doBlockPlaceY && BlockingLists.getPlaceY().contains(getPlacingY(hitResult))
-                    && (hand == Hand.MAIN_HAND && player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof BlockItem
-                        || hand == Hand.OFF_HAND  && player.getStackInHand(Hand.OFF_HAND).getItem() instanceof BlockItem))
-                    return ActionResult.FAIL;
+                    if (config.getCondition(ConditionCategory.PLACE).check(player, hand, pos.getX(), pos.getY(), pos.getZ(), hitResult)
+                            || config.getCondition(ConditionCategory.OTHER).check(player, hand, pos.getX(), pos.getY(), pos.getZ(), hitResult))
+                        return ActionResult.FAIL;
+                }
             }
             return ActionResult.PASS;
         });
 
         AttackBlockCallback.EVENT.register((PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction) ->
         {
-            if (PreventBuild.config.enabled) {
-                if (PreventBuild.config.doBlockBreakY && BlockingLists.getBreakY().contains(pos.getY()))
-                    return ActionResult.FAIL;
-                if (PreventBuild.config.blockBreakBlocks
-                        && BlockingLists.getBreakBlocks().contains(world.getBlockState(pos).getBlock().getTranslationKey()))
-                    return ActionResult.FAIL;
+            if (!player.getWorld().isClient)
+                return ActionResult.PASS;
+
+            for (String configName : PreventBuildConfig.getConfigsList().keySet()) {
+                ConditionConfig config = PreventBuildConfig.getConditionConfig(configName);
+                if (config != null && PreventBuildConfig.isConfigEnabled(configName)) {
+                    if (config.getCondition(ConditionCategory.BREAK).check(player, hand, pos.getX(), pos.getY(), pos.getZ())
+                            || config.getCondition(ConditionCategory.OTHER).check(player, hand, pos.getX(), pos.getY(), pos.getZ()))
+                        return ActionResult.FAIL;
+                }
+            }
+            return ActionResult.PASS;
+        });
+
+        UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            if (!player.getWorld().isClient)
+                return ActionResult.PASS;
+
+            for (String configName : PreventBuildConfig.getConfigsList().keySet()) {
+                ConditionConfig config = PreventBuildConfig.getConditionConfig(configName);
+                if (config != null && PreventBuildConfig.isConfigEnabled(configName)) {
+                    return ((IEntityCondition)(config.getCondition(ConditionCategory.INTERACT_ENTITY)))
+                            .check(ConditionCategory.INTERACT_ENTITY, player, world, hand, entity, hitResult);
+                }
+            }
+            return ActionResult.PASS;
+        });
+
+        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            if (!player.getWorld().isClient)
+                return ActionResult.PASS;
+
+            for (String configName : PreventBuildConfig.getConfigsList().keySet()) {
+                ConditionConfig config = PreventBuildConfig.getConditionConfig(configName);
+                if (config != null && PreventBuildConfig.isConfigEnabled(configName)) {
+                    return ((IEntityCondition)(config.getCondition(ConditionCategory.INTERACT_ENTITY)))
+                            .check(ConditionCategory.ATTACK_ENTITY, player, world, hand, entity, hitResult);
+                }
             }
             return ActionResult.PASS;
         });
     }
-    private int getPlacingY(BlockHitResult hitResult){
-        return switch (hitResult.getSide()) {
-            case UP -> hitResult.getBlockPos().getY() + 1;
-            case DOWN -> hitResult.getBlockPos().getY() - 1;
-            default -> hitResult.getBlockPos().getY();
-        };
-    }
 }
 /* TODO:
-    - Two events for preventing placing and breaking blocks
-    - Settings' Menu with setting up preventing mods and lists of blocks (including oredicts I hope) which will checking events
-    - Modes of preventing:
+    - New conditions:
         - "Place block A by RMB on block B"
-        - "Break block A"                           +
-        - "Break block A under block B"
-        - "Place on levels A,B,..."                 +
-        - "Break on levels A,B,..."                 +
-        - "Place/Break on levels between A and B"
-        - Stripping any logs and wood               +
+        - "blockReplace: replace block A by any block (grass, light)"
+    -
     - Extra future plan:
         - Create a visual UI for configuration preventing conditions
-        - Add an ability to save configurations to switch between them and share with other players(clients)
  */

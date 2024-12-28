@@ -1,0 +1,32 @@
+package rh.preventbuild.conditions;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+
+public interface ICondition {
+    ConditionCategory getCategory();
+    /**
+     * Check of breaking action
+     * */
+    boolean check(PlayerEntity player, Hand hand, int x, int y, int z);
+
+    /**
+     * Check of placing action
+     * */
+    default boolean check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+        return check(player, hand, x, y, z);
+    }
+
+    /**
+     * Mostly debug string to print the condition.
+     * It is more useful and convenient to use the debug mode
+     */
+    default String getString(int tabs) {
+        return "|\t".repeat(tabs) + this.getClass().getSimpleName();
+    }
+
+    default String getString() {
+        return getString(0);
+    }
+}
