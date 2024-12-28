@@ -3,6 +3,7 @@ package rh.preventbuild;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -15,11 +16,12 @@ import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.util.Map;
 
-public class PreventBuildConfig  {
+public class PreventBuildConfig {
     private static final Path conditionsDirPath = FabricLoader.getInstance().getConfigDir().resolve("preventbuild");
     private static final Logger LOGGER = LogManager.getLogger("PBConditionConfig");
     public static JSONObject condConfigsHandler = new JSONObject();
     private static final Map<String, ConditionConfig> conditionConfigs = new java.util.HashMap<>();
+    public static final Map<String, String[]> oreDictionary = new java.util.HashMap<>();
 
     public static void loadConditionConfigs() {
         try {
@@ -72,6 +74,34 @@ public class PreventBuildConfig  {
         catch (Exception e) {
             LOGGER.error("Failed to load conditions configs: " + e.getMessage(), e);
         }
+    }
+
+    public static void loadOreDictionary() {
+        try {
+            oreDictionary.clear();
+            File jsonFile = conditionsDirPath.resolve("ore_dictionaries.json").toFile();
+            Object o = new JSONParser().parse(new FileReader(jsonFile));
+            JSONObject oreDictJSON = (JSONObject) o;
+
+            for (Object key : oreDictJSON.keySet().toArray()) {
+                JSONArray valuesList = (JSONArray) oreDictJSON.get(key);
+                String[] ores = new String[valuesList.size()];
+                for (int i = 0; i < valuesList.size(); i++) {
+                    ores[i] = (String) valuesList.get(i);
+                }
+                oreDictionary.put(key.toString(), ores);
+            }
+        }
+        catch (ParseException e) {
+            LOGGER.error("Failed to parse JSON config file. Check the format of the file\n" + e.getMessage(), e);
+        }
+        catch (Exception e) {
+            LOGGER.error("Failed to load ore dictionary file: " + e.getMessage(), e);
+        }
+    }
+
+    public static String[] getOreDictionary(String key) {
+        return oreDictionary.get(key);
     }
 
     public static ConditionConfig getConditionConfig(String name) {

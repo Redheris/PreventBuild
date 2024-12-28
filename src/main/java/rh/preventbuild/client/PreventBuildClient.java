@@ -51,6 +51,7 @@ public class PreventBuildClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        PreventBuildConfig.loadOreDictionary();
         PreventBuildConfig.loadConditionConfigs();
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
@@ -138,8 +139,9 @@ public class PreventBuildClient implements ClientModInitializer {
                             )
                             .then(literal("update")
                                     .executes(context -> {
+                                        PreventBuildConfig.loadOreDictionary();
                                         PreventBuildConfig.loadConditionConfigs();
-                                        context.getSource().getPlayer().sendMessage(Text.literal("§3Список конфигов обновлён"));
+                                        context.getSource().getPlayer().sendMessage(Text.literal("§3Конфиги обновлены"));
                                         return 1;
                                     })
                             )
@@ -227,7 +229,6 @@ public class PreventBuildClient implements ClientModInitializer {
     }
 }
 /* TODO:
-    - Ore dictionaries
     - New conditions:
         - "Place block A by RMB on block B"
         - "blockReplace: replace block A by any block (grass, light)"

@@ -3,6 +3,7 @@ package rh.preventbuild.conditions;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import rh.preventbuild.PreventBuildConfig;
 import rh.preventbuild.conditions.advanced.*;
 import rh.preventbuild.conditions.basic.*;
 import rh.preventbuild.conditions.blocks.*;
@@ -16,6 +17,7 @@ import java.io.*;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 import static rh.preventbuild.conditions.ConditionCategory.*;
@@ -209,40 +211,29 @@ public class ConditionConfig {
                         new ZEqualCondition(category, new int[]{Integer.parseInt(value)}),
                         new ZBelowCondition(category, Integer.parseInt(value))
                 );
-            case "block:": {
-                String[] values = value.split(",");
-                for (int i = 0; i < values.length; i++)
-                    if (!values[i].contains("."))
-                        values[i] = "block.minecraft." + values[i];
-                return new BlockEqualCondition(category, values);
-            }
-            case "blockAbove:": {
-                String[] values = value.split(",");
-                for (int i = 0; i < values.length; i++)
-                    if (!values[i].contains("."))
-                        values[i] = "block.minecraft." + values[i];
-                return new BlockAboveCondition(category, values);
-            }
-            case "blockBelow:": {
-                String[] values = value.split(",");
-                for (int i = 0; i < values.length; i++)
-                    if (!values[i].contains("."))
-                        values[i] = "block.minecraft." + values[i];
-                return new BlockBelowCondition(category, values);
-            }
-            case "blockAdj:": {
-                String[] values = value.split(",");
-                for (int i = 0; i < values.length; i++)
-                    if (!values[i].contains("."))
-                        values[i] = "block.minecraft." + values[i];
-                return new BlockAdjacentCondition(category, values);
-            }
+            case "block:":
+            case "blockAbove:":
+            case "blockBelow:":
+            case "blockAdj:":
             case "lookingAt:": {
                 String[] values = value.split(",");
-                for (int i = 0; i < values.length; i++)
-                    if (!values[i].contains("."))
-                        values[i] = "block.minecraft." + values[i];
-                return new LookingAtBlockCondition(values);
+                List<String> newValues = new ArrayList<>();
+                for (String val : values) {
+                    if (val.startsWith("#")) {
+                        String dictKey = val.substring(1);
+                        newValues.addAll(Arrays.asList(PreventBuildConfig.getOreDictionary(dictKey)));
+                    }
+                    else if (!val.contains("."))
+                        newValues.add("block.minecraft." + val);
+                }
+                values = newValues.toArray(new String[0]);
+                switch (key) {
+                    case "block:": return new BlockEqualCondition(category, values);
+                    case "blockAbove:": return new BlockAboveCondition(category, values);
+                    case "blockBelow:": return new BlockBelowCondition(category, values);
+                    case "blockAdj:": return new BlockAdjacentCondition(category, values);
+                    case "lookingAt:": return new LookingAtBlockCondition(values);
+                }
             }
             case "item:": {
                 String[] values = value.split(",");
