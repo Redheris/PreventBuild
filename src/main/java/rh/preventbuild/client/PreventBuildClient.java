@@ -2,11 +2,6 @@ package rh.preventbuild.client;
 
 
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.suggestion.SuggestionProvider;
-import com.mojang.brigadier.suggestion.Suggestions;
-import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -14,13 +9,10 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -29,23 +21,18 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import org.lwjgl.glfw.GLFW;
 import rh.preventbuild.PreventBuildConfig;
 import rh.preventbuild.conditions.ConditionCategory;
 import rh.preventbuild.conditions.ConditionConfig;
 import rh.preventbuild.conditions.entities.IEntityCondition;
 
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 @Environment(EnvType.CLIENT)
 public class PreventBuildClient implements ClientModInitializer {
-
-    private static KeyBinding keyBind_openConfigScreen;
-    private static KeyBinding keyBind_toggleMod;
 
     public static ConditionConfig config;
 
@@ -57,40 +44,42 @@ public class PreventBuildClient implements ClientModInitializer {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             final LiteralCommandNode<FabricClientCommandSource> pbNode = dispatcher.register(ClientCommandManager.literal("pb")
                     .executes(context -> {
-                        context.getSource().getPlayer().sendMessage(Text.literal("§3Called /pb with no arguments"));
+                        context.getSource().getPlayer().sendMessage(Text.literal("§cВызван /pb без аргументов"), false);
                         return 1;
                     })
                     .then(literal("help")
                             .executes(context -> {
-                                context.getSource().getPlayer().sendMessage(Text.literal("§aPreventBuild commands:"));
-                                context.getSource().getPlayer().sendMessage(Text.literal("/pb help - вывести список команд"));
-                                context.getSource().getPlayer().sendMessage(Text.literal("/pb config list - вывести список конфигов"));
-                                context.getSource().getPlayer().sendMessage(Text.literal("/pb config load <name> - обновить конфиг name"));
-                                context.getSource().getPlayer().sendMessage(Text.literal("/pb config save <name> - обновить конфиг name"));
-                                context.getSource().getPlayer().sendMessage(Text.literal("/pb config update - обновить список конфигов"));
+                                context.getSource().getPlayer().sendMessage(Text.literal("§aPreventBuild commands:"), false);
+                                context.getSource().getPlayer().sendMessage(Text.literal("/pb help - вывести список команд"), false);
+                                context.getSource().getPlayer().sendMessage(Text.literal("/pb config list - вывести список конфигов"), false);
+                                context.getSource().getPlayer().sendMessage(Text.literal("/pb config load <name> - обновить конфиг name"), false);
+                                context.getSource().getPlayer().sendMessage(Text.literal("/pb config save <name> - обновить конфиг name"), false);
+                                context.getSource().getPlayer().sendMessage(Text.literal("/pb config update - обновить список конфигов"), false);
                                 return 1;
                             })
                     )
                     .then(literal("config")
                             .executes(context -> {
-                                context.getSource().getPlayer().sendMessage(Text.literal("Type /rh help to see a list of all commands"));
+                                context.getSource().getPlayer().sendMessage(Text.literal("§3Напишите /rh help для получения списка команд"), false);
                                 return 1;
                             })
                             .then(literal("load")
                                     .then(argument("filename", StringArgumentType.word())
                                             .executes(context -> {
                                                 String name = context.getArgument("filename", String.class);
-                                                context.getSource().getPlayer().sendMessage(Text.literal("§3Загрузка конфиг-файла \"" + name + "\""));
+                                                context.getSource().getPlayer().sendMessage(Text.literal("§3Загрузка конфиг-файла \"" + name + "\""), false);
                                                 try {
                                                     config = new ConditionConfig(name);
                                                     context.getSource().getPlayer().sendMessage(
-                                                            Text.literal("§aУспешно загружен конфиг §3\"" + config.getName() + "\"")
+                                                            Text.literal("§aУспешно загружен конфиг §3\"" + config.getName() + "\""),
+                                                            false
                                                     );
                                                     System.out.println("\nname:" + config.getName() + "\n" + config.getCondition().getString());
                                                 } catch (Exception e) {
                                                     context.getSource().getPlayer().sendMessage(
                                                             Text.literal("§cПроизошла ошибка при чтении конфига, " +
-                                                                    "для подробностей откройте логи клиента")
+                                                                    "для подробностей откройте логи клиента"),
+                                                            false
                                                     );
                                                     System.out.println("Unexpected error while loading config file:\n" + e.getMessage());
                                                 }
@@ -102,37 +91,43 @@ public class PreventBuildClient implements ClientModInitializer {
                                     .executes(context -> {
                                         Map<String, Boolean> configs = PreventBuildConfig.getConfigsList();
                                         if (configs.isEmpty()) {
-                                            context.getSource().getPlayer().sendMessage(Text.literal("§3Не найдено конфигов"));
+                                            context.getSource().getPlayer().sendMessage(Text.literal("§3Не найдено конфигов"), false);
                                         }
                                         for (String config : configs.keySet()) {
                                             context.getSource().getPlayer().sendMessage(Text.literal(
-                                                    "§3\"" + config + "\" : " + (configs.get(config) ? "§aactive" : "§cinactive")
-                                            ));
+                                                    "§3\"" + config + "\" : " + (configs.get(config) ? "§aактивен" : "§cнеактивен")),
+                                                    false
+                                            );
                                         }
                                         return 1;
                                     })
                             )
                             .then(literal("switch")
                                     .then(argument("name", StringArgumentType.word())
-                                            .suggests(new SuggestionProvider<FabricClientCommandSource>() {
-                                                @Override
-                                                public CompletableFuture<Suggestions> getSuggestions(CommandContext<FabricClientCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
-                                                    for (String config : PreventBuildConfig.getConfigsList().keySet()) {
-                                                        builder.suggest(config.replace(" ", "_"));
-                                                    }
-                                                    return builder.buildFuture();
+                                            .suggests((context, builder) -> {
+                                                for (String config : PreventBuildConfig.getConfigsList().keySet()) {
+                                                    builder.suggest(config.replace(" ", "_"));
                                                 }
+                                                return builder.buildFuture();
                                             })
                                             .executes(context -> {
                                                 String name = context.getArgument("name", String.class).replace("_", " ");
                                                 if (PreventBuildConfig.switchConfigEnabled(name) == -1) {
-                                                    context.getSource().getPlayer().sendMessage(Text.literal("§3Config \"" + name + "\" not found"));
+                                                    context.getSource().getPlayer().sendMessage(
+                                                            Text.literal("§3Конфиг \"" + name + "\" не найден"),
+                                                            false);
                                                     return 0;
                                                 }
                                                 if (PreventBuildConfig.isConfigEnabled(name))
-                                                    context.getSource().getPlayer().sendMessage(Text.literal("§3Config \"" + name + "\" is §aactive §3now"));
+                                                    context.getSource().getPlayer().sendMessage(
+                                                            Text.literal("§3Конфиг \"" + name + "\" теперь §aактивен"),
+                                                            false
+                                                    );
                                                 else
-                                                    context.getSource().getPlayer().sendMessage(Text.literal("§3Config \"" + name + "\" is §cinactive §3now"));
+                                                    context.getSource().getPlayer().sendMessage(
+                                                            Text.literal("§3Конфиг \"" + name + "\" теперь §cнеактивен"),
+                                                            false
+                                                    );
                                                 return 1;
                                             })
                                     )
@@ -141,7 +136,7 @@ public class PreventBuildClient implements ClientModInitializer {
                                     .executes(context -> {
                                         PreventBuildConfig.loadOreDictionary();
                                         PreventBuildConfig.loadConditionConfigs();
-                                        context.getSource().getPlayer().sendMessage(Text.literal("§3Конфиги обновлены"));
+                                        context.getSource().getPlayer().sendMessage(Text.literal("§3Конфиги обновлены"), true);
                                         return 1;
                                     })
                             )
@@ -149,21 +144,6 @@ public class PreventBuildClient implements ClientModInitializer {
             );
             dispatcher.register(literal("preventbuild").redirect(pbNode));
         });
-
-        keyBind_openConfigScreen = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.preventbuild.openConfigScreen", // Ключ перевода имени привязки ключей
-                InputUtil.Type.KEYSYM, // Тип привязки клавиш, KEYSYM для клавиатуры, MOUSE для мыши.
-                GLFW.GLFW_KEY_V, // Ключевой код ключа
-                "category.preventbuild" // Ключ перевода категории привязки ключей.
-        ));
-
-        keyBind_toggleMod = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.preventbuild.toggleMod",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_R,
-                "category.preventbuild"
-        ));
-
 
         UseBlockCallback.EVENT.register((PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) ->
         {
