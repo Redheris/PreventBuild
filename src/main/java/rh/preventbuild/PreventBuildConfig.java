@@ -48,7 +48,8 @@ public class PreventBuildConfig {
                 }
             }
 
-            for (Object key : condConfigsHandler.keySet()) {
+            Object[] keys = condConfigsHandler.keySet().toArray();
+            for (Object key : keys) {
                 if (!conditionConfigs.containsKey((String) key)) {
                     condConfigsHandler.remove(key);
                 }

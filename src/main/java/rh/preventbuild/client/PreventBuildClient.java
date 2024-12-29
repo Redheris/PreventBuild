@@ -53,7 +53,7 @@ public class PreventBuildClient implements ClientModInitializer {
                                 context.getSource().getPlayer().sendMessage(Text.literal("/pb help - вывести список команд"), false);
                                 context.getSource().getPlayer().sendMessage(Text.literal("/pb config list - вывести список конфигов"), false);
                                 context.getSource().getPlayer().sendMessage(Text.literal("/pb config load <name> - обновить конфиг name"), false);
-                                context.getSource().getPlayer().sendMessage(Text.literal("/pb config save <name> - обновить конфиг name"), false);
+                                context.getSource().getPlayer().sendMessage(Text.literal("/pb config switch <name> - включить/выключить конфиг name"), false);
                                 context.getSource().getPlayer().sendMessage(Text.literal("/pb config update - обновить список конфигов"), false);
                                 return 1;
                             })
@@ -121,12 +121,12 @@ public class PreventBuildClient implements ClientModInitializer {
                                                 if (PreventBuildConfig.isConfigEnabled(name))
                                                     context.getSource().getPlayer().sendMessage(
                                                             Text.literal("§3Конфиг \"" + name + "\" теперь §aактивен"),
-                                                            false
+                                                            true
                                                     );
                                                 else
                                                     context.getSource().getPlayer().sendMessage(
                                                             Text.literal("§3Конфиг \"" + name + "\" теперь §cнеактивен"),
-                                                            false
+                                                            true
                                                     );
                                                 return 1;
                                             })
@@ -210,7 +210,6 @@ public class PreventBuildClient implements ClientModInitializer {
 }
 /* TODO:
     - New conditions:
-        - "Place block A by RMB on block B"
         - "blockReplace: replace block A by any block (grass, light)"
     -
     - Extra future plan:
