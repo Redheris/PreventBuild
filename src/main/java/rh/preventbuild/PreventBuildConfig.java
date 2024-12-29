@@ -9,15 +9,13 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import rh.preventbuild.conditions.ConditionConfig;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
 public class PreventBuildConfig {
-    private static final Path conditionsDirPath = FabricLoader.getInstance().getConfigDir().resolve("preventbuild");
+    private static final Path PBConfigsPath = FabricLoader.getInstance().getConfigDir().resolve("preventbuild");
     private static final Logger LOGGER = LogManager.getLogger("PBConditionConfig");
     public static JSONObject condConfigsHandler = new JSONObject();
     private static final Map<String, ConditionConfig> conditionConfigs = new java.util.HashMap<>();
@@ -26,11 +24,22 @@ public class PreventBuildConfig {
     public static void loadConditionConfigs() {
         try {
             conditionConfigs.clear();
-            File jsonFile = conditionsDirPath.resolve("condition_configs.json").toFile();
+            File jsonFile = PBConfigsPath.resolve("condition_configs.json").toFile();
+            if (jsonFile.createNewFile()) {
+                PrintWriter writer = new PrintWriter(jsonFile);
+                writer.println("{}");
+                writer.close();
+            }
             Object o = new JSONParser().parse(new FileReader(jsonFile));
             condConfigsHandler = (JSONObject) o;
 
-            File[] files = conditionsDirPath.resolve("conditions").toFile().listFiles();
+            File conditionDir = PBConfigsPath.resolve("conditions").toFile();
+            if (!conditionDir.exists()) {
+                conditionDir.mkdir();
+                Files.createFile(PBConfigsPath.resolve("conditions/put_your_configs_here"));
+            }
+
+            File[] files = conditionDir.listFiles();
             if (files == null) {
                 LOGGER.info("No conditions configs found");
                 return;
@@ -63,7 +72,7 @@ public class PreventBuildConfig {
                 }
             }
 
-            FileWriter fileWriter = new FileWriter(conditionsDirPath.toString() + "/condition_configs.json");
+            FileWriter fileWriter = new FileWriter(PBConfigsPath + "/condition_configs.json");
             PrintWriter printWriter = new PrintWriter(fileWriter);
             printWriter.print(prettyPrintJSON(condConfigsHandler.toString()));
             printWriter.close();
@@ -79,8 +88,16 @@ public class PreventBuildConfig {
 
     public static void loadOreDictionary() {
         try {
+            if (!new File(PBConfigsPath.toString()).exists())
+                new File(PBConfigsPath.toString()).mkdir();
             oreDictionary.clear();
-            File jsonFile = conditionsDirPath.resolve("ore_dictionaries.json").toFile();
+            File jsonFile = PBConfigsPath.resolve("ore_dictionaries.json").toFile();
+            if (jsonFile.createNewFile()) {
+                PrintWriter writer = new PrintWriter(jsonFile);
+                writer.println("{}");
+                writer.close();
+                return;
+            }
             Object o = new JSONParser().parse(new FileReader(jsonFile));
             JSONObject oreDictJSON = (JSONObject) o;
 
@@ -134,7 +151,7 @@ public class PreventBuildConfig {
             jsonObject.put("active", !((Boolean) jsonObject.get("active")));
             condConfigsHandler.put(configName, jsonObject);
 
-            FileWriter fileWriter = new FileWriter(conditionsDirPath.toString() + "/condition_configs.json");
+            FileWriter fileWriter = new FileWriter(PBConfigsPath + "/condition_configs.json");
             PrintWriter printWriter = new PrintWriter(fileWriter);
             printWriter.print(prettyPrintJSON(condConfigsHandler.toString()));
             printWriter.close();
@@ -150,9 +167,6 @@ public class PreventBuildConfig {
 
     /**
      * A simple implementation to pretty-print JSON file.
-     *
-     * @param unformattedJsonString
-     * @return
      */
     public static String prettyPrintJSON(String unformattedJsonString) {
         StringBuilder prettyJSONBuilder = new StringBuilder();
@@ -201,8 +215,6 @@ public class PreventBuildConfig {
 
     /**
      * Print a new line with indention at the beginning of the new line.
-     * @param indentLevel
-     * @param stringBuilder
      */
     private static void appendIndentedNewLine(int indentLevel, StringBuilder stringBuilder) {
         stringBuilder.append("\n");
