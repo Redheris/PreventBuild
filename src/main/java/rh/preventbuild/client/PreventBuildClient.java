@@ -24,7 +24,9 @@ import net.minecraft.world.World;
 import rh.preventbuild.PreventBuildConfig;
 import rh.preventbuild.conditions.ConditionCategory;
 import rh.preventbuild.conditions.ConditionConfig;
+import rh.preventbuild.conditions.ICondition;
 import rh.preventbuild.conditions.entities.IEntityCondition;
+import rh.preventbuild.conditions.entities.NullEntityCondition;
 
 import java.util.Map;
 
@@ -186,8 +188,12 @@ public class PreventBuildClient implements ClientModInitializer {
             for (String configName : PreventBuildConfig.getConfigsList().keySet()) {
                 ConditionConfig config = PreventBuildConfig.getConditionConfig(configName);
                 if (config != null && PreventBuildConfig.isConfigEnabled(configName)) {
-                    return ((IEntityCondition)(config.getCondition(ConditionCategory.INTERACT_ENTITY)))
-                            .check(ConditionCategory.INTERACT_ENTITY, player, world, hand, entity, hitResult);
+                    IEntityCondition condition = ((IEntityCondition)(config.getCondition(ConditionCategory.INTERACT_ENTITY)));
+                    if (!(condition instanceof NullEntityCondition)) {
+                        ActionResult res = condition.check(ConditionCategory.INTERACT_ENTITY, player, world, hand, entity, hitResult);
+                        if (res != ActionResult.PASS)
+                            return res;
+                    }
                 }
             }
             return ActionResult.PASS;
@@ -200,8 +206,12 @@ public class PreventBuildClient implements ClientModInitializer {
             for (String configName : PreventBuildConfig.getConfigsList().keySet()) {
                 ConditionConfig config = PreventBuildConfig.getConditionConfig(configName);
                 if (config != null && PreventBuildConfig.isConfigEnabled(configName)) {
-                    return ((IEntityCondition)(config.getCondition(ConditionCategory.INTERACT_ENTITY)))
-                            .check(ConditionCategory.ATTACK_ENTITY, player, world, hand, entity, hitResult);
+                    IEntityCondition condition = ((IEntityCondition)(config.getCondition(ConditionCategory.INTERACT_ENTITY)));
+                    if (!(condition instanceof NullEntityCondition)) {
+                        ActionResult res = condition.check(ConditionCategory.ATTACK_ENTITY, player, world, hand, entity, hitResult);
+                        if (res != ActionResult.PASS)
+                            return res;
+                    }
                 }
             }
             return ActionResult.PASS;
