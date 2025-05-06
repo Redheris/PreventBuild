@@ -1,8 +1,6 @@
 package rh.preventbuild.conditions;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -13,9 +11,9 @@ public class ConditionHandler {
      *
      * @param condition the condition to check
      * @param player    the player entity
-     * @param hand
+     * @param hand      which hand was used
      * @param pos       the position to check
-     * @return the result of the condition check
+     * @return          the result of the condition check
      */
     public static boolean checkCondition(ICondition condition, PlayerEntity player, Hand hand, BlockPos pos) {
         return condition.check(player, hand, pos.getX(), pos.getY(), pos.getZ());

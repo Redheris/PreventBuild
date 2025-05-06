@@ -31,11 +31,6 @@ public class AxeStrippingCondition implements ICondition {
     }
 
     @Override
-    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
-        return false;
-    }
-
-    @Override
     public boolean check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         Block lookingAt = player.getWorld().getBlockState(hitResult.getBlockPos()).getBlock();
         if (blacklist != null && Arrays.stream(blacklist).anyMatch(i -> i.equalsIgnoreCase(lookingAt.getTranslationKey()))) {

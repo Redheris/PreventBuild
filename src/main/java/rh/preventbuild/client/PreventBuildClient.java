@@ -25,8 +25,7 @@ import rh.preventbuild.PreventBuildConfig;
 import rh.preventbuild.conditions.ConditionCategory;
 import rh.preventbuild.conditions.ConditionConfig;
 import rh.preventbuild.conditions.ICondition;
-import rh.preventbuild.conditions.entities.IEntityCondition;
-import rh.preventbuild.conditions.entities.NullEntityCondition;
+import rh.preventbuild.conditions.basic.NullCondition;
 
 import java.util.Map;
 
@@ -188,8 +187,8 @@ public class PreventBuildClient implements ClientModInitializer {
             for (String configName : PreventBuildConfig.getConfigsList().keySet()) {
                 ConditionConfig config = PreventBuildConfig.getConditionConfig(configName);
                 if (config != null && PreventBuildConfig.isConfigEnabled(configName)) {
-                    IEntityCondition condition = ((IEntityCondition)(config.getCondition(ConditionCategory.INTERACT_ENTITY)));
-                    if (!(condition instanceof NullEntityCondition)) {
+                    ICondition condition = config.getCondition(ConditionCategory.INTERACT_ENTITY);
+                    if (!(condition instanceof NullCondition)) {
                         ActionResult res = condition.check(ConditionCategory.INTERACT_ENTITY, player, world, hand, entity, hitResult);
                         if (res != ActionResult.PASS)
                             return res;
@@ -206,8 +205,8 @@ public class PreventBuildClient implements ClientModInitializer {
             for (String configName : PreventBuildConfig.getConfigsList().keySet()) {
                 ConditionConfig config = PreventBuildConfig.getConditionConfig(configName);
                 if (config != null && PreventBuildConfig.isConfigEnabled(configName)) {
-                    IEntityCondition condition = ((IEntityCondition)(config.getCondition(ConditionCategory.INTERACT_ENTITY)));
-                    if (!(condition instanceof NullEntityCondition)) {
+                    ICondition condition = config.getCondition(ConditionCategory.ATTACK_ENTITY);
+                    if (!(condition instanceof NullCondition)) {
                         ActionResult res = condition.check(ConditionCategory.ATTACK_ENTITY, player, world, hand, entity, hitResult);
                         if (res != ActionResult.PASS)
                             return res;
@@ -218,10 +217,3 @@ public class PreventBuildClient implements ClientModInitializer {
         });
     }
 }
-/* TODO:
-    - New conditions:
-        - "blockReplace: replace block A by any block (grass, light)"
-    -
-    - Extra future plan:
-        - Create a visual UI for configuration preventing conditions
- */

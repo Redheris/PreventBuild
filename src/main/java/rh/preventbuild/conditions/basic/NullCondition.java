@@ -1,7 +1,11 @@
 package rh.preventbuild.conditions.basic;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.world.World;
 import rh.preventbuild.conditions.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
 
@@ -14,8 +18,8 @@ public class NullCondition implements ICondition {
     }
 
     @Override
-    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
-        return false;
+    public ActionResult check(ConditionCategory category, PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
+        return ActionResult.PASS;
     }
 
     @Override

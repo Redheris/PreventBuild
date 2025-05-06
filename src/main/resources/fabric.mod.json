@@ -3,7 +3,7 @@
   "id": "preventbuild",
   "version": "${version}",
   "name": "PreventBuild",
-  "description": "A simple mod that should be useful in building, especially in maparts",
+  "description": "A simple but flexible client-side mod that will help you prevent some unwanted actions on your part",
   "authors": [
     "Redheris"
   ],
@@ -17,9 +17,6 @@
     ],
     "main": [
       "rh.preventbuild.PreventBuild"
-    ],
-    "modmenu": [
-      "rh.preventbuild.ModMenuIntegration"
     ]
   },
   "depends": {

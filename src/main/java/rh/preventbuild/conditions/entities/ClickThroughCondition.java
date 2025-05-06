@@ -15,12 +15,13 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import rh.preventbuild.conditions.ConditionCategory;
+import rh.preventbuild.conditions.ICondition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ClickThroughCondition implements IEntityCondition {
+public class ClickThroughCondition implements ICondition {
 
     private final int sneaking_mode;
     private static final List<Block> INTERACTION_BLOCKS;

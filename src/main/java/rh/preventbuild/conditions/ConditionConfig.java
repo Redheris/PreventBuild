@@ -9,8 +9,7 @@ import rh.preventbuild.conditions.basic.*;
 import rh.preventbuild.conditions.blocks.*;
 import rh.preventbuild.conditions.coordinates.*;
 import rh.preventbuild.conditions.entities.ClickThroughCondition;
-import rh.preventbuild.conditions.entities.IEntityCondition;
-import rh.preventbuild.conditions.entities.NullEntityCondition;
+import rh.preventbuild.conditions.entities.EntityCondition;
 import rh.preventbuild.conditions.items.HeldItemCondition;
 
 import java.io.*;
@@ -26,11 +25,11 @@ public class ConditionConfig {
     private static final Path conditionsDirPath = FabricLoader.getInstance().getConfigDir().resolve("preventbuild/conditions");
     private static final Logger LOGGER = LogManager.getLogger("PBConditionConfig");
     private final String name;
-    private ICondition breakCondition = new NullCondition();
-    private ICondition placeCondition = new NullCondition();
-    private ICondition otherCondition = new NullCondition();
-    private IEntityCondition interactCondition;
-    private IEntityCondition attackCondition;
+    private final ICondition breakCondition;
+    private final ICondition placeCondition;
+    private final ICondition otherCondition;
+    private final ICondition interactCondition;
+    private final ICondition attackCondition;
 
     public ConditionConfig(String filename) {
         ConditionConfig config = getConditionFromConfig(filename);
@@ -42,7 +41,7 @@ public class ConditionConfig {
         this.attackCondition = config.attackCondition;
     }
     public ConditionConfig(String name, ICondition breakCondition, ICondition placeCondition, ICondition otherCondition,
-                           IEntityCondition interactCondition, IEntityCondition attackCondition) {
+                           ICondition interactCondition, ICondition attackCondition) {
         this.name = name;
         this.breakCondition = breakCondition;
         this.placeCondition = placeCondition;
@@ -52,7 +51,7 @@ public class ConditionConfig {
     }
 
     public static ConditionConfig getConditionFromConfig(String filename) {
-        LOGGER.info("Reading condition file: " + conditionsDirPath);
+        LOGGER.info("Reading condition file: " + conditionsDirPath + "\\" + filename + ".cfg");
         ConditionConfig config = read(conditionsDirPath.resolve( filename + ".cfg"));
         assert config != null;
         LOGGER.info("Successfully read config \"" + config.name + "\" from file: " + filename + ".cfg");
@@ -73,8 +72,8 @@ public class ConditionConfig {
             ICondition breakCondition = new NullCondition();
             ICondition placeCondition = new NullCondition();
             ICondition otherCondition = new NullCondition();
-            IEntityCondition interactCondition = new NullEntityCondition();
-            IEntityCondition attackCondition = new NullEntityCondition();
+            ICondition interactCondition = new NullCondition();
+            ICondition attackCondition = new NullCondition();
 
             for (int i = 0; i < configLines.length; i++) {
                 int tabLevel = getTabLevel(configLines[i]);
@@ -96,10 +95,10 @@ public class ConditionConfig {
                             otherCondition = readLogicalCondition(OTHER, configPart);
                             break;
                         case "interactEntity:":
-                            interactCondition = (IEntityCondition) readLogicalCondition(INTERACT_ENTITY, configPart);
+                            interactCondition = readLogicalCondition(INTERACT_ENTITY, configPart);
                             break;
                         case "attackEntity:":
-                            attackCondition = (IEntityCondition) readLogicalCondition(ATTACK_ENTITY, configPart);
+                            attackCondition = readLogicalCondition(ATTACK_ENTITY, configPart);
                             break;
                     }
                     i += configPart.length - 2;
@@ -264,6 +263,11 @@ public class ConditionConfig {
             case "isSneaking:": return new IsSneakingCondition(Boolean.parseBoolean(value));
             case "dimension:": return new DimensionCondition(value);
             case "hand:": return new HandTypeCondition(value);
+            case "entity:": {
+                if (!value.contains("."))
+                    value = "entity.minecraft." + value;
+                return new EntityCondition(category, value);
+            }
         }
 
         return new NullCondition();
@@ -273,6 +277,10 @@ public class ConditionConfig {
         switch (lines[0].trim()){
             case "not:": {
                 String nextLine = lines[1].trim();
+                int indWithoutComms = 1;
+                while ((nextLine.startsWith("%") || nextLine.startsWith("#")) && indWithoutComms < lines.length - 1) {
+                    nextLine = lines[++indWithoutComms].trim();
+                }
                 if (nextLine.startsWith("and:") || nextLine.startsWith("not:") || nextLine.startsWith("or:"))
                     return new NotCondition(readLogicalCondition(category, Arrays.copyOfRange(lines, 1, lines.length)));
                 return new NotCondition(readCondition(category, nextLine));
@@ -282,17 +290,22 @@ public class ConditionConfig {
             case "place:":
             case "other:":
             case "interactEntity:":
+            case "attackEntity:":
             case "or:": {
                 ArrayList<ICondition> conditions = new ArrayList<>();
                 String[] condLines = Arrays.copyOfRange(lines, 1, lines.length);
                 for (int i = 0; i < condLines.length; i++) {
                     String param = condLines[i].trim();
+                    while ((param.startsWith("%") || param.startsWith("#")) && i < condLines.length - 1)
+                        param = condLines[++i].trim();
                     if (param.startsWith("and:") || param.startsWith("not:") || param.startsWith("or:")) {
                         String[] newCondString = cutTabLevel(Arrays.copyOfRange(condLines, i, condLines.length));
                         conditions.add(readLogicalCondition(category, newCondString));
                         i += newCondString.length - 1;
                     } else {
-                        conditions.add(readCondition(category, param));
+                        ICondition newCond = readCondition(category, param);
+                        if (!(newCond instanceof NullCondition))
+                            conditions.add(newCond);
                     }
                 }
 
@@ -309,10 +322,6 @@ public class ConditionConfig {
             }
             default: return new NullCondition();
         }
-    }
-
-    private static ICondition readLogicalCondition(ConditionCategory category, String configPart) {
-        return readLogicalCondition(category, configPart.split("\n"));
     }
 
     public String getName() {
@@ -348,6 +357,10 @@ public class ConditionConfig {
         ArrayList<String> res = new ArrayList<>();
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
+            if (line.trim().startsWith("#") || line.trim().startsWith("%")) {
+                res.add(line);
+                continue;
+            }
             if (getTabLevel(line) <= tabLevel && i != 0)
                 break;
             res.add(line);
@@ -357,9 +370,5 @@ public class ConditionConfig {
             result[i] = res.get(i);
 
         return result;
-    }
-
-    private static String[] cutTabLevel(String str) {
-        return cutTabLevel(str.split("\n"));
     }
 }

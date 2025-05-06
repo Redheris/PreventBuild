@@ -1,9 +1,13 @@
 package rh.preventbuild.conditions.basic;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import rh.preventbuild.conditions.ConditionCategory;
 import rh.preventbuild.conditions.ConditionHandler;
 import rh.preventbuild.conditions.ICondition;
@@ -17,6 +21,13 @@ public class NotCondition implements ICondition {
     @Override
     public ConditionCategory getCategory() {
         return ConditionCategory.LOGIC;
+    }
+
+    @Override
+    public ActionResult check(ConditionCategory category, PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
+        if (nestedCondition.check(category, player, world, hand, entity, hitResult) != ActionResult.PASS)
+            return ActionResult.PASS;
+        return ActionResult.FAIL;
     }
 
     @Override
