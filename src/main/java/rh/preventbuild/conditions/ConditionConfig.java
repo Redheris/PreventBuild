@@ -224,6 +224,8 @@ public class ConditionConfig {
                     }
                     else if (!val.contains("."))
                         newValues.add("block.minecraft." + val);
+                    else
+                        newValues.add(val);
                 }
                 values = newValues.toArray(new String[0]);
                 switch (key) {
@@ -236,9 +238,18 @@ public class ConditionConfig {
             }
             case "item:": {
                 String[] values = value.split(",");
-                for (int i = 0; i < values.length; i++)
-                    if (!values[i].contains("."))
-                        values[i] = "item.minecraft." + values[i];
+                List<String> newValues = new ArrayList<>();
+                for (String val : values) {
+                    if (val.startsWith("#")) {
+                        String dictKey = val.substring(1);
+                        newValues.addAll(Arrays.asList(PreventBuildConfig.getOreDictionary(dictKey)));
+                    }
+                    else if (!val.contains("."))
+                        newValues.add("item.minecraft." + val);
+                    else
+                        newValues.add(val);
+                }
+                values = newValues.toArray(new String[0]);
                 return new HeldItemCondition(values);
             }
             case "stripWood": return new AxeStrippingCondition();
