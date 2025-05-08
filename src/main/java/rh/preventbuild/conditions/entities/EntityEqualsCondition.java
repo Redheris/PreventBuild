@@ -9,13 +9,15 @@ import net.minecraft.world.World;
 import rh.preventbuild.conditions.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
 
-public class EntityCondition implements ICondition {
-    private final ConditionCategory category;
-    private final String entity;
+import java.util.Arrays;
 
-    public EntityCondition(ConditionCategory category, String entity) {
+public class EntityEqualsCondition implements ICondition {
+    private final ConditionCategory category;
+    private final String[] entities;
+
+    public EntityEqualsCondition(ConditionCategory category, String... entities) {
         this.category = category;
-        this.entity = entity;
+        this.entities = entities;
     }
 
     @Override
@@ -25,7 +27,8 @@ public class EntityCondition implements ICondition {
 
     @Override
     public ActionResult check(ConditionCategory category, PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
-        if (entity.getType().getTranslationKey().equals(this.entity))
+        String entityName = entity.getType().getTranslationKey();
+        if (Arrays.stream(this.entities).anyMatch(i -> i.equalsIgnoreCase(entityName)))
             return ActionResult.FAIL;
         return ActionResult.PASS;
     }

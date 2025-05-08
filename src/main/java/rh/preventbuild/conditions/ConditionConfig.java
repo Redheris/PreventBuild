@@ -275,9 +275,20 @@ public class ConditionConfig {
             case "dimension:": return new DimensionCondition(value);
             case "hand:": return new HandTypeCondition(value);
             case "entity:": {
-                if (!value.contains("."))
-                    value = "entity.minecraft." + value;
-                return new EntityCondition(category, value);
+                String[] values = value.split(",");
+                List<String> newValues = new ArrayList<>();
+                for (String val : values) {
+                    if (val.startsWith("#")) {
+                        String dictKey = val.substring(1);
+                        newValues.addAll(Arrays.asList(PreventBuildConfig.getOreDictionary(dictKey)));
+                    }
+                    else if (!val.contains("."))
+                        newValues.add("entity.minecraft." + val);
+                    else
+                        newValues.add(val);
+                }
+                values = newValues.toArray(new String[0]);
+                return new EntityEqualsCondition(category,values);
             }
         }
 
