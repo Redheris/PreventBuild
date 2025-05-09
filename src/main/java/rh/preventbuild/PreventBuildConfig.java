@@ -21,7 +21,7 @@ public class PreventBuildConfig {
     private static final Map<String, ConditionConfig> conditionConfigs = new java.util.HashMap<>();
     public static final Map<String, String[]> oreDictionary = new java.util.HashMap<>();
 
-    public static void loadConditionConfigs() {
+    public static boolean loadConditionConfigs() {
         try {
             conditionConfigs.clear();
             File jsonFile = PBConfigsPath.resolve("condition_configs.json").toFile();
@@ -42,7 +42,7 @@ public class PreventBuildConfig {
             File[] files = conditionDir.listFiles();
             if (files == null) {
                 LOGGER.info("No conditions configs found");
-                return;
+                return false;
             }
             for (File file : files) {
                 if (file.getName().endsWith(".cfg")) {
@@ -65,10 +65,10 @@ public class PreventBuildConfig {
             }
 
             if (!conditionConfigs.isEmpty()) {
-                LOGGER.info("Found " + condConfigsHandler.size() + " conditions configs:");
+                LOGGER.info("Found {} conditions configs:", condConfigsHandler.size());
                 for (String configName : conditionConfigs.keySet()) {
                     boolean isActive = (Boolean)((JSONObject)(condConfigsHandler.get(configName))).get("active");
-                    LOGGER.info("Config \"" + configName + "\" : " + (isActive ? "active" : "disabled"));
+                    LOGGER.info("Config \"{}\" : {}", configName, isActive ? "active" : "disabled");
                 }
             }
 
@@ -77,16 +77,18 @@ public class PreventBuildConfig {
             printWriter.print(prettyPrintJSON(condConfigsHandler.toString()));
             printWriter.close();
             fileWriter.close();
+            return true;
         }
         catch (ParseException e) {
-            LOGGER.error("Failed to parse JSON config file. Check the format of the file\n" + e.getMessage(), e);
+            LOGGER.error("Failed to parse JSON config file. Check the format of the file\n{}", e.getMessage(), e);
         }
         catch (Exception e) {
-            LOGGER.error("Failed to load conditions configs: " + e.getMessage(), e);
+            LOGGER.error("Failed to load conditions configs: {}", e.getMessage(), e);
         }
+        return false;
     }
 
-    public static void loadOreDictionary() {
+    public static boolean loadOreDictionary() {
         try {
             if (!new File(PBConfigsPath.toString()).exists())
                 new File(PBConfigsPath.toString()).mkdir();
@@ -96,7 +98,7 @@ public class PreventBuildConfig {
                 PrintWriter writer = new PrintWriter(jsonFile);
                 writer.println("{}");
                 writer.close();
-                return;
+                return true;
             }
             Object o = new JSONParser().parse(new FileReader(jsonFile));
             JSONObject oreDictJSON = (JSONObject) o;
@@ -111,15 +113,21 @@ public class PreventBuildConfig {
             }
         }
         catch (ParseException e) {
-            LOGGER.error("Failed to parse JSON config file. Check the format of the file\n" + e.getMessage(), e);
+            LOGGER.error("Failed to parse JSON config file. Check the format of the file:\n{}", e.getMessage(), e);
+            return false;
         }
         catch (Exception e) {
-            LOGGER.error("Failed to load ore dictionary file: " + e.getMessage(), e);
+            LOGGER.error("Failed to load ore dictionary file:\n{}", e.getMessage(), e);
+            return false;
         }
+        return true;
     }
 
     public static String[] getOreDictionary(String key) {
-        return oreDictionary.get(key);
+        if (oreDictionary.containsKey(key))
+            return oreDictionary.get(key);
+        LOGGER.error("Ore dictionary \"{}\" not found", key);
+        return null;
     }
 
     public static ConditionConfig getConditionConfig(String name) {
@@ -218,9 +226,7 @@ public class PreventBuildConfig {
      */
     private static void appendIndentedNewLine(int indentLevel, StringBuilder stringBuilder) {
         stringBuilder.append("\n");
-        for(int i = 0; i < indentLevel; i++) {
-            // Assuming indention using 2 spaces
-            stringBuilder.append("  ");
-        }
+        // Assuming indention using 2 spaces
+        stringBuilder.append("  ".repeat(Math.max(0, indentLevel)));
     }
 }

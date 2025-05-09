@@ -14,10 +14,7 @@ import rh.preventbuild.conditions.items.HeldItemCondition;
 
 import java.io.*;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import static rh.preventbuild.conditions.ConditionCategory.*;
 
@@ -51,10 +48,10 @@ public class ConditionConfig {
     }
 
     public static ConditionConfig getConditionFromConfig(String filename) {
-        LOGGER.info("Reading condition file: " + conditionsDirPath + "\\" + filename + ".cfg");
+        LOGGER.info("Reading condition file: {}\\{}.cfg", conditionsDirPath, filename);
         ConditionConfig config = read(conditionsDirPath.resolve( filename + ".cfg"));
         assert config != null;
-        LOGGER.info("Successfully read config \"" + config.name + "\" from file: " + filename + ".cfg");
+        LOGGER.info("Successfully read config \"{}\" from file: {}.cfg", config.name, filename);
         return config;
     }
 
@@ -220,7 +217,7 @@ public class ConditionConfig {
                 for (String val : values) {
                     if (val.startsWith("#")) {
                         String dictKey = val.substring(1);
-                        newValues.addAll(Arrays.asList(PreventBuildConfig.getOreDictionary(dictKey)));
+                        newValues.addAll(Arrays.asList(Objects.requireNonNull(PreventBuildConfig.getOreDictionary(dictKey))));
                     }
                     else if (!val.contains("."))
                         newValues.add("block.minecraft." + val);
@@ -242,7 +239,7 @@ public class ConditionConfig {
                 for (String val : values) {
                     if (val.startsWith("#")) {
                         String dictKey = val.substring(1);
-                        newValues.addAll(Arrays.asList(PreventBuildConfig.getOreDictionary(dictKey)));
+                        newValues.addAll(Arrays.asList(Objects.requireNonNull(PreventBuildConfig.getOreDictionary(dictKey))));
                     }
                     else if (!val.contains("."))
                         newValues.add("item.minecraft." + val);
@@ -280,7 +277,7 @@ public class ConditionConfig {
                 for (String val : values) {
                     if (val.startsWith("#")) {
                         String dictKey = val.substring(1);
-                        newValues.addAll(Arrays.asList(PreventBuildConfig.getOreDictionary(dictKey)));
+                        newValues.addAll(Arrays.asList(Objects.requireNonNull(PreventBuildConfig.getOreDictionary(dictKey))));
                     }
                     else if (!val.contains("."))
                         newValues.add("entity.minecraft." + val);

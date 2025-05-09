@@ -64,30 +64,6 @@ public class PreventBuildClient implements ClientModInitializer {
                                 context.getSource().getPlayer().sendMessage(Text.literal("§3Напишите /rh help для получения списка команд"), false);
                                 return 1;
                             })
-                            .then(literal("load")
-                                    .then(argument("filename", StringArgumentType.word())
-                                            .executes(context -> {
-                                                String name = context.getArgument("filename", String.class);
-                                                context.getSource().getPlayer().sendMessage(Text.literal("§3Загрузка конфиг-файла \"" + name + "\""), false);
-                                                try {
-                                                    config = new ConditionConfig(name);
-                                                    context.getSource().getPlayer().sendMessage(
-                                                            Text.literal("§aУспешно загружен конфиг §3\"" + config.getName() + "\""),
-                                                            false
-                                                    );
-                                                    System.out.println("\nname:" + config.getName() + "\n" + config.getCondition().getString());
-                                                } catch (Exception e) {
-                                                    context.getSource().getPlayer().sendMessage(
-                                                            Text.literal("§cПроизошла ошибка при чтении конфига, " +
-                                                                    "для подробностей откройте логи клиента"),
-                                                            false
-                                                    );
-                                                    System.out.println("Unexpected error while loading config file:\n" + e.getMessage());
-                                                }
-                                                return 1;
-                                            })
-                                    )
-                            )
                             .then(literal("list")
                                     .executes(context -> {
                                         Map<String, Boolean> configs = PreventBuildConfig.getConfigsList();
@@ -135,9 +111,25 @@ public class PreventBuildClient implements ClientModInitializer {
                             )
                             .then(literal("update")
                                     .executes(context -> {
-                                        PreventBuildConfig.loadOreDictionary();
-                                        PreventBuildConfig.loadConditionConfigs();
+                                        boolean loadOreDict = PreventBuildConfig.loadOreDictionary();
+                                        if (!loadOreDict) {
+                                            context.getSource().getPlayer().sendMessage(
+                                                    Text.literal("§cОшибка при загрузке словаря руд"),
+                                                    false
+                                            );
+                                            return 0;
+                                        }
+                                        boolean loadConditions = PreventBuildConfig.loadConditionConfigs();
+                                        if (!loadConditions) {
+                                            context.getSource().getPlayer().sendMessage(
+                                                    Text.literal("§cОшибка при загрузке конфигов"),
+                                                    false
+                                            );
+                                            return 0;
+                                        }
+
                                         context.getSource().getPlayer().sendMessage(Text.literal("§3Конфиги обновлены"), true);
+
                                         return 1;
                                     })
                             )
