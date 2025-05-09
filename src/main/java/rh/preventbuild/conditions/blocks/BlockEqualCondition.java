@@ -1,6 +1,5 @@
 package rh.preventbuild.conditions.blocks;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -35,13 +34,6 @@ public class BlockEqualCondition implements ICondition {
 
     @Override
     public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
-        BlockState replaceBlock = player.getWorld().getBlockState(hitResult.getBlockPos());
-        if (!replaceBlock.isReplaceable())
-            replaceBlock = player.getWorld().getBlockState(new BlockPos(x, y, z));
-        String finalCurrentBlock = replaceBlock.getBlock().getTranslationKey();
-        if (Arrays.stream(this.blocks).anyMatch(i -> i.equalsIgnoreCase(finalCurrentBlock)))
-            return ActionResult.FAIL;
-
         String blockName = player.getStackInHand(hand).getItem().getTranslationKey();
         if (Arrays.stream(this.blocks).anyMatch(i -> i.equalsIgnoreCase(blockName)))
             return ActionResult.FAIL;

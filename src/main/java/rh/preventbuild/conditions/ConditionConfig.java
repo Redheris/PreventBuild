@@ -211,7 +211,8 @@ public class ConditionConfig {
             case "blockAbove:":
             case "blockBelow:":
             case "blockAdj:":
-            case "lookingAt:": {
+            case "lookingAt:":
+            case "replaceBlock:": {
                 String[] values = value.split(",");
                 List<String> newValues = new ArrayList<>();
                 for (String val : values) {
@@ -231,8 +232,10 @@ public class ConditionConfig {
                     case "blockBelow:": return new BlockBelowCondition(category, values);
                     case "blockAdj:": return new BlockAdjacentCondition(category, values);
                     case "lookingAt:": return new LookingAtBlockCondition(values);
+                    case "replaceBlock:": return new ReplaceBlockCondition(values);
                 }
             }
+            case "replaceBlock": return new ReplaceBlockCondition(null);
             case "item:": {
                 String[] values = value.split(",");
                 List<String> newValues = new ArrayList<>();
@@ -356,10 +359,6 @@ public class ConditionConfig {
             case ATTACK_ENTITY -> attackCondition;
             default -> new NullCondition();
         };
-    }
-
-    public ICondition getCondition() {
-        return new OrCondition(breakCondition, placeCondition, otherCondition, interactCondition, attackCondition);
     }
 
     private static int getTabLevel(String line) {
