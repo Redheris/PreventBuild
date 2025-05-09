@@ -1,6 +1,7 @@
 package rh.preventbuild.conditions.items;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import rh.preventbuild.conditions.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
@@ -20,8 +21,10 @@ public class HeldItemCondition implements ICondition {
     }
 
     @Override
-    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
+    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
         String itemName = player.getStackInHand(hand).getItem().getTranslationKey();
-        return Arrays.stream(this.items).anyMatch(i -> i.equalsIgnoreCase(itemName));
+        if (Arrays.stream(this.items).anyMatch(i -> i.equalsIgnoreCase(itemName)))
+            return ActionResult.FAIL;
+        return ActionResult.PASS;
     }
 }

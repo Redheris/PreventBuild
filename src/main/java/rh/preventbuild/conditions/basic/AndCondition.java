@@ -25,21 +25,23 @@ public class AndCondition implements ICondition {
     }
 
     @Override
-    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
+    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
         for (ICondition condition : nestedConditions) {
-            if (!ConditionHandler.checkCondition(condition, player, hand, BlockPos.ofFloored(x, y, z)))
-                return false;
+            ActionResult res = ConditionHandler.checkCondition(condition, player, hand, BlockPos.ofFloored(x, y, z));
+            if (res == ActionResult.PASS)
+                return res;
         }
-        return true;
+        return ActionResult.FAIL;
     }
 
     @Override
-    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         for (ICondition condition : nestedConditions) {
-            if (!ConditionHandler.checkCondition(condition, player, hand, hitResult))
-                return false;
+            ActionResult res = ConditionHandler.checkCondition(condition, player, hand, hitResult);
+            if (res == ActionResult.PASS)
+                return res;
         }
-        return true;
+        return ActionResult.FAIL;
     }
 
     @Override

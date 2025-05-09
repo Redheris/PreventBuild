@@ -1,6 +1,7 @@
 package rh.preventbuild.conditions.advanced;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import rh.preventbuild.conditions.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
@@ -21,7 +22,9 @@ public class DimensionCondition implements ICondition {
     }
 
     @Override
-    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
-        return player.getWorld().getDimensionEntry().getIdAsString().equals(dimension_id);
+    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
+        if (player.getWorld().getDimensionEntry().getIdAsString().equals(dimension_id))
+            return ActionResult.FAIL;
+        return ActionResult.PASS;
     }
 }

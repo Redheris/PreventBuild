@@ -8,8 +8,8 @@ import rh.preventbuild.conditions.advanced.*;
 import rh.preventbuild.conditions.basic.*;
 import rh.preventbuild.conditions.blocks.*;
 import rh.preventbuild.conditions.coordinates.*;
-import rh.preventbuild.conditions.entities.ClickThroughCondition;
-import rh.preventbuild.conditions.entities.EntityCondition;
+import rh.preventbuild.conditions.advanced.ClickThroughCondition;
+import rh.preventbuild.conditions.entities.EntityEqualsCondition;
 import rh.preventbuild.conditions.items.HeldItemCondition;
 
 import java.io.*;
@@ -262,14 +262,14 @@ public class ConditionConfig {
             }
             case "carpetOnCarpet": return new CarpetOnCarpetCondition(category);
             case "doubleSlab": return new DoubleSlabCondition(category);
-            case "clickThrough": return new ClickThroughCondition(1);
+            case "clickThrough": return new ClickThroughCondition(category, 1);
             case "clickThroughWhen:": {
                 int sneaking_mode = switch (value.trim()) {
                     case "standing" -> 1;
                     case "sneaking" -> 2;
                     default -> 0;
                 };
-                return new ClickThroughCondition(sneaking_mode);
+                return new ClickThroughCondition(category, sneaking_mode);
             }
             case "isSneaking:": return new IsSneakingCondition(Boolean.parseBoolean(value));
             case "dimension:": return new DimensionCondition(value);

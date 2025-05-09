@@ -35,20 +35,22 @@ public class OrCondition implements ICondition {
     }
 
     @Override
-    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
+    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
         for (ICondition condition : nestedConditions) {
-            if (ConditionHandler.checkCondition(condition, player, hand, BlockPos.ofFloored(x, y, z)))
-                return true;
+            ActionResult res = ConditionHandler.checkCondition(condition, player, hand, BlockPos.ofFloored(x, y, z));
+            if (res != ActionResult.PASS)
+                return res;
         }
-        return false;
+        return ActionResult.PASS;
     }
     @Override
-    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         for (ICondition condition : nestedConditions) {
-            if (ConditionHandler.checkCondition(condition, player, hand, hitResult))
-                return true;
+            ActionResult res = ConditionHandler.checkCondition(condition, player, hand, hitResult);
+            if (res != ActionResult.PASS)
+                return res;
         }
-        return false;
+        return ActionResult.PASS;
     }
     @Override
     public String getString(int tabs) {

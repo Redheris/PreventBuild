@@ -1,6 +1,7 @@
 package rh.preventbuild.conditions.blocks;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import rh.preventbuild.conditions.ConditionCategory;
@@ -23,8 +24,10 @@ public class BlockBelowCondition implements ICondition {
     }
 
     @Override
-    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
+    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
         String blockName = player.getWorld().getBlockState(new BlockPos(x, y - 1, z)).getBlock().getTranslationKey();
-        return Arrays.stream(this.blocks).anyMatch(i -> i.equalsIgnoreCase(blockName));
+        if (Arrays.stream(this.blocks).anyMatch(i -> i.equalsIgnoreCase(blockName)))
+            return ActionResult.FAIL;
+        return ActionResult.PASS;
     }
 }

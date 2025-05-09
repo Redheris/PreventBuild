@@ -1,6 +1,7 @@
 package rh.preventbuild.conditions.coordinates;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import rh.preventbuild.conditions.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
@@ -22,8 +23,8 @@ public class XEqualCondition implements ICondition {
     }
 
     @Override
-    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
-        return Arrays.stream(this.x).anyMatch(i -> i == x);
+    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
+        return Arrays.stream(this.x).anyMatch(i -> i == x) ? ActionResult.FAIL : ActionResult.PASS;
     }
 
 }

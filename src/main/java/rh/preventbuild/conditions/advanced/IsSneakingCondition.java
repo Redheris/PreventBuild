@@ -1,6 +1,7 @@
 package rh.preventbuild.conditions.advanced;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import rh.preventbuild.conditions.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
@@ -18,7 +19,9 @@ public class IsSneakingCondition implements ICondition {
     }
 
     @Override
-    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
-        return player.isSneaking() == is_sneaking;
+    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
+        if (player.isSneaking() == is_sneaking)
+            return ActionResult.PASS;
+        return ActionResult.PASS;
     }
 }

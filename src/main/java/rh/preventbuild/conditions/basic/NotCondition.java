@@ -31,12 +31,19 @@ public class NotCondition implements ICondition {
     }
 
     @Override
-    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
-        return !ConditionHandler.checkCondition(nestedCondition, player, hand, BlockPos.ofFloored(x, y, z));
+    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
+        ActionResult res = ConditionHandler.checkCondition(nestedCondition, player, hand, BlockPos.ofFloored(x, y, z));
+        if (res != ActionResult.PASS)
+            return ActionResult.FAIL;
+        return ActionResult.PASS;
+
     }
     @Override
-    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
-        return !ConditionHandler.checkCondition(nestedCondition, player, hand, hitResult);
+    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+        ActionResult res = ConditionHandler.checkCondition(nestedCondition, player, hand, hitResult);
+        if (res == ActionResult.PASS)
+            return ActionResult.FAIL;
+        return ActionResult.PASS;
     }
     @Override
     public String getString(int tabs) {

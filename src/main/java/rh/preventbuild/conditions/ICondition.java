@@ -11,31 +11,29 @@ import net.minecraft.world.World;
 public interface ICondition {
     ConditionCategory getCategory();
     /**
-     * Check of breaking action
-     * */
-    default boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
-        return false;
-    }
-
-    /**
-     * Check of placing action
-     * */
-    default boolean check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
-        return check(player, hand, x, y, z);
-    }
-
-    /**
-     * Check of left- or right-click on entity action
+     * Checking of breaking action
      */
-    default ActionResult check(ConditionCategory category, PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
-        if (check(player, hand, entity.getBlockX(), entity.getBlockY(), entity.getBlockZ()))
-            return ActionResult.FAIL;
+    default ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
         return ActionResult.PASS;
     }
 
     /**
-     * Mostly debug string to print the condition.
-     * It is more useful and convenient to use the debug mode
+     * Checking of placing action
+     */
+    default ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+        return check(player, hand, x, y, z);
+    }
+
+    /**
+     * Checking of left- or right-click on entity action
+     */
+    default ActionResult check(ConditionCategory category, PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
+        return check(player, hand, entity.getBlockX(), entity.getBlockY(), entity.getBlockZ());
+    }
+
+    /**
+     * Debug string to print the condition.
+     * It can be more useful and convenient to use the debug mode
      */
     default String getString(int tabs) {
         return "|\t".repeat(tabs) + this.getClass().getSimpleName();

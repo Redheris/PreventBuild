@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -25,13 +26,15 @@ public class DoubleSlabCondition implements ICondition {
     }
 
     @Override
-    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
+    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
         BlockState blockState = player.getWorld().getBlockState(new BlockPos(x, y, z));
-        return blockState.getBlock() instanceof SlabBlock && blockState.get(SlabBlock.TYPE) == SlabType.DOUBLE;
+        if (blockState.getBlock() instanceof SlabBlock && blockState.get(SlabBlock.TYPE) == SlabType.DOUBLE)
+            return ActionResult.FAIL;
+        return ActionResult.PASS;
     }
 
     @Override
-    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         BlockState blockState = player.getWorld().getBlockState(new BlockPos(x, y, z));
         Block heldBlock = Block.getBlockFromItem(player.getStackInHand(hand).getItem());
         if (heldBlock instanceof SlabBlock) {
@@ -43,9 +46,10 @@ public class DoubleSlabCondition implements ICondition {
                 if (blockStateSide.getBlock() instanceof SlabBlock && hitResult.getSide() == Direction.UP && blockStateSide.get(SlabBlock.TYPE) == SlabType.BOTTOM)
                     blockState = blockStateSide;
             }
-            return Block.getBlockFromItem(player.getStackInHand(hand).getItem()) instanceof SlabBlock
-                    && blockState.getBlock() instanceof SlabBlock;
+            if (Block.getBlockFromItem(player.getStackInHand(hand).getItem()) instanceof SlabBlock
+                    && blockState.getBlock() instanceof SlabBlock)
+                return ActionResult.FAIL;
         }
-        return false;
+        return ActionResult.PASS;
     }
 }

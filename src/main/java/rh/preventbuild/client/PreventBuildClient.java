@@ -155,10 +155,12 @@ public class PreventBuildClient implements ClientModInitializer {
                 ConditionConfig config = PreventBuildConfig.getConditionConfig(configName);
                 if (config != null && PreventBuildConfig.isConfigEnabled(configName)) {
                     BlockPos pos = hitResult.getBlockPos().offset(hitResult.getSide());
-
-                    if (config.getCondition(ConditionCategory.PLACE).check(player, hand, pos.getX(), pos.getY(), pos.getZ(), hitResult)
-                            || config.getCondition(ConditionCategory.OTHER).check(player, hand, pos.getX(), pos.getY(), pos.getZ(), hitResult))
-                        return ActionResult.FAIL;
+                    ActionResult resOther = config.getCondition(ConditionCategory.OTHER).check(player, hand, pos.getX(), pos.getY(), pos.getZ(), hitResult);
+                    if (resOther != ActionResult.PASS)
+                        return resOther;
+                    ActionResult resPlacing = config.getCondition(ConditionCategory.PLACE).check(player, hand, pos.getX(), pos.getY(), pos.getZ(), hitResult);
+                    if (resPlacing != ActionResult.PASS)
+                        return resPlacing;
                 }
             }
             return ActionResult.PASS;
@@ -172,9 +174,12 @@ public class PreventBuildClient implements ClientModInitializer {
             for (String configName : PreventBuildConfig.getConfigsList().keySet()) {
                 ConditionConfig config = PreventBuildConfig.getConditionConfig(configName);
                 if (config != null && PreventBuildConfig.isConfigEnabled(configName)) {
-                    if (config.getCondition(ConditionCategory.BREAK).check(player, hand, pos.getX(), pos.getY(), pos.getZ())
-                            || config.getCondition(ConditionCategory.OTHER).check(player, hand, pos.getX(), pos.getY(), pos.getZ()))
-                        return ActionResult.FAIL;
+                    ActionResult resOther = config.getCondition(ConditionCategory.OTHER).check(player, hand, pos.getX(), pos.getY(), pos.getZ());
+                    if (resOther != ActionResult.PASS)
+                        return resOther;
+                    ActionResult resBreaking = config.getCondition(ConditionCategory.BREAK).check(player, hand, pos.getX(), pos.getY(), pos.getZ());
+                    if (resBreaking != ActionResult.PASS)
+                        return resBreaking;
                 }
             }
             return ActionResult.PASS;

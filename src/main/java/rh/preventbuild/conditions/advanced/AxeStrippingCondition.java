@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import rh.preventbuild.conditions.ConditionCategory;
@@ -31,12 +32,14 @@ public class AxeStrippingCondition implements ICondition {
     }
 
     @Override
-    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         Block lookingAt = player.getWorld().getBlockState(hitResult.getBlockPos()).getBlock();
         if (blacklist != null && Arrays.stream(blacklist).anyMatch(i -> i.equalsIgnoreCase(lookingAt.getTranslationKey()))) {
-            return false;
+            return ActionResult.PASS;
         }
-        return player.getStackInHand(hand).getItem() instanceof AxeItem && STRIPPABLE_BLOCKS.contains(lookingAt);
+        if (player.getStackInHand(hand).getItem() instanceof AxeItem && STRIPPABLE_BLOCKS.contains(lookingAt))
+            return ActionResult.FAIL;
+        return ActionResult.PASS;
     }
 
     static {

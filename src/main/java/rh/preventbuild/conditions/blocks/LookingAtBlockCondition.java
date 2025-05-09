@@ -2,6 +2,7 @@ package rh.preventbuild.conditions.blocks;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -23,13 +24,15 @@ public class LookingAtBlockCondition implements ICondition {
     }
 
     @Override
-    public boolean check(PlayerEntity player, Hand hand, int x, int y, int z) {
+    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
         HitResult target = MinecraftClient.getInstance().crosshairTarget;
         assert target != null;
         if (target.getType() != HitResult.Type.BLOCK)
-            return false;
+            return ActionResult.PASS;
         BlockHitResult targetBlock = (BlockHitResult) target;
         String blockName = player.getWorld().getBlockState(targetBlock.getBlockPos()).getBlock().getTranslationKey();
-        return Arrays.stream(this.blocks).anyMatch(i -> i.equalsIgnoreCase(blockName));
+        if (Arrays.stream(this.blocks).anyMatch(i -> i.equalsIgnoreCase(blockName)))
+            return ActionResult.FAIL;
+        return ActionResult.PASS;
     }
 }
