@@ -10,11 +10,11 @@ import rh.preventbuild.conditions.ICondition;
 
 import java.util.Arrays;
 
-public class BlockEqualCondition implements ICondition {
+public class BlockEqualsCondition implements ICondition {
     private final String[] blocks;
     private final ConditionCategory category;
 
-    public BlockEqualCondition(ConditionCategory category, String[] blocks) {
+    public BlockEqualsCondition(ConditionCategory category, String[] blocks) {
         this.category = category;
         this.blocks = blocks;
     }

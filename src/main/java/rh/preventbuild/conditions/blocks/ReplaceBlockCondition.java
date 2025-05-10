@@ -32,6 +32,8 @@ public class ReplaceBlockCondition implements ICondition {
             if (replaceBlock.getBlock() instanceof AirBlock || !replaceBlock.isReplaceable())
                 return ActionResult.PASS;
         }
+        if (player.getStackInHand(hand).getItem() == replaceBlock.getBlock().asItem())
+            return ActionResult.PASS;
         String finalCurrentBlock = replaceBlock.getBlock().getTranslationKey();
         if (blocks == null || Arrays.stream(this.blocks).anyMatch(i -> i.equalsIgnoreCase(finalCurrentBlock)))
             return ActionResult.FAIL;

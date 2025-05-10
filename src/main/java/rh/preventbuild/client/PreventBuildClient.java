@@ -22,6 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import rh.preventbuild.PreventBuildConfig;
+import rh.preventbuild.api.Conditions;
 import rh.preventbuild.conditions.ConditionCategory;
 import rh.preventbuild.conditions.ConditionConfig;
 import rh.preventbuild.conditions.ICondition;
@@ -35,11 +36,10 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.lit
 @Environment(EnvType.CLIENT)
 public class PreventBuildClient implements ClientModInitializer {
 
-    public static ConditionConfig config;
-
     @Override
     public void onInitializeClient() {
         PreventBuildConfig.loadOreDictionary();
+        Conditions.register();
         PreventBuildConfig.loadConditionConfigs();
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {

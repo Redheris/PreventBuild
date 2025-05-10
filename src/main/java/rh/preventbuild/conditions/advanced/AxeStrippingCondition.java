@@ -67,4 +67,12 @@ public class AxeStrippingCondition implements ICondition {
                 Blocks.BAMBOO_BLOCK
         ));
     }
+
+    public static ICondition parse(ConditionCategory ignoredCategory, String value) {
+        String[] values = value.split(",");
+        for (int i = 0; i < values.length; i++)
+            if (!values[i].contains("."))
+                values[i] = "block.minecraft." + values[i];
+        return new AxeStrippingCondition(values);
+    }
 }

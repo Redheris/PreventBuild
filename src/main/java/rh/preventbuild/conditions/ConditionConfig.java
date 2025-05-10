@@ -3,18 +3,17 @@ package rh.preventbuild.conditions;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import rh.preventbuild.PreventBuildConfig;
-import rh.preventbuild.conditions.advanced.*;
-import rh.preventbuild.conditions.basic.*;
-import rh.preventbuild.conditions.blocks.*;
-import rh.preventbuild.conditions.coordinates.*;
-import rh.preventbuild.conditions.advanced.ClickThroughCondition;
-import rh.preventbuild.conditions.entities.EntityEqualsCondition;
-import rh.preventbuild.conditions.items.HeldItemCondition;
+import rh.preventbuild.api.ConditionRegistry;
+import rh.preventbuild.conditions.basic.AndCondition;
+import rh.preventbuild.conditions.basic.NotCondition;
+import rh.preventbuild.conditions.basic.NullCondition;
+import rh.preventbuild.conditions.basic.OrCondition;
 
-import java.io.*;
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
 
 import static rh.preventbuild.conditions.ConditionCategory.*;
 
@@ -48,7 +47,7 @@ public class ConditionConfig {
     }
 
     public static ConditionConfig getConditionFromConfig(String filename) {
-        LOGGER.info("Reading condition file: {}\\{}.cfg", conditionsDirPath, filename);
+        LOGGER.info("Reading condition file: {}.cfg", conditionsDirPath + "\\" + filename);
         ConditionConfig config = read(conditionsDirPath.resolve( filename + ".cfg"));
         assert config != null;
         LOGGER.info("Successfully read config \"{}\" from file: {}.cfg", config.name, filename);
@@ -56,10 +55,10 @@ public class ConditionConfig {
     }
 
     /**
-     * A function that reads a config file and generates a condition config based on the content.
+     * Reads the config file and generates a condition config based on its content
      *
      * @param  configPath	path to the file containing the configuration
-     * @return         	    the ConditionConfig generated from the config
+     * @return         	    the {@code ConditionConfig} generated from the config
      */
     private static ConditionConfig read(Path configPath) {
         try {
@@ -114,185 +113,18 @@ public class ConditionConfig {
 
     private static ICondition readCondition(ConditionCategory category, String line) {
         line = line.trim();
-        String key = line.substring(0, line.indexOf(":") + 1);
-        String value = line.substring(line.indexOf(":") + 1).trim();
-        if (key.isEmpty())
+        String key, value = "";
+
+        int divIndex = line.indexOf(":");
+        if (divIndex == -1)
             key = line;
-
-        switch (key) { // TODO: Rewrite to some "conditions registry" format
-            case "x:": {
-                String[] values = value.split(",");
-                ICondition[] conditions = new ICondition[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    if (values[i].contains("~")) {
-                        int start = Integer.parseInt(values[i].substring(0, values[i].indexOf("~")).trim());
-                        int end = Integer.parseInt(values[i].substring(values[i].indexOf("~") + 1).trim());
-                        conditions[i] = new XWithinCondition(category, start, end);
-                    } else {
-                        conditions[i] = new XEqualCondition(category, new int[]{Integer.parseInt(values[i].trim())});
-                    }
-                }
-                if (conditions.length == 1)
-                    return conditions[0];
-                return new OrCondition(conditions);
-            }
-            case "y:": {
-                String[] values = value.split(",");
-                ICondition[] conditions = new ICondition[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    if (values[i].contains("~")) {
-                        int start = Integer.parseInt(values[i].substring(0, values[i].indexOf("~")).trim());
-                        int end = Integer.parseInt(values[i].substring(values[i].indexOf("~") + 1).trim());
-                        conditions[i] = new YWithinCondition(category, start, end);
-                    } else {
-                        conditions[i] = new YEqualCondition(category, new int[]{Integer.parseInt(values[i].trim())});
-                    }
-                }
-                if (conditions.length == 1)
-                    return conditions[0];
-                return new OrCondition(conditions);
-            }
-            case "z:": {
-                String[] values = value.split(",");
-                ICondition[] conditions = new ICondition[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    if (values[i].contains("~")) {
-                        int start = Integer.parseInt(values[i].substring(0, values[i].indexOf("~")).trim());
-                        int end = Integer.parseInt(values[i].substring(values[i].indexOf("~") + 1).trim());
-                        conditions[i] = new ZWithinCondition(category, start, end);
-                    } else {
-                        conditions[i] = new ZEqualCondition(category, new int[]{Integer.parseInt(values[i].trim())});
-                    }
-                }
-                if (conditions.length == 1)
-                    return conditions[0];
-                return new OrCondition(conditions);
-            }
-            case "x=:": return new XEqualCondition(category, new int[]{Integer.parseInt(value)});
-            case "y=:": return new YEqualCondition(category, new int[]{Integer.parseInt(value)});
-            case "z=:": return new ZEqualCondition(category, new int[]{Integer.parseInt(value)});
-            case "x>:": return new XAboveCondition(category, Integer.parseInt(value));
-            case "y>:": return new YAboveCondition(category, Integer.parseInt(value));
-            case "z>:": return new ZAboveCondition(category, Integer.parseInt(value));
-            case "x<:": return new XBelowCondition(category, Integer.parseInt(value));
-            case "y<:": return new YBelowCondition(category, Integer.parseInt(value));
-            case "z<:": return new ZBelowCondition(category, Integer.parseInt(value));
-            case "x>=:":
-                return new OrCondition(
-                        new XEqualCondition(category, new int[]{Integer.parseInt(value)}),
-                        new XAboveCondition(category, Integer.parseInt(value))
-                );
-            case "y>=:":
-                return new OrCondition(
-                        new YEqualCondition(category, new int[]{Integer.parseInt(value)}),
-                        new YAboveCondition(category, Integer.parseInt(value))
-                );
-            case "z>=:":
-                return new OrCondition(
-                        new ZEqualCondition(category, new int[]{Integer.parseInt(value)}),
-                        new ZAboveCondition(category, Integer.parseInt(value))
-                );
-            case "x<=:":
-                return new OrCondition(
-                        new XEqualCondition(category, new int[]{Integer.parseInt(value)}),
-                        new XBelowCondition(category, Integer.parseInt(value))
-                );
-            case "y<=:":
-                return new OrCondition(
-                        new YEqualCondition(category, new int[]{Integer.parseInt(value)}),
-                        new YBelowCondition(category, Integer.parseInt(value))
-                );
-            case "z<=:":
-                return new OrCondition(
-                        new ZEqualCondition(category, new int[]{Integer.parseInt(value)}),
-                        new ZBelowCondition(category, Integer.parseInt(value))
-                );
-            case "block:":
-            case "blockAbove:":
-            case "blockBelow:":
-            case "blockAdj:":
-            case "lookingAt:":
-            case "replaceBlock:": {
-                String[] values = value.split(",");
-                List<String> newValues = new ArrayList<>();
-                for (String val : values) {
-                    if (val.startsWith("#")) {
-                        String dictKey = val.substring(1);
-                        newValues.addAll(Arrays.asList(Objects.requireNonNull(PreventBuildConfig.getOreDictionary(dictKey))));
-                    }
-                    else if (!val.contains("."))
-                        newValues.add("block.minecraft." + val);
-                    else
-                        newValues.add(val);
-                }
-                values = newValues.toArray(new String[0]);
-                switch (key) {
-                    case "block:": return new BlockEqualCondition(category, values);
-                    case "blockAbove:": return new BlockAboveCondition(category, values);
-                    case "blockBelow:": return new BlockBelowCondition(category, values);
-                    case "blockAdj:": return new BlockAdjacentCondition(category, values);
-                    case "lookingAt:": return new LookingAtBlockCondition(values);
-                    case "replaceBlock:": return new ReplaceBlockCondition(values);
-                }
-            }
-            case "replaceBlock": return new ReplaceBlockCondition(null);
-            case "item:": {
-                String[] values = value.split(",");
-                List<String> newValues = new ArrayList<>();
-                for (String val : values) {
-                    if (val.startsWith("#")) {
-                        String dictKey = val.substring(1);
-                        newValues.addAll(Arrays.asList(Objects.requireNonNull(PreventBuildConfig.getOreDictionary(dictKey))));
-                    }
-                    else if (!val.contains("."))
-                        newValues.add("item.minecraft." + val);
-                    else
-                        newValues.add(val);
-                }
-                values = newValues.toArray(new String[0]);
-                return new HeldItemCondition(values);
-            }
-            case "stripWood": return new AxeStrippingCondition();
-            case "stripWoodExcept:": {
-                String[] values = value.split(",");
-                for (int i = 0; i < values.length; i++)
-                    if (!values[i].contains("."))
-                        values[i] = "block.minecraft." + values[i];
-                return new AxeStrippingCondition(values);
-            }
-            case "carpetOnCarpet": return new CarpetOnCarpetCondition(category);
-            case "doubleSlab": return new DoubleSlabCondition(category);
-            case "clickThrough": return new ClickThroughCondition(category, 1);
-            case "clickThroughWhen:": {
-                int sneaking_mode = switch (value.trim()) {
-                    case "standing" -> 1;
-                    case "sneaking" -> 2;
-                    default -> 0;
-                };
-                return new ClickThroughCondition(category, sneaking_mode);
-            }
-            case "isSneaking:": return new IsSneakingCondition(Boolean.parseBoolean(value));
-            case "dimension:": return new DimensionCondition(value);
-            case "hand:": return new HandTypeCondition(value);
-            case "entity:": {
-                String[] values = value.split(",");
-                List<String> newValues = new ArrayList<>();
-                for (String val : values) {
-                    if (val.startsWith("#")) {
-                        String dictKey = val.substring(1);
-                        newValues.addAll(Arrays.asList(Objects.requireNonNull(PreventBuildConfig.getOreDictionary(dictKey))));
-                    }
-                    else if (!val.contains("."))
-                        newValues.add("entity.minecraft." + val);
-                    else
-                        newValues.add(val);
-                }
-                values = newValues.toArray(new String[0]);
-                return new EntityEqualsCondition(category,values);
-            }
+        else {
+            key = line.substring(0, divIndex + 1);
+            value = line.substring(divIndex + 1).trim();
+            if (value.isEmpty())
+                throw new IllegalArgumentException("Condition with empty required value: \"" + line + "\"");
         }
-
-        return new NullCondition();
+        return ConditionRegistry.parse(category, key, value);
     }
 
     private static ICondition readLogicalCondition(ConditionCategory category, String[] lines) {
@@ -318,8 +150,8 @@ public class ConditionConfig {
                 String[] condLines = Arrays.copyOfRange(lines, 1, lines.length);
                 for (int i = 0; i < condLines.length; i++) {
                     String param = condLines[i].trim();
-                    while ((param.startsWith("%") || param.startsWith("#")) && i < condLines.length - 1)
-                        param = condLines[++i].trim();
+                    if (param.startsWith("%") || param.startsWith("#"))
+                        continue;
                     if (param.startsWith("and:") || param.startsWith("not:") || param.startsWith("or:")) {
                         String[] newCondString = cutTabLevel(Arrays.copyOfRange(condLines, i, condLines.length));
                         conditions.add(readLogicalCondition(category, newCondString));
@@ -336,6 +168,8 @@ public class ConditionConfig {
                     conditionsRes[i] = conditions.get(i);
                 }
 
+                if (conditionsRes.length == 0)
+                    throw new IllegalArgumentException("Logical condition with zero arguments");
                 if (conditionsRes.length == 1)
                     return conditionsRes[0];
                 if (lines[0].trim().startsWith("and:"))
