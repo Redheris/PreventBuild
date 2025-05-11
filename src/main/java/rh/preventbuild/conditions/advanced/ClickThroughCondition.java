@@ -40,7 +40,7 @@ public class ClickThroughCondition implements ICondition {
     }
 
     @Override
-    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+    public ActionResult useBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         if (sneaking_mode == 1 && player.isSneaking() || sneaking_mode == 2 && !player.isSneaking())
             return ActionResult.PASS;
         BlockState state = player.getWorld().getBlockState(hitResult.getBlockPos());
@@ -63,7 +63,7 @@ public class ClickThroughCondition implements ICondition {
         return ActionResult.PASS;
     }
 
-    public ActionResult check(ConditionCategory category, PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
+    public ActionResult useEntityCheck(ConditionCategory category, PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
         if (category != ConditionCategory.INTERACT_ENTITY)
             return ActionResult.PASS;
         if (sneaking_mode == 1 && player.isSneaking() || sneaking_mode == 2 && !player.isSneaking())

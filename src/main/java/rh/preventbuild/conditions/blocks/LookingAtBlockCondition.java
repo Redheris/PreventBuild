@@ -24,7 +24,7 @@ public class LookingAtBlockCondition implements ICondition {
     }
 
     @Override
-    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
+    public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
         HitResult target = MinecraftClient.getInstance().crosshairTarget;
         assert target != null;
         if (target.getType() != HitResult.Type.BLOCK)

@@ -21,7 +21,7 @@ public class HandTypeCondition implements ICondition {
     }
 
     @Override
-    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
+    public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
         if (hand == this.hand)
             return ActionResult.FAIL;
         return ActionResult.PASS;

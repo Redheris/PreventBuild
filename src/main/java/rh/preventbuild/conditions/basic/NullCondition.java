@@ -18,7 +18,7 @@ public class NullCondition implements ICondition {
     }
 
     @Override
-    public ActionResult check(ConditionCategory category, PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
+    public ActionResult useEntityCheck(ConditionCategory category, PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
         return ActionResult.PASS;
     }
 

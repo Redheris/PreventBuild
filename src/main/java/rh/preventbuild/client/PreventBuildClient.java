@@ -168,10 +168,10 @@ public class PreventBuildClient implements ClientModInitializer {
                 ConditionConfig config = PreventBuildConfig.getConditionConfig(configName);
                 if (config != null && PreventBuildConfig.isConfigEnabled(configName)) {
                     BlockPos pos = hitResult.getBlockPos().offset(hitResult.getSide());
-                    ActionResult resOther = config.getCondition(ConditionCategory.OTHER).check(player, hand, pos.getX(), pos.getY(), pos.getZ(), hitResult);
+                    ActionResult resOther = config.getCondition(ConditionCategory.OTHER).useBlockCheck(player, hand, pos.getX(), pos.getY(), pos.getZ(), hitResult);
                     if (resOther != ActionResult.PASS)
                         return resOther;
-                    ActionResult resPlacing = config.getCondition(ConditionCategory.PLACE).check(player, hand, pos.getX(), pos.getY(), pos.getZ(), hitResult);
+                    ActionResult resPlacing = config.getCondition(ConditionCategory.PLACE).useBlockCheck(player, hand, pos.getX(), pos.getY(), pos.getZ(), hitResult);
                     if (resPlacing != ActionResult.PASS)
                         return resPlacing;
                 }
@@ -187,10 +187,10 @@ public class PreventBuildClient implements ClientModInitializer {
             for (String configName : PreventBuildConfig.getConfigsList().keySet()) {
                 ConditionConfig config = PreventBuildConfig.getConditionConfig(configName);
                 if (config != null && PreventBuildConfig.isConfigEnabled(configName)) {
-                    ActionResult resOther = config.getCondition(ConditionCategory.OTHER).check(player, hand, pos.getX(), pos.getY(), pos.getZ());
+                    ActionResult resOther = config.getCondition(ConditionCategory.OTHER).attackBlockCheck(player, hand, pos.getX(), pos.getY(), pos.getZ());
                     if (resOther != ActionResult.PASS)
                         return resOther;
-                    ActionResult resBreaking = config.getCondition(ConditionCategory.BREAK).check(player, hand, pos.getX(), pos.getY(), pos.getZ());
+                    ActionResult resBreaking = config.getCondition(ConditionCategory.BREAK).attackBlockCheck(player, hand, pos.getX(), pos.getY(), pos.getZ());
                     if (resBreaking != ActionResult.PASS)
                         return resBreaking;
                 }
@@ -207,7 +207,7 @@ public class PreventBuildClient implements ClientModInitializer {
                 if (config != null && PreventBuildConfig.isConfigEnabled(configName)) {
                     ICondition condition = config.getCondition(ConditionCategory.INTERACT_ENTITY);
                     if (!(condition instanceof NullCondition)) {
-                        ActionResult res = condition.check(ConditionCategory.INTERACT_ENTITY, player, world, hand, entity, hitResult);
+                        ActionResult res = condition.useEntityCheck(ConditionCategory.INTERACT_ENTITY, player, world, hand, entity, hitResult);
                         if (res != ActionResult.PASS)
                             return res;
                     }
@@ -225,7 +225,7 @@ public class PreventBuildClient implements ClientModInitializer {
                 if (config != null && PreventBuildConfig.isConfigEnabled(configName)) {
                     ICondition condition = config.getCondition(ConditionCategory.ATTACK_ENTITY);
                     if (!(condition instanceof NullCondition)) {
-                        ActionResult res = condition.check(ConditionCategory.ATTACK_ENTITY, player, world, hand, entity, hitResult);
+                        ActionResult res = condition.useEntityCheck(ConditionCategory.ATTACK_ENTITY, player, world, hand, entity, hitResult);
                         if (res != ActionResult.PASS)
                             return res;
                     }

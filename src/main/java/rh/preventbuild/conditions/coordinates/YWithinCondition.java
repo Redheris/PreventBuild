@@ -23,7 +23,7 @@ public class YWithinCondition implements ICondition {
     }
 
     @Override
-    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
+    public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
         return y_start <= y && y <= y_end ? ActionResult.FAIL : ActionResult.PASS;
     }
 }

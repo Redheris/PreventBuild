@@ -21,7 +21,7 @@ public class YBelowCondition implements ICondition {
     }
 
     @Override
-    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
+    public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
         return y < this.y ? ActionResult.FAIL : ActionResult.PASS;
     }
 

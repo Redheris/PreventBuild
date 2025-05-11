@@ -25,7 +25,7 @@ public class AndCondition implements ICondition {
     }
 
     @Override
-    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
+    public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
         for (ICondition condition : nestedConditions) {
             ActionResult res = ConditionHandler.checkCondition(condition, player, hand, BlockPos.ofFloored(x, y, z));
             if (res == ActionResult.PASS)
@@ -35,7 +35,7 @@ public class AndCondition implements ICondition {
     }
 
     @Override
-    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+    public ActionResult useBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         for (ICondition condition : nestedConditions) {
             ActionResult res = ConditionHandler.checkCondition(condition, player, hand, hitResult);
             if (res == ActionResult.PASS)
@@ -45,9 +45,9 @@ public class AndCondition implements ICondition {
     }
 
     @Override
-    public ActionResult check(ConditionCategory category, PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
+    public ActionResult useEntityCheck(ConditionCategory category, PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
         for (ICondition condition : nestedConditions) {
-            ActionResult res = condition.check(category, player, world, hand, entity, hitResult);
+            ActionResult res = condition.useEntityCheck(category, player, world, hand, entity, hitResult);
             if (res != ActionResult.SUCCESS)
                 return res;
         }

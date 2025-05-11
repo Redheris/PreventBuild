@@ -24,7 +24,7 @@ public class YEqualsCondition implements ICondition {
     }
 
     @Override
-    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
+    public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
         return Arrays.stream(this.y).anyMatch(i -> i == y) ? ActionResult.FAIL : ActionResult.PASS;
     }
 

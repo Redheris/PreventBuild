@@ -17,7 +17,7 @@ public class ConditionHandler {
      * @return          the result of the condition check
      */
     public static ActionResult checkCondition(ICondition condition, PlayerEntity player, Hand hand, BlockPos pos) {
-        return condition.check(player, hand, pos.getX(), pos.getY(), pos.getZ());
+        return condition.attackBlockCheck(player, hand, pos.getX(), pos.getY(), pos.getZ());
     }
     /**
      * Checking the condition for placing a block with coordinate offset to the block that was clicked.
@@ -29,6 +29,6 @@ public class ConditionHandler {
      */
     public static ActionResult checkCondition(ICondition condition, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
         BlockPos pos = hitResult.getBlockPos().offset(hitResult.getSide());
-        return condition.check(player, hand, pos.getX(), pos.getY(), pos.getZ(), hitResult);
+        return condition.useBlockCheck(player, hand, pos.getX(), pos.getY(), pos.getZ(), hitResult);
     }
 }

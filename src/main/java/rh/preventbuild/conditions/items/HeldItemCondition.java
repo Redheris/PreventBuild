@@ -21,7 +21,7 @@ public class HeldItemCondition implements ICondition {
     }
 
     @Override
-    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
+    public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
         String itemName = player.getStackInHand(hand).getItem().getTranslationKey();
         if (Arrays.stream(this.items).anyMatch(i -> i.equalsIgnoreCase(itemName)))
             return ActionResult.FAIL;

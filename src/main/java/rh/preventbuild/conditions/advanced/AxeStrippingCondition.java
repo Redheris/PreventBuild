@@ -32,7 +32,7 @@ public class AxeStrippingCondition implements ICondition {
     }
 
     @Override
-    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+    public ActionResult useBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         Block lookingAt = player.getWorld().getBlockState(hitResult.getBlockPos()).getBlock();
         if (blacklist != null && Arrays.stream(blacklist).anyMatch(i -> i.equalsIgnoreCase(lookingAt.getTranslationKey()))) {
             return ActionResult.PASS;

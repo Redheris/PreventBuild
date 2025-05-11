@@ -23,7 +23,7 @@ public class CarpetOnCarpetCondition implements ICondition {
     }
 
     @Override
-    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+    public ActionResult useBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         Block block = player.getWorld().getBlockState(new BlockPos(x, y - 1, z)).getBlock();
         if (block instanceof CarpetBlock)
             return ActionResult.FAIL;

@@ -26,7 +26,7 @@ public class DoubleSlabCondition implements ICondition {
     }
 
     @Override
-    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z) {
+    public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
         BlockState blockState = player.getWorld().getBlockState(new BlockPos(x, y, z));
         if (blockState.getBlock() instanceof SlabBlock && blockState.get(SlabBlock.TYPE) == SlabType.DOUBLE)
             return ActionResult.FAIL;
@@ -34,7 +34,7 @@ public class DoubleSlabCondition implements ICondition {
     }
 
     @Override
-    public ActionResult check(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+    public ActionResult useBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         BlockState blockState = player.getWorld().getBlockState(new BlockPos(x, y, z));
         Block heldBlock = Block.getBlockFromItem(player.getStackInHand(hand).getItem());
         if (heldBlock instanceof SlabBlock) {
