@@ -3,11 +3,14 @@
   "id": "preventbuild",
   "version": "${version}",
   "name": "PreventBuild",
-  "description": "A simple but flexible client-side mod that will help you prevent some unwanted actions on your part",
+  "description": "A simple but flexible mod that prevents unwanted player actions described in the custom configs",
   "authors": [
     "Redheris"
   ],
-  "contact": {},
+  "contact": {
+    "sources": "https://github.com/Redheris/PreventBuild",
+    "homepage": "https://modrinth.com/project/VYOvHxMm"
+  },
   "license": "MIT",
   "icon": "assets/preventbuild/icon.png",
   "environment": "client",

@@ -1,4 +1,5 @@
 {
+  "modmenu.descriptionTranslation.preventbuild": "Простой, но гибкий мод, предотвращающий нежелательные действия игрока, описанные в пользовательских конфигах",
   "preventbuild.command_with_no_arguments": "§cВызван /pb без аргументов",
   "preventbuild.help_line_1": "§aPreventBuild commands:",
   "preventbuild.help_line_2": "/pb help - вывести список команд",
