@@ -21,31 +21,31 @@ public class Conditions {
         ConditionRegistry.register("x:", XEqualsCondition::parse);
         ConditionRegistry.register("y:", YEqualsCondition::parse);
         ConditionRegistry.register("z:", ZEqualsCondition::parse);
-        ConditionRegistry.register("x=:", (category, value) ->
+        ConditionRegistry.register("x=", (category, value) ->
                 new XEqualsCondition(category, new int[]{Integer.parseInt(value)})
         );
-        ConditionRegistry.register("y=:", (category, value) ->
+        ConditionRegistry.register("y=", (category, value) ->
                 new YEqualsCondition(category, new int[]{Integer.parseInt(value)})
         );
-        ConditionRegistry.register("z=:", (category, value) ->
+        ConditionRegistry.register("z=", (category, value) ->
                 new ZEqualsCondition(category, new int[]{Integer.parseInt(value)})
         );
-        ConditionRegistry.register("x>:", (category, value) ->
+        ConditionRegistry.register("x>", (category, value) ->
                 new XAboveCondition(category, Integer.parseInt(value))
         );
-        ConditionRegistry.register("y>:", (category, value) ->
+        ConditionRegistry.register("y>", (category, value) ->
                 new YAboveCondition(category, Integer.parseInt(value))
         );
-        ConditionRegistry.register("z>:", (category, value) ->
+        ConditionRegistry.register("z>", (category, value) ->
                 new ZAboveCondition(category, Integer.parseInt(value))
         );
-        ConditionRegistry.register("x<:", (category, value) ->
+        ConditionRegistry.register("x<", (category, value) ->
                 new XBelowCondition(category, Integer.parseInt(value))
         );
-        ConditionRegistry.register("y<:", (category, value) ->
+        ConditionRegistry.register("y<", (category, value) ->
                 new YBelowCondition(category, Integer.parseInt(value))
         );
-        ConditionRegistry.register("z<:", (category, value) ->
+        ConditionRegistry.register("z<", (category, value) ->
                 new ZBelowCondition(category, Integer.parseInt(value))
         );
         ConditionRegistry.register("x>=", (category, value) ->
