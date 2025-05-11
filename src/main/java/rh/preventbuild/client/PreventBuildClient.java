@@ -16,6 +16,7 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -45,34 +46,51 @@ public class PreventBuildClient implements ClientModInitializer {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             final LiteralCommandNode<FabricClientCommandSource> pbNode = dispatcher.register(ClientCommandManager.literal("pb")
                     .executes(context -> {
-                        context.getSource().getPlayer().sendMessage(Text.literal("§cВызван /pb без аргументов"), false);
+                        context.getSource().getPlayer().sendMessage(
+                                Text.translatable("preventbuild.command_with_no_arguments").withColor(Colors.LIGHT_RED),
+                                false);
                         return 1;
                     })
                     .then(literal("help")
                             .executes(context -> {
-                                context.getSource().getPlayer().sendMessage(Text.literal("§aPreventBuild commands:"), false);
-                                context.getSource().getPlayer().sendMessage(Text.literal("/pb help - вывести список команд"), false);
-                                context.getSource().getPlayer().sendMessage(Text.literal("/pb config list - вывести список конфигов"), false);
-                                context.getSource().getPlayer().sendMessage(Text.literal("/pb config load <name> - обновить конфиг name"), false);
-                                context.getSource().getPlayer().sendMessage(Text.literal("/pb config switch <name> - включить/выключить конфиг name"), false);
-                                context.getSource().getPlayer().sendMessage(Text.literal("/pb config update - обновить список конфигов"), false);
+                                context.getSource().getPlayer().sendMessage(
+                                        Text.translatable("preventbuild.help_line_1"),
+                                        false);
+                                context.getSource().getPlayer().sendMessage(
+                                        Text.translatable("preventbuild.help_line_2"),
+                                        false);
+                                context.getSource().getPlayer().sendMessage(
+                                        Text.translatable("preventbuild.help_line_3"),
+                                        false);
+                                context.getSource().getPlayer().sendMessage(
+                                        Text.translatable("preventbuild.help_line_4"),
+                                        false);
+                                context.getSource().getPlayer().sendMessage(
+                                        Text.translatable("preventbuild.help_line_5"),
+                                        false);
                                 return 1;
                             })
                     )
                     .then(literal("config")
                             .executes(context -> {
-                                context.getSource().getPlayer().sendMessage(Text.literal("§3Напишите /rh help для получения списка команд"), false);
+                                context.getSource().getPlayer().sendMessage(
+                                        Text.translatable("preventbuild.config_without_arguments"),
+                                        false);
                                 return 1;
                             })
                             .then(literal("list")
                                     .executes(context -> {
                                         Map<String, Boolean> configs = PreventBuildConfig.getConfigsList();
                                         if (configs.isEmpty()) {
-                                            context.getSource().getPlayer().sendMessage(Text.literal("§3Не найдено конфигов"), false);
+                                            context.getSource().getPlayer().sendMessage(
+                                                    Text.translatable("preventbuild.no_configs_found"),
+                                                    false);
                                         }
                                         for (String config : configs.keySet()) {
-                                            context.getSource().getPlayer().sendMessage(Text.literal(
-                                                    "§3\"" + config + "\" : " + (configs.get(config) ? "§aактивен" : "§cнеактивен")),
+                                            boolean isActive = configs.get(config);
+                                            context.getSource().getPlayer().sendMessage(
+                                                    Text.literal("§3\"" + config + "\": ").append(
+                                                    Text.translatable(isActive ? "preventbuild.config_is_active" : "preventbuild.config_is_inactive")),
                                                     false
                                             );
                                         }
@@ -91,18 +109,19 @@ public class PreventBuildClient implements ClientModInitializer {
                                                 String name = context.getArgument("name", String.class).replace("_", " ");
                                                 if (PreventBuildConfig.switchConfigEnabled(name) == -1) {
                                                     context.getSource().getPlayer().sendMessage(
-                                                            Text.literal("§3Конфиг \"" + name + "\" не найден"),
+                                                            Text.translatable("preventbuild.config_not_found", name)
+                                                                    .withColor(Colors.LIGHT_RED),
                                                             false);
                                                     return 0;
                                                 }
                                                 if (PreventBuildConfig.isConfigEnabled(name))
                                                     context.getSource().getPlayer().sendMessage(
-                                                            Text.literal("§3Конфиг \"" + name + "\" теперь §aактивен"),
+                                                            Text.translatable("preventbuild.config_is_turned_on", name),
                                                             true
                                                     );
                                                 else
                                                     context.getSource().getPlayer().sendMessage(
-                                                            Text.literal("§3Конфиг \"" + name + "\" теперь §cнеактивен"),
+                                                            Text.translatable("preventbuild.config_is_turned_off", name),
                                                             true
                                                     );
                                                 return 1;
@@ -114,7 +133,7 @@ public class PreventBuildClient implements ClientModInitializer {
                                         boolean loadOreDict = PreventBuildConfig.loadOreDictionary();
                                         if (!loadOreDict) {
                                             context.getSource().getPlayer().sendMessage(
-                                                    Text.literal("§cОшибка при загрузке словаря руд"),
+                                                    Text.translatable("preventbuild.oredict_load_error"),
                                                     false
                                             );
                                             return 0;
@@ -122,13 +141,15 @@ public class PreventBuildClient implements ClientModInitializer {
                                         boolean loadConditions = PreventBuildConfig.loadConditionConfigs();
                                         if (!loadConditions) {
                                             context.getSource().getPlayer().sendMessage(
-                                                    Text.literal("§cОшибка при загрузке конфигов"),
+                                                    Text.translatable("preventbuild.configs_load_error"),
                                                     false
                                             );
                                             return 0;
                                         }
 
-                                        context.getSource().getPlayer().sendMessage(Text.literal("§3Конфиги обновлены"), true);
+                                        context.getSource().getPlayer().sendMessage(
+                                                Text.translatable("preventbuild.configs_updated"),
+                                                true);
 
                                         return 1;
                                     })

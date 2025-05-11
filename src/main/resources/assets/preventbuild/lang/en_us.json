@@ -1,32 +1,18 @@
 {
-	"category.preventbuild": "Prevent Build",
-	"key.preventbuild.openConfigScreen": "Open config screen",
-	"key.preventbuild.toggleMod": "Toggle mod",
-	"key.preventbuild.addCurrentBreakY": "§7Add current to §fbreaking §7block list",
-	"key.preventbuild.addCurrentPlaceY": "§7Add current to §fplacing §7block list",
-	"key.preventbuild.keyBind_addCurrentPlaceY": "§7Add current Y-coord to §fplacing §7block list",
-
-	"text.autoconfig.preventbuild.title": "PreventBuild",
-	"text.autoconfig.preventbuild.option.enabled": "§7Prevent anything (Enable mod)",
-	"text.autoconfig.preventbuild.option.blockCarpets": "§7Prevent §fplacing §7carpet-like blocks on carpets",
-	"text.autoconfig.preventbuild.option.blockStripping": "§fStripping §7any logs and wood",
-	"text.autoconfig.preventbuild.option.doBlockBreakY": "§7Prevent §fbreaking §7on heights",
-	"text.autoconfig.preventbuild.option.breakY": "§7Y-coordinates on which §fbreaking §7is preventing:",
-	"text.autoconfig.preventbuild.option.doBlockPlaceY": "§7Prevent §fplacing §7on heights",
-	"text.autoconfig.preventbuild.option.placeY": "§7Y-coordinates on which §fplacing §7is preventing:",
-	"text.autoconfig.preventbuild.option.blockBreakBlocks": "§fBreaking §7of listed blocks",
-	"text.autoconfig.preventbuild.option.breakBlocks": "§7Blocks which §fplacing §7is preventing:",
-
-	"text.autoconfig.preventbuild.option.breakY.@Tooltip": "§7Example: §f0,4,10,-3,20",
-	"text.autoconfig.preventbuild.option.placeY.@Tooltip": "§7Example: §f0,4,10,-3,20",
-	"text.autoconfig.preventbuild.option.breakBlocks.@Tooltip": "§7Example: §fminecraft:stone,oak_planks,minecraft:warped_stem,",
-
-	"preventbuild.togglemod.true": "§7Mod turned §aon",
-	"preventbuild.togglemod.false": "§7Mod turned §coff",
-	"preventbuild.exception.incorrect_list_format": "§cIncorrect format in §7%d §cin config",
-
-	"title.examplemod.config": "PreventBuild",
-
-	"preventbuild.add_to_break_list": "§7Height §a%d §7was added to preventing breaking list",
-	"preventbuild.add_to_place_list": "§7Height §a%d §7was added to preventing placing list"
+	"preventbuild.command_with_no_arguments": "Called /pb without arguments",
+	"preventbuild.help_line_1": "§aPreventBuild commands:",
+	"preventbuild.help_line_2": "/pb help - display a list of commands",
+	"preventbuild.help_line_3": "/pb config list - display a list of configs",
+	"preventbuild.help_line_4": "/pb config switch <name> - enable/disable config by name",
+	"preventbuild.help_line_5": "/pb config update - reload all configs",
+	"preventbuild.config_without_arguments": "§3Type /rh help to see a list of commands",
+	"preventbuild.no_configs_found": "§3No configs found",
+	"preventbuild.config_is_active": "§aenabled",
+	"preventbuild.config_is_inactive": "§cdisabled",
+	"preventbuild.config_not_found": "Config \"%s\" not found",
+	"preventbuild.config_is_turned_on": "§3Config \"%s§3\" is now §aenabled",
+	"preventbuild.config_is_turned_off": "§3Config \"%s§3\" is now §cdisabled",
+	"preventbuild.oredict_load_error": "§cError loading ore dictionary",
+	"preventbuild.configs_load_error": "§cError loading configs",
+	"preventbuild.configs_updated": "§3Configs updated"
 }

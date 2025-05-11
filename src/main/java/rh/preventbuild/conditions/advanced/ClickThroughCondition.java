@@ -6,7 +6,6 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -50,7 +49,7 @@ public class ClickThroughCondition implements ICondition {
             Direction signFacingOpposite = state.get(WallSignBlock.FACING).getOpposite();
             BlockPos pos = hitResult.getBlockPos().offset(signFacingOpposite);
             Block block = player.getWorld().getBlockState(pos).getBlock();
-            if (block instanceof ChestBlock || block instanceof CraftingTableBlock || block instanceof AbstractFurnaceBlock
+            if (block instanceof AbstractChestBlock || block instanceof CraftingTableBlock || block instanceof AbstractFurnaceBlock
                     || block instanceof ShulkerBoxBlock || INTERACTION_BLOCKS.contains(block)) {
                 Vec3d chestPos = new Vec3d(pos.getX(), pos.getY(), pos.getZ());
                 Direction hitDirection = state.get(WallSignBlock.FACING);
@@ -73,7 +72,7 @@ public class ClickThroughCondition implements ICondition {
             Direction frameFacingMirror = entity.getHorizontalFacing().getOpposite();
             BlockPos pos = entity.getBlockPos().offset(frameFacingMirror);
             Block block = world.getBlockState(pos).getBlock();
-            if (block instanceof ChestBlock || block instanceof CraftingTableBlock || block instanceof AbstractFurnaceBlock
+            if (block instanceof AbstractChestBlock || block instanceof CraftingTableBlock || block instanceof AbstractFurnaceBlock
                     || block instanceof ShulkerBoxBlock || INTERACTION_BLOCKS.contains(block)) {
                 Vec3d chestPos = new Vec3d(pos.getX(), pos.getY(), pos.getZ());
                 Direction hitDirection = entity.getHorizontalFacing();
@@ -87,8 +86,6 @@ public class ClickThroughCondition implements ICondition {
     }
     static {
         INTERACTION_BLOCKS = new ArrayList<>(Arrays.asList(
-                Blocks.ENDER_CHEST,
-                Blocks.SHULKER_BOX,
                 Blocks.BARREL,
                 Blocks.DISPENSER,
                 Blocks.DROPPER,
