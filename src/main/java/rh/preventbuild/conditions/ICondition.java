@@ -11,24 +11,31 @@ import net.minecraft.world.World;
 public interface ICondition {
     ConditionCategory getCategory();
     /**
-     * Checking of left-clicking a block action
+     * Checking the action of left-clicking a block
      */
     default ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
         return ActionResult.PASS;
     }
 
     /**
-     * Checking of right-clicking a block action
+     * Checking the action of right-clicking a block
      */
     default ActionResult useBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         return attackBlockCheck(player, hand, x, y, z);
     }
 
     /**
-     * Checking of left- and right-clicking an entity action
+     * Checking the action of right-clicking an entity
      */
-    default ActionResult useEntityCheck(ConditionCategory category, PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
+    default ActionResult useEntityCheck(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
         return attackBlockCheck(player, hand, entity.getBlockX(), entity.getBlockY(), entity.getBlockZ());
+    }
+
+    /**
+     * Checking the action of left-clicking an entity
+     */
+    default ActionResult attackEntityCheck(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
+        return useEntityCheck(player, world, hand, entity, hitResult);
     }
 
     /**

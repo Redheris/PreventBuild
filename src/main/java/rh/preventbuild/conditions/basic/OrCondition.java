@@ -25,16 +25,6 @@ public class OrCondition implements ICondition {
     }
 
     @Override
-    public ActionResult useEntityCheck(ConditionCategory category, PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
-        for (ICondition condition : nestedConditions) {
-            ActionResult res = condition.useEntityCheck(category, player, world, hand, entity, hitResult);
-            if (res != ActionResult.PASS)
-                return res;
-        }
-        return ActionResult.PASS;
-    }
-
-    @Override
     public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
         for (ICondition condition : nestedConditions) {
             ActionResult res = ConditionHandler.checkCondition(condition, player, hand, BlockPos.ofFloored(x, y, z));
@@ -43,6 +33,7 @@ public class OrCondition implements ICondition {
         }
         return ActionResult.PASS;
     }
+
     @Override
     public ActionResult useBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         for (ICondition condition : nestedConditions) {
@@ -52,6 +43,27 @@ public class OrCondition implements ICondition {
         }
         return ActionResult.PASS;
     }
+
+    @Override
+    public ActionResult useEntityCheck(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
+        for (ICondition condition : nestedConditions) {
+            ActionResult res = condition.useEntityCheck(player, world, hand, entity, hitResult);
+            if (res != ActionResult.PASS)
+                return res;
+        }
+        return ActionResult.PASS;
+    }
+
+    @Override
+    public ActionResult attackEntityCheck(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
+        for (ICondition condition : nestedConditions) {
+            ActionResult res = condition.attackEntityCheck(player, world, hand, entity, hitResult);
+            if (res != ActionResult.PASS)
+                return res;
+        }
+        return ActionResult.PASS;
+    }
+
     @Override
     public String getString(int tabs) {
         StringBuilder str = new StringBuilder("|\t".repeat(tabs) + "or:");

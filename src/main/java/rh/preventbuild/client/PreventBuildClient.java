@@ -207,7 +207,7 @@ public class PreventBuildClient implements ClientModInitializer {
                 if (config != null && PreventBuildConfig.isConfigEnabled(configName)) {
                     ICondition condition = config.getCondition(ConditionCategory.INTERACT_ENTITY);
                     if (!(condition instanceof NullCondition)) {
-                        ActionResult res = condition.useEntityCheck(ConditionCategory.INTERACT_ENTITY, player, world, hand, entity, hitResult);
+                        ActionResult res = condition.useEntityCheck(player, world, hand, entity, hitResult);
                         if (res != ActionResult.PASS)
                             return res;
                     }
@@ -225,7 +225,7 @@ public class PreventBuildClient implements ClientModInitializer {
                 if (config != null && PreventBuildConfig.isConfigEnabled(configName)) {
                     ICondition condition = config.getCondition(ConditionCategory.ATTACK_ENTITY);
                     if (!(condition instanceof NullCondition)) {
-                        ActionResult res = condition.useEntityCheck(ConditionCategory.ATTACK_ENTITY, player, world, hand, entity, hitResult);
+                        ActionResult res = condition.useEntityCheck(player, world, hand, entity, hitResult);
                         if (res != ActionResult.PASS)
                             return res;
                     }

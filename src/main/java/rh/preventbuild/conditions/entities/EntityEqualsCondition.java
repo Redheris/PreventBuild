@@ -26,7 +26,7 @@ public class EntityEqualsCondition implements ICondition {
     }
 
     @Override
-    public ActionResult useEntityCheck(ConditionCategory category, PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
+    public ActionResult useEntityCheck(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
         String entityName = entity.getType().getTranslationKey();
         if (Arrays.stream(this.entities).anyMatch(i -> i.equalsIgnoreCase(entityName)))
             return ActionResult.FAIL;

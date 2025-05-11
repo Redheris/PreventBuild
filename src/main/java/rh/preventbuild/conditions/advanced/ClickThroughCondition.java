@@ -63,9 +63,7 @@ public class ClickThroughCondition implements ICondition {
         return ActionResult.PASS;
     }
 
-    public ActionResult useEntityCheck(ConditionCategory category, PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
-        if (category != ConditionCategory.INTERACT_ENTITY)
-            return ActionResult.PASS;
+    public ActionResult useEntityCheck(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
         if (sneaking_mode == 1 && player.isSneaking() || sneaking_mode == 2 && !player.isSneaking())
             return ActionResult.PASS;
         if (entity instanceof ItemFrameEntity) {
