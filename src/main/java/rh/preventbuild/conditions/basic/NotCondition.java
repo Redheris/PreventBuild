@@ -26,7 +26,7 @@ public class NotCondition implements ICondition {
     @Override
     public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
         ActionResult res = ConditionHandler.checkCondition(nestedCondition, player, hand, BlockPos.ofFloored(x, y, z));
-        if (res != ActionResult.PASS)
+        if (res == ActionResult.PASS)
             return ActionResult.FAIL;
         return ActionResult.PASS;
 
@@ -50,16 +50,16 @@ public class NotCondition implements ICondition {
 
     @Override
     public ActionResult useEntityCheck(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
-        if (nestedCondition.useEntityCheck(player, world, hand, entity, hitResult) != ActionResult.PASS)
-            return ActionResult.PASS;
-        return ActionResult.FAIL;
+        if (nestedCondition.useEntityCheck(player, world, hand, entity, hitResult) == ActionResult.PASS)
+            return ActionResult.FAIL;
+        return ActionResult.PASS;
     }
 
     @Override
     public ActionResult attackEntityCheck(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
-        if (nestedCondition.attackEntityCheck(player, world, hand, entity, hitResult) != ActionResult.PASS)
-            return ActionResult.PASS;
-        return ActionResult.FAIL;
+        if (nestedCondition.attackEntityCheck(player, world, hand, entity, hitResult) == ActionResult.PASS)
+            return ActionResult.FAIL;
+        return ActionResult.PASS;
     }
 
     @Override
