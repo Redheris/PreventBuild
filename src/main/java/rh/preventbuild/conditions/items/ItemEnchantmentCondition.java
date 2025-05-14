@@ -15,21 +15,19 @@ import java.util.Set;
 public class ItemEnchantmentCondition implements ICondition {
     private final String enchantmentId;
     private final int enchantmentLevel;
-    private final ConditionCategory category;
 
-    public ItemEnchantmentCondition (ConditionCategory category, String enchantmentId, int enchantmentLevel) {
-        this.category = category;
+    public ItemEnchantmentCondition (String enchantmentId, int enchantmentLevel) {
         this.enchantmentId = enchantmentId;
         this.enchantmentLevel = enchantmentLevel;
     }
 
-    public ItemEnchantmentCondition (ConditionCategory category,String enchantmentId) {
-        this(category, enchantmentId, -1);
+    public ItemEnchantmentCondition (String enchantmentId) {
+        this(enchantmentId, -1);
     }
 
     @Override
     public ConditionCategory getCategory() {
-        return this.category;
+        return ConditionCategory.OTHER;
     }
 
     @Override

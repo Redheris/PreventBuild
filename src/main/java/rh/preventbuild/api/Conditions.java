@@ -7,6 +7,7 @@ import rh.preventbuild.conditions.blocks.*;
 import rh.preventbuild.conditions.coordinates.*;
 import rh.preventbuild.conditions.entities.EntityEqualsCondition;
 import rh.preventbuild.conditions.items.HeldItemCondition;
+import rh.preventbuild.conditions.items.ItemCustomNameCondition;
 import rh.preventbuild.conditions.items.ItemEnchantmentCondition;
 
 import java.util.ArrayList;
@@ -118,9 +119,12 @@ public class Conditions {
             if (!val[0].contains(":"))
                 val[0] = "minecraft:" + val[0];
             if (val.length == 2)
-                return new ItemEnchantmentCondition(category, val[0], Integer.parseInt(val[1]));
-            return new ItemEnchantmentCondition(category, val[0]);
+                return new ItemEnchantmentCondition(val[0], Integer.parseInt(val[1]));
+            return new ItemEnchantmentCondition(val[0]);
         }));
+        ConditionRegistry.register("customName:", (category, value) ->
+                new ItemCustomNameCondition(value)
+        );
 
         // Advanced
 
