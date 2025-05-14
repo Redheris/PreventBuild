@@ -118,17 +118,6 @@ public class Conditions {
         ConditionRegistry.register("doubleSlab", (category, value) ->
                 new DoubleSlabCondition(category)
         );
-        ConditionRegistry.register("clickThrough", (category, value) ->
-                new ClickThroughCondition(category, 1)
-        );
-        ConditionRegistry.register("clickThroughWhen:", (category, value) -> {
-                int sneaking_mode = switch (value.trim()) {
-                    case "standing" -> 1;
-                    case "sneaking" -> 2;
-                    default -> 0;
-                };
-                return new ClickThroughCondition(category, sneaking_mode);
-        });
         ConditionRegistry.register("isSneaking:", (category, value) ->
                 new IsSneakingCondition(Boolean.parseBoolean(value))
         );
