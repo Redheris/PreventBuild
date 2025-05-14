@@ -79,8 +79,11 @@ public class ConditionConfig {
                 int tabLevel = getTabLevel(configLines[i]);
                 String line = configLines[i].trim();
                 if (tabLevel == 0) {
-                    if (line.startsWith("name:"))
+                    if (line.startsWith("name:")) {
+                        if (line.contains("_"))
+                            throw new IllegalArgumentException("Configuration name must not contain \"_\" characters");
                         configurationName = line.substring(5).trim();
+                    }
                 }
                 else {
                     String[] configPart = cutTabLevel(Arrays.copyOfRange(configLines, i - 1, configLines.length));
