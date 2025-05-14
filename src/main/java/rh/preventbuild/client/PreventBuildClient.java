@@ -13,7 +13,9 @@ import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Colors;
@@ -164,6 +166,13 @@ public class PreventBuildClient implements ClientModInitializer {
             if (!player.getWorld().isClient)
                 return ActionResult.PASS;
 
+            BlockState state = world.getBlockState(hitResult.getBlockPos());
+            ActionResult interactCheck = state.onUse(world, player, hitResult);
+            if (!(player.isSneaking()) && interactCheck != ActionResult.PASS)
+                return ActionResult.SUCCESS;
+            if (!(player.getStackInHand(hand).getItem() instanceof BlockItem))
+                return ActionResult.PASS;
+
             for (String configName : PreventBuildConfig.getConfigsList().keySet()) {
                 ConditionConfig config = PreventBuildConfig.getConditionConfig(configName);
                 if (config != null && PreventBuildConfig.isConfigEnabled(configName)) {
@@ -176,6 +185,7 @@ public class PreventBuildClient implements ClientModInitializer {
                         return resPlacing;
                 }
             }
+
             return ActionResult.PASS;
         });
 
