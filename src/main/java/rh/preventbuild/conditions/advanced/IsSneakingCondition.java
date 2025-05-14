@@ -21,7 +21,7 @@ public class IsSneakingCondition implements ICondition {
     @Override
     public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
         if (player.isSneaking() == is_sneaking)
-            return ActionResult.PASS;
+            return ActionResult.FAIL;
         return ActionResult.PASS;
     }
 }
