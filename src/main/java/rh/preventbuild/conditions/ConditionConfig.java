@@ -81,7 +81,7 @@ public class ConditionConfig {
                 if (tabLevel == 0) {
                     if (line.startsWith("name:")) {
                         if (line.contains("_"))
-                            throw new IllegalArgumentException("Configuration name must not contain \"_\" characters");
+                            throw new IllegalArgumentException("Configuration names must not contain '_' characters");
                         configurationName = line.substring(5).trim();
                     }
                 }
@@ -142,7 +142,7 @@ public class ConditionConfig {
             case "not:": {
                 String nextLine = lines[1].trim();
                 int indWithoutComms = 1;
-                while ((nextLine.startsWith("%") || nextLine.startsWith("#")) && indWithoutComms < lines.length - 1) {
+                while ((nextLine.isBlank() || nextLine.startsWith("%") || nextLine.startsWith("#")) && indWithoutComms < lines.length - 1) {
                     nextLine = lines[++indWithoutComms].trim();
                 }
                 if (nextLine.startsWith("and:") || nextLine.startsWith("not:") || nextLine.startsWith("or:"))
@@ -161,7 +161,7 @@ public class ConditionConfig {
                 String[] condLines = Arrays.copyOfRange(lines, 1, lines.length);
                 for (int i = 0; i < condLines.length; i++) {
                     String param = condLines[i].trim();
-                    if (param.startsWith("%") || param.startsWith("#"))
+                    if (param.isBlank() || param.startsWith("%") || param.startsWith("#"))
                         continue;
                     if (param.startsWith("and:") || param.startsWith("not:") || param.startsWith("or:")) {
                         String[] newCondString = cutTabLevel(Arrays.copyOfRange(condLines, i, condLines.length));
@@ -225,7 +225,8 @@ public class ConditionConfig {
         ArrayList<String> res = new ArrayList<>();
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
-            if (line.trim().startsWith("#") || line.trim().startsWith("%")) {
+            String lineTrim = line.trim();
+            if (lineTrim.isEmpty() || lineTrim.startsWith("#") || lineTrim.startsWith("%")) {
                 res.add(line);
                 continue;
             }
