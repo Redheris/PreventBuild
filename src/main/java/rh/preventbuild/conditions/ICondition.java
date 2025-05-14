@@ -25,6 +25,13 @@ public interface ICondition {
     }
 
     /**
+     * Checking the action of using an item
+     */
+    default ActionResult useItemCheck(PlayerEntity player, World world, Hand hand) {
+        return attackBlockCheck(player, hand, player.getBlockX(), player.getBlockY(), player.getBlockZ());
+    }
+
+    /**
      * Checking the action of right-clicking an entity
      */
     default ActionResult useEntityCheck(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {

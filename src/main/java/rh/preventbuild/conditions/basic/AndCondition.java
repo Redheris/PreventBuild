@@ -45,6 +45,16 @@ public class AndCondition implements ICondition {
     }
 
     @Override
+    public ActionResult useItemCheck(PlayerEntity player, World world, Hand hand) {
+        for (ICondition condition : nestedConditions) {
+            ActionResult res = condition.useItemCheck(player, world, hand);
+            if (res == ActionResult.PASS)
+                return res;
+        }
+        return ActionResult.FAIL;
+    }
+
+    @Override
     public ActionResult useEntityCheck(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult) {
         for (ICondition condition : nestedConditions) {
             ActionResult res = condition.useEntityCheck(player, world, hand, entity, hitResult);

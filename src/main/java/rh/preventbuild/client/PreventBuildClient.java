@@ -9,10 +9,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
-import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.fabric.api.event.player.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -186,6 +183,22 @@ public class PreventBuildClient implements ClientModInitializer {
                 }
             }
 
+            return ActionResult.PASS;
+        });
+
+        UseItemCallback.EVENT.register((player, world, hand) ->
+        {
+            if (!player.getWorld().isClient)
+                return ActionResult.PASS;
+
+            for (String configName : PreventBuildConfig.getConfigsList().keySet()) {
+                ConditionConfig config = PreventBuildConfig.getConditionConfig(configName);
+                if (config != null && PreventBuildConfig.isConfigEnabled(configName)) {
+                    ActionResult res = config.getCondition(ConditionCategory.USE_ITEM).useItemCheck(player, world, hand);
+                    if (res != ActionResult.PASS)
+                        return res;
+                }
+            }
             return ActionResult.PASS;
         });
 

@@ -31,9 +31,18 @@ public class NotCondition implements ICondition {
         return ActionResult.PASS;
 
     }
+
     @Override
     public ActionResult useBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         ActionResult res = ConditionHandler.checkCondition(nestedCondition, player, hand, hitResult);
+        if (res == ActionResult.PASS)
+            return ActionResult.FAIL;
+        return ActionResult.PASS;
+    }
+
+    @Override
+    public ActionResult useItemCheck(PlayerEntity player, World world, Hand hand) {
+        ActionResult res = nestedCondition.useItemCheck(player, world, hand);
         if (res == ActionResult.PASS)
             return ActionResult.FAIL;
         return ActionResult.PASS;

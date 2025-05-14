@@ -24,6 +24,7 @@ public class ConditionConfig {
     private final ICondition breakCondition;
     private final ICondition placeCondition;
     private final ICondition otherCondition;
+    private final ICondition useItemCondition;
     private final ICondition interactCondition;
     private final ICondition attackCondition;
 
@@ -33,15 +34,17 @@ public class ConditionConfig {
         this.breakCondition = config.breakCondition;
         this.placeCondition = config.placeCondition;
         this.otherCondition = config.otherCondition;
+        this.useItemCondition = config.useItemCondition;
         this.interactCondition = config.interactCondition;
         this.attackCondition = config.attackCondition;
     }
     public ConditionConfig(String name, ICondition breakCondition, ICondition placeCondition, ICondition otherCondition,
-                           ICondition interactCondition, ICondition attackCondition) {
+                           ICondition useItemCondition, ICondition interactCondition, ICondition attackCondition) {
         this.name = name;
         this.breakCondition = breakCondition;
         this.placeCondition = placeCondition;
         this.otherCondition = otherCondition;
+        this.useItemCondition = useItemCondition;
         this.interactCondition = interactCondition;
         this.attackCondition = attackCondition;
     }
@@ -68,6 +71,7 @@ public class ConditionConfig {
             ICondition breakCondition = new NullCondition();
             ICondition placeCondition = new NullCondition();
             ICondition otherCondition = new NullCondition();
+            ICondition useItemCondition = new NullCondition();
             ICondition interactCondition = new NullCondition();
             ICondition attackCondition = new NullCondition();
 
@@ -90,6 +94,9 @@ public class ConditionConfig {
                         case "other:":
                             otherCondition = readLogicalCondition(OTHER, configPart);
                             break;
+                        case "useItem:":
+                            useItemCondition = readLogicalCondition(USE_ITEM, configPart);
+                            break;
                         case "interactEntity:":
                             interactCondition = readLogicalCondition(INTERACT_ENTITY, configPart);
                             break;
@@ -102,7 +109,7 @@ public class ConditionConfig {
             }
 
             return new ConditionConfig(
-                    configurationName, breakCondition, placeCondition, otherCondition, interactCondition, attackCondition
+                    configurationName, breakCondition, placeCondition, otherCondition, useItemCondition, interactCondition, attackCondition
             );
 
         } catch (FileNotFoundException exception) {
@@ -143,6 +150,7 @@ public class ConditionConfig {
             case "break:":
             case "place:":
             case "other:":
+            case "useItem:":
             case "interactEntity:":
             case "attackEntity:":
             case "or:": {
@@ -189,6 +197,7 @@ public class ConditionConfig {
             case BREAK -> breakCondition;
             case PLACE -> placeCondition;
             case OTHER -> otherCondition;
+            case USE_ITEM -> useItemCondition;
             case INTERACT_ENTITY -> interactCondition;
             case ATTACK_ENTITY -> attackCondition;
             default -> new NullCondition();
@@ -196,7 +205,7 @@ public class ConditionConfig {
     }
 
     public ICondition getCondition() {
-        return new OrCondition(breakCondition, placeCondition, otherCondition, interactCondition, attackCondition);
+        return new OrCondition(breakCondition, placeCondition, otherCondition, useItemCondition, interactCondition, attackCondition);
     }
 
     private static int getTabLevel(String line) {

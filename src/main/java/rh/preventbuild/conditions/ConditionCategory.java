@@ -5,6 +5,7 @@ public enum ConditionCategory {
     BREAK,
     PLACE,
     OTHER,
+    USE_ITEM,
     ATTACK_ENTITY,
     INTERACT_ENTITY
 }
