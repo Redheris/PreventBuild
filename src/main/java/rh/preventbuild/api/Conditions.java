@@ -101,6 +101,13 @@ public class Conditions {
                 new ReplaceBlockCondition(null)
         ));
 
+        ConditionRegistry.register("state:", ((category, value) -> {
+            String[] val = value.split("=");
+            if (val.length != 2)
+                throw new IllegalArgumentException("Expected line of type \"state:key=value\" but found \"state:" + value + "\"");
+            return new BlockStateCondition(category, val[0], val[1]);
+        }));
+
         // Items
 
         ConditionRegistry.register("item:", (category, value) ->
