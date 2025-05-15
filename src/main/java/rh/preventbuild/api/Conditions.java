@@ -8,6 +8,7 @@ import rh.preventbuild.conditions.coordinates.*;
 import rh.preventbuild.conditions.entities.EntityEqualsCondition;
 import rh.preventbuild.conditions.items.HeldItemCondition;
 import rh.preventbuild.conditions.items.ItemCustomNameCondition;
+import rh.preventbuild.conditions.items.ItemDamageCondition;
 import rh.preventbuild.conditions.items.ItemEnchantmentCondition;
 
 import java.util.ArrayList;
@@ -124,6 +125,48 @@ public class Conditions {
         }));
         ConditionRegistry.register("customName:", (category, value) ->
                 new ItemCustomNameCondition(value)
+        );
+        ConditionRegistry.register("durability:", (category, value) ->
+                new ItemDamageCondition(Integer.parseInt(value), true, 0)
+        );
+        ConditionRegistry.register("durability<:", (category, value) ->
+                new ItemDamageCondition(Integer.parseInt(value), true, -1)
+        );
+        ConditionRegistry.register("durability>:", (category, value) ->
+                new ItemDamageCondition(Integer.parseInt(value), true, 1)
+        );
+        ConditionRegistry.register("durability<=:", (category, value) ->
+                new OrCondition(
+                        new ItemDamageCondition(Integer.parseInt(value), true, 0),
+                        new ItemDamageCondition(Integer.parseInt(value), true, -1)
+                )
+        );
+        ConditionRegistry.register("durability>=:", (category, value) ->
+                new OrCondition(
+                        new ItemDamageCondition(Integer.parseInt(value), true, 0),
+                        new ItemDamageCondition(Integer.parseInt(value), true, 1)
+                )
+        );
+        ConditionRegistry.register("damage:", (category, value) ->
+                new ItemDamageCondition(Integer.parseInt(value), false, 0)
+        );
+        ConditionRegistry.register("damage<:", (category, value) ->
+                new ItemDamageCondition(Integer.parseInt(value), false, -1)
+        );
+        ConditionRegistry.register("damage>:", (category, value) ->
+                new ItemDamageCondition(Integer.parseInt(value), false, 1)
+        );
+        ConditionRegistry.register("damage<=:", (category, value) ->
+                new OrCondition(
+                    new ItemDamageCondition(Integer.parseInt(value), false, 0),
+                    new ItemDamageCondition(Integer.parseInt(value), false, -1)
+                )
+        );
+        ConditionRegistry.register("damage>=:", (category, value) ->
+                new OrCondition(
+                        new ItemDamageCondition(Integer.parseInt(value), false, 0),
+                        new ItemDamageCondition(Integer.parseInt(value), false, 1)
+                )
         );
 
         // Advanced

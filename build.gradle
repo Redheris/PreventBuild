@@ -31,13 +31,12 @@ dependencies {
 
 processResources {
     inputs.property "version", project.version
-    inputs.property "fabricapi", project.fabric_version
     filteringCharset "UTF-8"
 
     filesMatching("fabric.mod.json") {
         expand(
                 "version": project.version,
-                "fabricapi": project.fabric_version
+                "fabricapi": fabric_version
         )
     }
 }

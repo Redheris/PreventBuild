@@ -166,7 +166,7 @@ public class PreventBuildConfig {
             fileWriter.close();
         }
         catch (Exception e) {
-            LOGGER.error("Failed to write file\n" + e.getMessage(), e);
+            LOGGER.error("Failed to write file\n{}", e.getMessage(), e);
         }
 
         return 0;
