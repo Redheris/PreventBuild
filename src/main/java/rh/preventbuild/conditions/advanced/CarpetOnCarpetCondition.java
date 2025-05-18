@@ -4,6 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.CarpetBlock;
 import net.minecraft.block.PaleMossCarpetBlock;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -25,6 +27,12 @@ public class CarpetOnCarpetCondition implements ICondition {
 
     @Override
     public ActionResult useBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+        Item heldItem = player.getStackInHand(hand).getItem();
+        if (heldItem instanceof BlockItem) {
+            Block heldBlock = ((BlockItem) heldItem).getBlock();
+            if (!(heldBlock instanceof CarpetBlock || heldBlock instanceof PaleMossCarpetBlock))
+                return ActionResult.PASS;
+        }
         Block block = player.getWorld().getBlockState(new BlockPos(x, y - 1, z)).getBlock();
         if (block instanceof CarpetBlock || block instanceof PaleMossCarpetBlock)
             return ActionResult.FAIL;
