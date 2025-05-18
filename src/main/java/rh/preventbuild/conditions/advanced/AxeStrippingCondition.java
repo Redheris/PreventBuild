@@ -73,7 +73,9 @@ public class AxeStrippingCondition implements ICondition {
                 Blocks.CRIMSON_HYPHAE,
                 Blocks.MANGROVE_WOOD,
                 Blocks.MANGROVE_LOG,
-                Blocks.BAMBOO_BLOCK
+                Blocks.BAMBOO_BLOCK,
+                Blocks.PALE_OAK_LOG,
+                Blocks.PALE_OAK_WOOD
         ));
     }
 

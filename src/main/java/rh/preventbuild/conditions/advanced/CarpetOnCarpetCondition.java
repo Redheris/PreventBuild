@@ -2,6 +2,7 @@ package rh.preventbuild.conditions.advanced;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.CarpetBlock;
+import net.minecraft.block.PaleMossCarpetBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -25,7 +26,7 @@ public class CarpetOnCarpetCondition implements ICondition {
     @Override
     public ActionResult useBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         Block block = player.getWorld().getBlockState(new BlockPos(x, y - 1, z)).getBlock();
-        if (block instanceof CarpetBlock)
+        if (block instanceof CarpetBlock || block instanceof PaleMossCarpetBlock)
             return ActionResult.FAIL;
         return ActionResult.PASS;
     }
