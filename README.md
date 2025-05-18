@@ -8,7 +8,7 @@ This mod is just cancelling the player's actions, so it's fully client-side.
 
 ## How to use the mod
 
-This is almost necessarily to check [Wiki](https://github.com/Redheris/PreventBuild/wiki) to understand how to write a config,because there is no other way to write it except by hand.
+It's almost mandatory to visit the [Wiki](https://github.com/Redheris/PreventBuild/wiki) to understand how to write a config, because there is no other way to write it except by hand.
 
 There are a few files in config/preventbuild/:
 - `conditions/` - contains config .cfg files

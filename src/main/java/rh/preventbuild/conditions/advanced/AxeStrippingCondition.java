@@ -2,11 +2,14 @@ package rh.preventbuild.conditions.advanced;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.world.World;
 import rh.preventbuild.conditions.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
 
@@ -32,8 +35,14 @@ public class AxeStrippingCondition implements ICondition {
     }
 
     @Override
-    public ActionResult useBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
-        Block lookingAt = player.getWorld().getBlockState(hitResult.getBlockPos()).getBlock();
+    public ActionResult useItemCheck(PlayerEntity player, World world, Hand hand) {
+        HitResult target = MinecraftClient.getInstance().crosshairTarget;
+        assert target != null;
+        if (target.getType() != HitResult.Type.BLOCK)
+            return ActionResult.PASS;
+        BlockHitResult targetBlock = (BlockHitResult) target;
+        Block lookingAt = player.getWorld().getBlockState(targetBlock.getBlockPos()).getBlock();
+
         if (blacklist != null && Arrays.stream(blacklist).anyMatch(i -> i.equalsIgnoreCase(lookingAt.getTranslationKey()))) {
             return ActionResult.PASS;
         }
