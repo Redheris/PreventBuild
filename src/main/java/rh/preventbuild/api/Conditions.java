@@ -213,6 +213,8 @@ public class Conditions {
                 String dictKey = val.substring(1);
                 newValues.addAll(Arrays.asList(Objects.requireNonNull(PreventBuildConfig.getOreDictionary(dictKey))));
             }
+            else if (val.equals("empty") || val.equals("air"))
+                newValues.add("block.minecraft.air");
             else if (!val.contains("."))
                 newValues.add(prefix + "." + val);
             else
