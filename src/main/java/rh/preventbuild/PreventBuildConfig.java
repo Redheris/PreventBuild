@@ -10,10 +10,12 @@ import org.json.simple.parser.ParseException;
 import rh.preventbuild.conditions.ConditionConfig;
 
 import java.io.*;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
+@SuppressWarnings("unchecked")
 public class PreventBuildConfig {
     private static final Path PBConfigsPath = FabricLoader.getInstance().getConfigDir().resolve("preventbuild");
     private static final Logger LOGGER = LogManager.getLogger("PBConditionConfig");
@@ -34,29 +36,39 @@ public class PreventBuildConfig {
             Object o = new JSONParser().parse(new FileReader(jsonFile));
             condConfigsHandler = (JSONObject) o;
 
-            File conditionDir = PBConfigsPath.resolve("conditions").toFile();
-            if (!conditionDir.exists()) {
-                conditionDir.mkdir();
-                Files.createFile(PBConfigsPath.resolve("conditions/put_your_configs_here"));
+            Path conditionDir = PBConfigsPath.resolve("conditions");
+            if (!Files.exists(conditionDir)) {
+                Files.createDirectories(conditionDir);
+                Files.createFile(conditionDir.resolve("put_your_configs_here"));
             }
 
-            File[] files = conditionDir.listFiles();
-            if (files == null) {
-                LOGGER.info("No conditions configs found");
-                return false;
-            }
-            for (File file : files) {
-                if (file.getName().endsWith(".cfg")) {
-                    ConditionConfig config = new ConditionConfig(file.getName().substring(0, file.getName().length() - 4));
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(conditionDir, "*.cfg")) {
+                boolean found = false;
+                for (Path path : stream) {
+                    found = true;
+                    String fileName = path.getFileName().toString();
+                    String configName = fileName.substring(0, fileName.length() - 4);
+
+                    ConditionConfig config = new ConditionConfig(configName);
                     conditionConfigs.put(config.getName(), config);
-                    conditionConfigPaths.put(config.getName(), file.toPath());
+                    conditionConfigPaths.put(config.getName(), path);
 
                     if (!condConfigsHandler.containsKey(config.getName())) {
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("active", true);
                         condConfigsHandler.put(config.getName(), jsonObject);
                     }
+
                 }
+
+                if (!found) {
+                    LOGGER.info("No conditions configs found");
+                    return false;
+                }
+
+            } catch (IOException e) {
+                LOGGER.error("Failed to read condition configs directory", e);
+                return false;
             }
 
             Object[] keys = condConfigsHandler.keySet().toArray();
@@ -92,8 +104,8 @@ public class PreventBuildConfig {
 
     public static boolean loadOreDictionary() {
         try {
-            if (!new File(PBConfigsPath.toString()).exists())
-                new File(PBConfigsPath.toString()).mkdir();
+            if (!Files.exists(PBConfigsPath))
+                Files.createDirectories(PBConfigsPath);
             oreDictionary.clear();
             File jsonFile = PBConfigsPath.resolve("ore_dictionaries.json").toFile();
             if (jsonFile.createNewFile()) {
