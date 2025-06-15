@@ -4,7 +4,7 @@ Adds control over preventing the player from performing certain actions that are
 
 Original purpose of creating this mod was enhancing experience of hand-building map-arts without using any printers and easy-place mode. But now it's more than just preventing placing and breaking: you can prevent any right- or left-click actions, just make sure there is a suitable condition.
 
-This mod is just cancelling the player's actions, so it's fully client-side.
+This mod simply cancels the player's actions, so it's entirely client-side.
 
 ## How to use the mod
 
@@ -22,7 +22,10 @@ There are a few files in config/preventbuild/:
 - `/pb config switch` <name> - enable/disable config by name
 - `/pb config update` - reload all configs
 
-## Contact
+## Official links to download the mod
+- [Modrinth](https://modrinth.com/project/VYOvHxMm)
+- This GitHub repository (only source code)
 
+## Contact
 - GitHub: https://github.com/Redheris/PreventBuild/issues
 - Discord: @redheris

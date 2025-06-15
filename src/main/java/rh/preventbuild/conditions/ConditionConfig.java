@@ -215,8 +215,9 @@ public class ConditionConfig {
     private static int getTabLevel(String line) {
         int tabLevel = 0;
         for (char ch : line.toCharArray()) {
-            if (ch == '\t')
-                tabLevel++;
+            if (!Character.isWhitespace(ch))
+                return tabLevel;
+            tabLevel++;
         }
         return tabLevel;
     }
