@@ -8,7 +8,7 @@ public class CategoriesRegister {
         BreakBlockCategory.register();
         PlaceBlockCategory.register();
 
-        InteractBlockCategory.register();
+        InteractEntityCategory.register();
         AttackEntityCategory.register();
     }
 }
