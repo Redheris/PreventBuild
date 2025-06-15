@@ -8,12 +8,14 @@
   "preventbuild.help_line_5": "/pb config update - перезагрузить конфиги и словарь руд",
   "preventbuild.config_without_arguments": "§3Напишите /rh help для получения списка команд",
   "preventbuild.no_configs_found": "§3Не найдено конфигов",
-  "preventbuild.config_is_active": "§aактивен",
-  "preventbuild.config_is_inactive": "§cнеактивен",
+  "preventbuild.config_is_active": "активен",
+  "preventbuild.config_is_inactive": "неактивен",
   "preventbuild.config_not_found": "Конфиг \"%s\" не найден",
   "preventbuild.config_is_turned_on": "§3Конфиг \"%s§3\" теперь §aактивен",
   "preventbuild.config_is_turned_off": "§3Конфиг \"%s§3\" теперь §cнеактивен",
   "preventbuild.oredict_load_error": "§cОшибка при загрузке словаря руд",
   "preventbuild.configs_load_error": "§cОшибка при загрузке конфигов",
-  "preventbuild.configs_updated": "§3Конфиги обновлены"
+  "preventbuild.configs_updated": "§3Конфиги обновлены",
+  "preventbuild.open_config_file": "[Нажмите, чтобы открыть файл конфига]",
+  "preventbuild.toggle_enabled": "[Нажмите для переключения]"
 }

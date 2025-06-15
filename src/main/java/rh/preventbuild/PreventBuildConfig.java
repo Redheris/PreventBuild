@@ -18,6 +18,7 @@ public class PreventBuildConfig {
     private static final Path PBConfigsPath = FabricLoader.getInstance().getConfigDir().resolve("preventbuild");
     private static final Logger LOGGER = LogManager.getLogger("PBConditionConfig");
     public static JSONObject condConfigsHandler = new JSONObject();
+    private static final Map<String, Path> conditionConfigPaths = new java.util.HashMap<>();
     private static final Map<String, ConditionConfig> conditionConfigs = new java.util.HashMap<>();
     public static final Map<String, String[]> oreDictionary = new java.util.HashMap<>();
 
@@ -48,6 +49,7 @@ public class PreventBuildConfig {
                 if (file.getName().endsWith(".cfg")) {
                     ConditionConfig config = new ConditionConfig(file.getName().substring(0, file.getName().length() - 4));
                     conditionConfigs.put(config.getName(), config);
+                    conditionConfigPaths.put(config.getName(), file.toPath());
 
                     if (!condConfigsHandler.containsKey(config.getName())) {
                         JSONObject jsonObject = new JSONObject();
@@ -132,6 +134,10 @@ public class PreventBuildConfig {
 
     public static ConditionConfig getConditionConfig(String name) {
         return conditionConfigs.get(name);
+    }
+
+    public static Path getConditionConfigPath(String name) {
+        return conditionConfigPaths.get(name);
     }
 
     public static Map<String, Boolean> getConfigsList() {

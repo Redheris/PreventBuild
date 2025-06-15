@@ -6,10 +6,14 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
+import net.minecraft.util.Formatting;
 import rh.preventbuild.PreventBuildConfig;
 
+import java.nio.file.Path;
 import java.util.Map;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
@@ -49,6 +53,16 @@ public class ClientCommands {
                     )
             );
             dispatcher.register(literal("preventbuild").redirect(pbNode));
+            dispatcher.register(ClientCommandManager.literal("toggle_prevent_build_config_enabled")
+                    .then(ClientCommandManager.argument("name", StringArgumentType.word())
+                            .executes(context -> {
+                                context.getSource().getPlayer().sendMessage(Text.empty(), false);
+                                ClientCommands.configSwitch(context);
+                                ClientCommands.configList(context);
+                                return 1;
+                            })
+                    )
+            );
         });
     }
 
@@ -80,9 +94,27 @@ public class ClientCommands {
         }
         for (String config : configs.keySet()) {
             boolean isActive = configs.get(config);
-            context.getSource().getPlayer().sendMessage(
-                    Text.literal("§3\"" + config + "\": ").append(
-                            Text.translatable(isActive ? "preventbuild.config_is_active" : "preventbuild.config_is_inactive")),
+
+            Path configPath = PreventBuildConfig.getConditionConfigPath(config);
+            Text configName = Text.literal("\"" + config + "\"")
+                    .styled(style -> style
+                            .withColor(Formatting.DARK_AQUA)
+                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.translatable("preventbuild.open_config_file")))
+                            .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, configPath.toString()))
+                    );
+            String toggleCommand = "/toggle_prevent_build_config_enabled " + config.replace(" ", "_");
+            Text configIsActive = Text.translatable(isActive ? "preventbuild.config_is_active" : "preventbuild.config_is_inactive")
+                    .styled(style -> style
+                            .withColor(isActive ? Formatting.GREEN : Formatting.RED)
+                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.translatable("preventbuild.toggle_enabled")))
+                            .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, toggleCommand))
+                            .withUnderline(true)
+                    );
+
+            context.getSource().getPlayer().sendMessage(Text.empty()
+                            .append(configName)
+                            .append(Text.literal(" : "))
+                            .append(configIsActive),
                     false
             );
         }
