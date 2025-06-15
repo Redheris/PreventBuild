@@ -209,6 +209,7 @@ public class Conditions {
         String[] values = value.split(",");
         List<String> newValues = new ArrayList<>();
         for (String val : values) {
+            val = val.trim();
             if (val.startsWith("#")) {
                 String dictKey = val.substring(1);
                 newValues.addAll(Arrays.asList(Objects.requireNonNull(PreventBuildConfig.getOreDictionary(dictKey))));
