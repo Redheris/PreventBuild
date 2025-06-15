@@ -1,0 +1,142 @@
+package rh.preventbuild.client;
+
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
+import rh.preventbuild.PreventBuildConfig;
+
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
+
+public class ClientCommands {
+    protected static void registerAll() {
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            final LiteralCommandNode<FabricClientCommandSource> pbNode = dispatcher.register(ClientCommandManager.literal("pb")
+                    .executes(context -> {
+                        context.getSource().getPlayer().sendMessage(
+                                Text.translatable("preventbuild.command_with_no_arguments").withColor(Colors.LIGHT_RED),
+                                false);
+                        return 1;
+                    })
+                    .then(literal("help").executes(ClientCommands::getHelp))
+                    .then(literal("config")
+                            .executes(context -> {
+                                context.getSource().getPlayer().sendMessage(
+                                        Text.translatable("preventbuild.config_without_arguments"),
+                                        false);
+                                return 1;
+                            })
+                            .then(literal("list").executes(ClientCommands::configList))
+                            .then(literal("switch")
+                                    .then(argument("name", StringArgumentType.word())
+                                            .suggests((context, builder) -> {
+                                                for (String config : PreventBuildConfig.getConfigsList().keySet()) {
+                                                    builder.suggest(config.replace(" ", "_"));
+                                                }
+                                                return builder.buildFuture();
+                                            })
+                                            .executes(ClientCommands::configSwitch)
+                                    )
+                            )
+                            .then(literal("update").executes(ClientCommands::configUpdate))
+                    )
+            );
+            dispatcher.register(literal("preventbuild").redirect(pbNode));
+        });
+    }
+
+    private static int getHelp(CommandContext<FabricClientCommandSource> context) {
+        context.getSource().getPlayer().sendMessage(
+                Text.translatable("preventbuild.help_line_1"),
+                false);
+        context.getSource().getPlayer().sendMessage(
+                Text.translatable("preventbuild.help_line_2"),
+                false);
+        context.getSource().getPlayer().sendMessage(
+                Text.translatable("preventbuild.help_line_3"),
+                false);
+        context.getSource().getPlayer().sendMessage(
+                Text.translatable("preventbuild.help_line_4"),
+                false);
+        context.getSource().getPlayer().sendMessage(
+                Text.translatable("preventbuild.help_line_5"),
+                false);
+        return 1;
+    }
+
+    private static int configList(CommandContext<FabricClientCommandSource> context) {
+        Map<String, Boolean> configs = PreventBuildConfig.getConfigsList();
+        if (configs.isEmpty()) {
+            context.getSource().getPlayer().sendMessage(
+                    Text.translatable("preventbuild.no_configs_found"),
+                    false);
+        }
+        for (String config : configs.keySet()) {
+            boolean isActive = configs.get(config);
+            context.getSource().getPlayer().sendMessage(
+                    Text.literal("§3\"" + config + "\": ").append(
+                            Text.translatable(isActive ? "preventbuild.config_is_active" : "preventbuild.config_is_inactive")),
+                    false
+            );
+        }
+        return 1;
+    }
+
+    private static int configSwitch(CommandContext<FabricClientCommandSource> context) {
+        String name = context.getArgument("name", String.class).replace("_", " ");
+        if (PreventBuildConfig.switchConfigEnabled(name) == -1) {
+            context.getSource().getPlayer().sendMessage(
+                    Text.translatable("preventbuild.config_not_found", name)
+                            .withColor(Colors.LIGHT_RED),
+                    false);
+            return 0;
+        }
+        if (PreventBuildConfig.isConfigEnabled(name))
+            context.getSource().getPlayer().sendMessage(
+                    Text.translatable("preventbuild.config_is_turned_on", name),
+                    true
+            );
+        else
+            context.getSource().getPlayer().sendMessage(
+                    Text.translatable("preventbuild.config_is_turned_off", name),
+                    true
+            );
+        return 1;
+    }
+
+    private static int configUpdate(CommandContext<FabricClientCommandSource> context) {
+        boolean loadOreDict = PreventBuildConfig.loadOreDictionary();
+        if (!loadOreDict) {
+            context.getSource().getPlayer().sendMessage(
+                    Text.translatable("preventbuild.oredict_load_error"),
+                    false
+            );
+            return 0;
+        }
+        boolean loadConditions = PreventBuildConfig.loadConditionConfigs();
+        if (!loadConditions) {
+            context.getSource().getPlayer().sendMessage(
+                    Text.translatable("preventbuild.configs_load_error"),
+                    false
+            );
+            return 0;
+        }
+
+        context.getSource().getPlayer().sendMessage(
+                Text.translatable("preventbuild.configs_updated"),
+                true);
+
+        return 1;
+    }
+
+}

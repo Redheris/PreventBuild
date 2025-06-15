@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import rh.preventbuild.conditions.ConditionCategory;
+import rh.preventbuild.conditions.categories.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
 
 import java.util.Set;
@@ -27,7 +27,7 @@ public class ItemEnchantmentCondition implements ICondition {
 
     @Override
     public ConditionCategory getCategory() {
-        return ConditionCategory.OTHER;
+        return ConditionCategory.MISCELLANEOUS;
     }
 
     @Override

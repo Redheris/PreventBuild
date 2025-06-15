@@ -3,7 +3,7 @@ package rh.preventbuild.conditions.coordinates;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import rh.preventbuild.conditions.ConditionCategory;
+import rh.preventbuild.conditions.categories.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
 
 public class YWithinCondition implements ICondition {

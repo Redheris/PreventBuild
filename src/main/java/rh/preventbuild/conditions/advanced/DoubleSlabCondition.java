@@ -10,7 +10,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import rh.preventbuild.conditions.ConditionCategory;
+import rh.preventbuild.conditions.categories.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
 
 public class DoubleSlabCondition implements ICondition {
@@ -34,7 +34,7 @@ public class DoubleSlabCondition implements ICondition {
     }
 
     @Override
-    public ActionResult useBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+    public ActionResult placeBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         BlockState blockState = player.getWorld().getBlockState(new BlockPos(x, y, z));
         Block heldBlock = Block.getBlockFromItem(player.getStackInHand(hand).getItem());
         if (heldBlock instanceof SlabBlock) {

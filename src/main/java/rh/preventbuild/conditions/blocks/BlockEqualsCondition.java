@@ -5,7 +5,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import rh.preventbuild.conditions.ConditionCategory;
+import rh.preventbuild.conditions.categories.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
 
 import java.util.Arrays;
@@ -33,8 +33,16 @@ public class BlockEqualsCondition implements ICondition {
     }
 
     @Override
-    public ActionResult useBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+    public ActionResult placeBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         String blockName = player.getStackInHand(hand).getItem().getTranslationKey();
+        if (Arrays.stream(this.blocks).anyMatch(i -> i.equalsIgnoreCase(blockName)))
+            return ActionResult.FAIL;
+        return ActionResult.PASS;
+    }
+
+    @Override
+    public ActionResult interactBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+        String blockName = player.getWorld().getBlockState(hitResult.getBlockPos()).getBlock().getTranslationKey();
         if (Arrays.stream(this.blocks).anyMatch(i -> i.equalsIgnoreCase(blockName)))
             return ActionResult.FAIL;
         return ActionResult.PASS;

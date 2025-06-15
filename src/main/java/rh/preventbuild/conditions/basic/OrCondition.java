@@ -6,10 +6,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import rh.preventbuild.conditions.ConditionCategory;
-import rh.preventbuild.conditions.ConditionHandler;
+import rh.preventbuild.conditions.categories.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
 
 public class OrCondition implements ICondition {
@@ -27,7 +25,8 @@ public class OrCondition implements ICondition {
     @Override
     public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
         for (ICondition condition : nestedConditions) {
-            ActionResult res = ConditionHandler.checkCondition(condition, player, hand, BlockPos.ofFloored(x, y, z));
+//            ActionResult res = ConditionHandler.checkCondition(condition, player, hand, BlockPos.ofFloored(x, y, z));
+            ActionResult res = condition.attackBlockCheck(player, hand, x, y, z);
             if (res != ActionResult.PASS)
                 return res;
         }
@@ -35,9 +34,19 @@ public class OrCondition implements ICondition {
     }
 
     @Override
-    public ActionResult useBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+    public ActionResult placeBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         for (ICondition condition : nestedConditions) {
-            ActionResult res = ConditionHandler.checkCondition(condition, player, hand, hitResult);
+            ActionResult res = condition.placeBlockCheck(player, hand, x, y, z, hitResult);
+            if (res != ActionResult.PASS)
+                return res;
+        }
+        return ActionResult.PASS;
+    }
+
+    @Override
+    public ActionResult interactBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+        for (ICondition condition : nestedConditions) {
+            ActionResult res = condition.interactBlockCheck(player, hand, x, y, z, hitResult);
             if (res != ActionResult.PASS)
                 return res;
         }

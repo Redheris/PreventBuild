@@ -10,7 +10,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import rh.preventbuild.conditions.ConditionCategory;
+import rh.preventbuild.conditions.categories.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
 
 public class CarpetOnCarpetCondition implements ICondition {
@@ -26,7 +26,7 @@ public class CarpetOnCarpetCondition implements ICondition {
     }
 
     @Override
-    public ActionResult useBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+    public ActionResult placeBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         Item heldItem = player.getStackInHand(hand).getItem();
         if (heldItem instanceof BlockItem) {
             Block heldBlock = ((BlockItem) heldItem).getBlock();

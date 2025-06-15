@@ -6,10 +6,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import rh.preventbuild.conditions.ConditionCategory;
-import rh.preventbuild.conditions.ConditionHandler;
+import rh.preventbuild.conditions.categories.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
 
 public class NotCondition implements ICondition {
@@ -25,7 +23,7 @@ public class NotCondition implements ICondition {
 
     @Override
     public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
-        ActionResult res = ConditionHandler.checkCondition(nestedCondition, player, hand, BlockPos.ofFloored(x, y, z));
+        ActionResult res = nestedCondition.attackBlockCheck(player, hand, x, y, z);
         if (res == ActionResult.PASS)
             return ActionResult.FAIL;
         return ActionResult.PASS;
@@ -33,8 +31,16 @@ public class NotCondition implements ICondition {
     }
 
     @Override
-    public ActionResult useBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
-        ActionResult res = ConditionHandler.checkCondition(nestedCondition, player, hand, hitResult);
+    public ActionResult placeBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+        ActionResult res = nestedCondition.placeBlockCheck(player, hand, x, y, z, hitResult);
+        if (res == ActionResult.PASS)
+            return ActionResult.FAIL;
+        return ActionResult.PASS;
+    }
+
+    @Override
+    public ActionResult interactBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+        ActionResult res = nestedCondition.interactBlockCheck(player, hand, x, y, z, hitResult);
         if (res == ActionResult.PASS)
             return ActionResult.FAIL;
         return ActionResult.PASS;

@@ -6,7 +6,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
-import rh.preventbuild.conditions.ConditionCategory;
+import rh.preventbuild.conditions.categories.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
 
 import java.util.Arrays;
@@ -20,7 +20,7 @@ public class LookingAtBlockCondition implements ICondition {
 
     @Override
     public ConditionCategory getCategory() {
-        return ConditionCategory.OTHER;
+        return ConditionCategory.MISCELLANEOUS;
     }
 
     @Override

@@ -7,6 +7,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
+import rh.preventbuild.conditions.categories.ConditionCategory;
 
 public interface ICondition {
     ConditionCategory getCategory();
@@ -18,10 +19,16 @@ public interface ICondition {
     }
 
     /**
-     * Checking the action of right-clicking a block
+     * Checking the action of placing a block
      */
-    default ActionResult useBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+    default ActionResult placeBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
         return attackBlockCheck(player, hand, x, y, z);
+    }
+    /**
+     * Checking the action of tight-clicking a block
+     */
+    default ActionResult interactBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
+        return placeBlockCheck(player, hand, x, y, z, hitResult);
     }
 
     /**
