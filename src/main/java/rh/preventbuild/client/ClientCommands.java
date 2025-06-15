@@ -99,15 +99,15 @@ public class ClientCommands {
             Text configName = Text.literal("\"" + config + "\"")
                     .styled(style -> style
                             .withColor(Formatting.DARK_AQUA)
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.translatable("preventbuild.open_config_file")))
-                            .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, configPath.toString()))
+                            .withHoverEvent(new HoverEvent.ShowText(Text.translatable("preventbuild.open_config_file")))
+                            .withClickEvent(new ClickEvent.OpenFile(configPath))
                     );
             String toggleCommand = "/toggle_prevent_build_config_enabled " + config.replace(" ", "_");
             Text configIsActive = Text.translatable(isActive ? "preventbuild.config_is_active" : "preventbuild.config_is_inactive")
                     .styled(style -> style
                             .withColor(isActive ? Formatting.GREEN : Formatting.RED)
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.translatable("preventbuild.toggle_enabled")))
-                            .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, toggleCommand))
+                            .withHoverEvent(new HoverEvent.ShowText(Text.translatable("preventbuild.toggle_enabled")))
+                            .withClickEvent(new ClickEvent.RunCommand(toggleCommand))
                             .withUnderline(true)
                     );
 
