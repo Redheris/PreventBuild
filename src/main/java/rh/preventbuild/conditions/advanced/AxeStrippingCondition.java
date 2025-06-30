@@ -3,6 +3,7 @@ package rh.preventbuild.conditions.advanced;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.util.ActionResult;
@@ -36,6 +37,9 @@ public class AxeStrippingCondition implements ICondition {
 
     @Override
     public ActionResult useItemCheck(PlayerEntity player, World world, Hand hand) {
+        if (!(player.getStackInHand(hand).getItem() instanceof AxeItem))
+            return ActionResult.PASS;
+
         HitResult target = MinecraftClient.getInstance().crosshairTarget;
         assert target != null;
         if (target.getType() != HitResult.Type.BLOCK)
@@ -43,10 +47,14 @@ public class AxeStrippingCondition implements ICondition {
         BlockHitResult targetBlock = (BlockHitResult) target;
         Block lookingAt = player.getWorld().getBlockState(targetBlock.getBlockPos()).getBlock();
 
+        boolean shouldStopTripAttempt = hand == Hand.MAIN_HAND && player.getOffHandStack().contains(DataComponentTypes.BLOCKS_ATTACKS) && !player.shouldCancelInteraction();
+        if (shouldStopTripAttempt)
+            return ActionResult.PASS;
+
         if (blacklist != null && Arrays.stream(blacklist).anyMatch(i -> i.equalsIgnoreCase(lookingAt.getTranslationKey()))) {
             return ActionResult.PASS;
         }
-        if (player.getStackInHand(hand).getItem() instanceof AxeItem && STRIPPABLE_BLOCKS.contains(lookingAt))
+        if (STRIPPABLE_BLOCKS.contains(lookingAt))
             return ActionResult.FAIL;
         return ActionResult.PASS;
     }
