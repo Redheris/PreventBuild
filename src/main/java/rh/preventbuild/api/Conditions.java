@@ -175,6 +175,9 @@ public class Conditions {
                 new AxeStrippingCondition()
         );
         ConditionRegistry.register("stripWoodExcept:", AxeStrippingCondition::parse);
+        ConditionRegistry.register("createDirtPath", (category, value) ->
+                new DirtPathCreatingCondition()
+        );
         ConditionRegistry.register("carpetOnCarpet", (category, value) ->
                 new CarpetOnCarpetCondition(category)
         );
