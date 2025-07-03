@@ -6,7 +6,7 @@ import rh.preventbuild.conditions.basic.OrCondition;
 import rh.preventbuild.conditions.blocks.*;
 import rh.preventbuild.conditions.coordinates.*;
 import rh.preventbuild.conditions.entities.EntityEqualsCondition;
-import rh.preventbuild.conditions.items.HeldItemCondition;
+import rh.preventbuild.conditions.items.UsedItemCondition;
 import rh.preventbuild.conditions.items.ItemCustomNameCondition;
 import rh.preventbuild.conditions.items.ItemDamageCondition;
 import rh.preventbuild.conditions.items.ItemEnchantmentCondition;
@@ -113,7 +113,7 @@ public class Conditions {
         // Items
 
         ConditionRegistry.register("item:", (category, value) ->
-            new HeldItemCondition(parseIdsList(value,"item.minecraft"))
+            new UsedItemCondition(parseIdsList(value,"item.minecraft"))
         );
         ConditionRegistry.register("enchant:", ((category, value) -> {
             String[] val = value.split("\\^");

@@ -8,10 +8,10 @@ import rh.preventbuild.conditions.ICondition;
 
 import java.util.Arrays;
 
-public class HeldItemCondition implements ICondition {
+public class UsedItemCondition implements ICondition {
     private final String[] items;
 
-    public HeldItemCondition(String[] items) {
+    public UsedItemCondition(String[] items) {
         this.items = items;
     }
 
