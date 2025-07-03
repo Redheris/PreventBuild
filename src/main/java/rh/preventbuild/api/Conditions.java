@@ -21,6 +21,7 @@ public class Conditions {
     public static void register() {
 
         // Coordinates
+        // BlockPos coordinates
 
         ConditionRegistry.register("x:", (category, value) ->
                 EqualsCoordinateCondition.parse(category,Direction.Axis.X, value, false)
@@ -101,6 +102,90 @@ public class Conditions {
                 new CompareCoordinateCondition(
                         category, Direction.Axis.Z, IntComparator.LESS_EQ,
                         Integer.parseInt(value), false
+                )
+        );
+
+        // Player coordinates
+
+        ConditionRegistry.register("player_x:", (category, value) ->
+                EqualsCoordinateCondition.parse(category,Direction.Axis.X, value, true)
+        );
+        ConditionRegistry.register("player_y:", (category, value) ->
+                EqualsCoordinateCondition.parse(category,Direction.Axis.Y, value, true)
+        );
+        ConditionRegistry.register("player_z:", (category, value) ->
+                EqualsCoordinateCondition.parse(category,Direction.Axis.Z, value, true)
+        );
+        ConditionRegistry.register("player_x>:", (category, value) ->
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.X, IntComparator.GREATER,
+                        Integer.parseInt(value), true
+                )
+        );
+        ConditionRegistry.register("player_y>:", (category, value) ->
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.Y, IntComparator.GREATER,
+                        Integer.parseInt(value), true
+                )
+        );
+        ConditionRegistry.register("player_z>:", (category, value) ->
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.Z, IntComparator.GREATER,
+                        Integer.parseInt(value), true
+                )
+        );
+        ConditionRegistry.register("player_x<:", (category, value) ->
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.X, IntComparator.LESS,
+                        Integer.parseInt(value), true
+                )
+        );
+        ConditionRegistry.register("player_y<:", (category, value) ->
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.Y, IntComparator.LESS,
+                        Integer.parseInt(value), true
+                )
+        );
+        ConditionRegistry.register("player_z<:", (category, value) ->
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.Z, IntComparator.LESS,
+                        Integer.parseInt(value), true
+                )
+        );
+        ConditionRegistry.register("player_x>=:", (category, value) ->
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.X, IntComparator.GREATER_EQ,
+                        Integer.parseInt(value), true
+                )
+        );
+        ConditionRegistry.register("player_y>=:", (category, value) ->
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.Y, IntComparator.GREATER_EQ,
+                        Integer.parseInt(value), true
+                )
+        );
+        ConditionRegistry.register("player_z>=:", (category, value) ->
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.Z, IntComparator.GREATER_EQ,
+                        Integer.parseInt(value), true
+                )
+        );
+        ConditionRegistry.register("player_x<=:", (category, value) ->
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.X, IntComparator.LESS_EQ,
+                        Integer.parseInt(value), true
+                )
+        );
+        ConditionRegistry.register("player_y<=:", (category, value) ->
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.Y, IntComparator.LESS_EQ,
+                        Integer.parseInt(value), true
+                )
+        );
+        ConditionRegistry.register("player_z<=:", (category, value) ->
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.Z, IntComparator.LESS_EQ,
+                        Integer.parseInt(value), true
                 )
         );
 
