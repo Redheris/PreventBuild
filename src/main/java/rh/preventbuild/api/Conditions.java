@@ -1,5 +1,6 @@
 package rh.preventbuild.api;
 
+import net.minecraft.util.math.Direction;
 import rh.preventbuild.PreventBuildConfig;
 import rh.preventbuild.conditions.advanced.*;
 import rh.preventbuild.conditions.basic.OrCondition;
@@ -21,61 +22,85 @@ public class Conditions {
 
         // Coordinates
 
-        ConditionRegistry.register("x:", XEqualsCondition::parse);
-        ConditionRegistry.register("y:", YEqualsCondition::parse);
-        ConditionRegistry.register("z:", ZEqualsCondition::parse);
+        ConditionRegistry.register("x:", (category, value) ->
+                EqualsCoordinateCondition.parse(category,Direction.Axis.X, value, false)
+        );
+        ConditionRegistry.register("y:", (category, value) ->
+                EqualsCoordinateCondition.parse(category,Direction.Axis.Y, value, false)
+        );
+        ConditionRegistry.register("z:", (category, value) ->
+                EqualsCoordinateCondition.parse(category,Direction.Axis.Z, value, false)
+        );
         ConditionRegistry.register("x>:", (category, value) ->
-                new XAboveCondition(category, Integer.parseInt(value))
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.X, IntComparator.GREATER,
+                        Integer.parseInt(value), false
+                )
         );
         ConditionRegistry.register("y>:", (category, value) ->
-                new YAboveCondition(category, Integer.parseInt(value))
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.Y, IntComparator.GREATER,
+                        Integer.parseInt(value), false
+                )
         );
         ConditionRegistry.register("z>:", (category, value) ->
-                new ZAboveCondition(category, Integer.parseInt(value))
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.Z, IntComparator.GREATER,
+                        Integer.parseInt(value), false
+                )
         );
         ConditionRegistry.register("x<:", (category, value) ->
-                new XBelowCondition(category, Integer.parseInt(value))
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.X, IntComparator.LESS,
+                        Integer.parseInt(value), false
+                )
         );
         ConditionRegistry.register("y<:", (category, value) ->
-                new YBelowCondition(category, Integer.parseInt(value))
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.Y, IntComparator.LESS,
+                        Integer.parseInt(value), false
+                )
         );
         ConditionRegistry.register("z<:", (category, value) ->
-                new ZBelowCondition(category, Integer.parseInt(value))
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.Z, IntComparator.LESS,
+                        Integer.parseInt(value), false
+                )
         );
         ConditionRegistry.register("x>=:", (category, value) ->
-                new OrCondition(
-                        new XEqualsCondition(category, new int[]{Integer.parseInt(value)}),
-                        new XAboveCondition(category, Integer.parseInt(value))
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.X, IntComparator.GREATER_EQ,
+                        Integer.parseInt(value), false
                 )
         );
         ConditionRegistry.register("y>=:", (category, value) ->
-                new OrCondition(
-                        new YEqualsCondition(category, new int[]{Integer.parseInt(value)}),
-                        new YAboveCondition(category, Integer.parseInt(value))
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.Y, IntComparator.GREATER_EQ,
+                        Integer.parseInt(value), false
                 )
         );
         ConditionRegistry.register("z>=:", (category, value) ->
-                new OrCondition(
-                        new ZEqualsCondition(category, new int[]{Integer.parseInt(value)}),
-                        new ZAboveCondition(category, Integer.parseInt(value))
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.Z, IntComparator.GREATER_EQ,
+                        Integer.parseInt(value), false
                 )
         );
         ConditionRegistry.register("x<=:", (category, value) ->
-                new OrCondition(
-                        new XEqualsCondition(category, new int[]{Integer.parseInt(value)}),
-                        new XBelowCondition(category, Integer.parseInt(value))
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.X, IntComparator.LESS_EQ,
+                        Integer.parseInt(value), false
                 )
         );
         ConditionRegistry.register("y<=:", (category, value) ->
-                new OrCondition(
-                        new YEqualsCondition(category, new int[]{Integer.parseInt(value)}),
-                        new YBelowCondition(category, Integer.parseInt(value))
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.Y, IntComparator.LESS_EQ,
+                        Integer.parseInt(value), false
                 )
         );
         ConditionRegistry.register("z<=:", (category, value) ->
-                new OrCondition(
-                        new ZEqualsCondition(category, new int[]{Integer.parseInt(value)}),
-                        new ZBelowCondition(category, Integer.parseInt(value))
+                new CompareCoordinateCondition(
+                        category, Direction.Axis.Z, IntComparator.LESS_EQ,
+                        Integer.parseInt(value), false
                 )
         );
 
