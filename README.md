@@ -15,7 +15,9 @@ There are a few files in config/preventbuild/:
 - `condition_configs.json` - defines which configurations are active by its individual name
 - `ore_dictionaries.json` - defines custom ore dictionary lists for using in configs
 
-(For developers) Also you can find out how to create and register [your own conditions](https://github.com/Redheris/PreventBuild/wiki/(For-deveolpers)-Condition-Registry) that you will be able to use in the same config files.
+Once you have created/updated your configs, you should update configs in the game using commands.
+
+*(For developers) Also you can find out how to create and register [your own conditions](https://github.com/Redheris/PreventBuild/wiki/(For-deveolpers)-Condition-Registry) that you will be able to use in the same config files.*
 
 ## Commands
 - `/pb config list` - display a list of configs with their status
@@ -26,6 +28,7 @@ There are a few files in config/preventbuild/:
 - [Modrinth](https://modrinth.com/project/VYOvHxMm)
 - This GitHub repository (only source code)
 
-## Contact
+## Contacts
+If you have some issues with the mod, any questions or just want to leave feedback, you are always welcome:
 - GitHub: https://github.com/Redheris/PreventBuild/issues
 - Discord: @redheris
