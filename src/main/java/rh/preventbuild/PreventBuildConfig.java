@@ -35,8 +35,7 @@ public class PreventBuildConfig {
         exceptionMessage = null;
         MutableText current = Text.empty();
         try {
-            current = Text.translatable("preventbuild.configs_load_error").formatted(Formatting.RED);
-            current = Text.translatable("preventbuild.oredict_load_error").formatted(Formatting.RED);
+            current = Text.translatable("preventbuild.oredict_load_error");
             PreventBuildConfig.loadOreDictionary();
             current = Text.translatable("preventbuild.configs_load_error");
             PreventBuildConfig.loadConditionConfigs();
@@ -166,7 +165,8 @@ public class PreventBuildConfig {
         if (oreDictionary.containsKey(key))
             return oreDictionary.get(key);
         LOGGER.error("Ore dictionary \"{}\" not found", key);
-        return null;
+        String message = Text.translatable("preventbuild.oredict_not_found", key).getString();
+        throw new RuntimeException(message);
     }
 
     public static ConditionConfig getConditionConfig(String name) {
