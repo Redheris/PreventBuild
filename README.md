@@ -24,6 +24,21 @@ Once you have created/updated your configs, you should update configs in the gam
 - `/pb config switch` <name> - enable/disable config by name
 - `/pb config update` - reload all configs
 
+## Server restrictions of the conditions
+Since I'm trying to keep gameplay fair and rules-friendly, I decided to give server owners the ability to restrict
+some conditions that they can consider as "cheating-like" actions.
+
+For now, there's only a few of such restrictions. To use them, you need to add the following strings to the server
+message sent to players on joining the game:
+
+`§p§b§i§t§e§m§d§a§m§a§g§e` - Disables the "Item Damage" condition
+
+`§p§b§s§t§a§t§e` - Disables the "Block State" condition
+
+`§p§b§a§g§e§s§t§a§t§e` - Disables only the use of the "age" state in the "Block State" condition
+
+`§p§b§r§e§s§e§t`- Resets all restrictions
+
 ## Official links to download the mod
 - [Modrinth](https://modrinth.com/project/VYOvHxMm)
 - This GitHub repository (only source code)
