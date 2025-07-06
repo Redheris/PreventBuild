@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "rh.preventbuild.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [],
+  "client": [
+    "ServerMessagesChatListener"
+  ],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
