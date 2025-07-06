@@ -7,6 +7,7 @@ import net.fabricmc.api.Environment;
 import rh.preventbuild.PreventBuildConfig;
 import rh.preventbuild.api.Conditions;
 import rh.preventbuild.conditions.categories.CategoriesRegister;
+import rh.preventbuild.event.DisconnectWorldEventHandler;
 
 @Environment(EnvType.CLIENT)
 public class PreventBuildClient implements ClientModInitializer {
@@ -17,6 +18,7 @@ public class PreventBuildClient implements ClientModInitializer {
         Conditions.register();
         PreventBuildConfig.loadConditionConfigs();
 
+        DisconnectWorldEventHandler.register();
         ClientCommands.registerAll();
         CategoriesRegister.registerAll();
     }
