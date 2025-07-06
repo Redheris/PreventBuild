@@ -5,7 +5,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
+import net.minecraft.util.Formatting;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -35,12 +35,14 @@ public class PreventBuildConfig {
         exceptionMessage = null;
         MutableText current = Text.empty();
         try {
-            current = Text.translatable("preventbuild.oredict_load_error");
+            current = Text.translatable("preventbuild.configs_load_error").formatted(Formatting.RED);
+            current = Text.translatable("preventbuild.oredict_load_error").formatted(Formatting.RED);
             PreventBuildConfig.loadOreDictionary();
             current = Text.translatable("preventbuild.configs_load_error");
             PreventBuildConfig.loadConditionConfigs();
         } catch (Exception e) {
-            exceptionMessage = current.append(": " + e.getCause().getMessage()).withColor(Colors.LIGHT_RED);
+            MutableText prefix = Text.literal("[PreventBuild] ").formatted(Formatting.DARK_AQUA);
+            exceptionMessage = prefix.append(current.append(": " + e.getCause().getMessage()).formatted(Formatting.RED));
             PlayerEntity player = MinecraftClient.getInstance().player;
             if (player != null) {
                 player.sendMessage(exceptionMessage, false);

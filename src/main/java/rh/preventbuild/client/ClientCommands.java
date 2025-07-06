@@ -34,7 +34,8 @@ public class ClientCommands {
                     .then(literal("config")
                             .executes(context -> {
                                 context.getSource().getPlayer().sendMessage(
-                                        Text.translatable("preventbuild.config_without_arguments"),
+                                        Text.translatable("preventbuild.config_without_arguments")
+                                                .formatted(Formatting.DARK_AQUA),
                                         false);
                                 return 1;
                             })
@@ -69,7 +70,8 @@ public class ClientCommands {
 
     private static int getHelp(CommandContext<FabricClientCommandSource> context) {
         context.getSource().getPlayer().sendMessage(
-                Text.translatable("preventbuild.help_line_1"),
+                Text.translatable("preventbuild.help_line_1")
+                        .formatted(Formatting.DARK_AQUA),
                 false);
         context.getSource().getPlayer().sendMessage(
                 Text.translatable("preventbuild.help_line_2"),
@@ -90,7 +92,8 @@ public class ClientCommands {
         Map<String, Boolean> configs = PreventBuildConfig.getConfigsList();
         if (configs.isEmpty()) {
             context.getSource().getPlayer().sendMessage(
-                    Text.translatable("preventbuild.no_configs_found"),
+                    Text.translatable("preventbuild.no_configs_found")
+                            .formatted(Formatting.DARK_AQUA),
                     false);
         }
         for (String config : configs.keySet()) {
@@ -131,16 +134,22 @@ public class ClientCommands {
                     false);
             return 0;
         }
-        if (PreventBuildConfig.isConfigEnabled(name))
+        Text configName = Text.literal(name).formatted(Formatting.WHITE);
+        MutableText message = Text.translatable("preventbuild.config_is_toggled", configName)
+                .formatted(Formatting.DARK_AQUA);
+        if (PreventBuildConfig.isConfigEnabled(name)) {
             context.getSource().getPlayer().sendMessage(
-                    Text.translatable("preventbuild.config_is_turned_on", name),
+                    message.append(Text.translatable("preventbuild.config_is_active")
+                            .formatted(Formatting.GREEN)),
                     true
             );
-        else
+        } else {
             context.getSource().getPlayer().sendMessage(
-                    Text.translatable("preventbuild.config_is_turned_off", name),
+                    message.append(Text.translatable("preventbuild.config_is_inactive")
+                            .formatted(Formatting.RED)),
                     true
             );
+        }
         return 1;
     }
 
@@ -151,7 +160,8 @@ public class ClientCommands {
         if (exceptionMessage != null) return 0;
 
         context.getSource().getPlayer().sendMessage(
-                Text.translatable("preventbuild.configs_updated"),
+                Text.translatable("preventbuild.configs_updated")
+                        .formatted(Formatting.DARK_AQUA),
                 true
         );
         return 1;
