@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
@@ -144,27 +145,15 @@ public class ClientCommands {
     }
 
     private static int configUpdate(CommandContext<FabricClientCommandSource> context) {
-        boolean loadOreDict = PreventBuildConfig.loadOreDictionary();
-        if (!loadOreDict) {
-            context.getSource().getPlayer().sendMessage(
-                    Text.translatable("preventbuild.oredict_load_error"),
-                    false
-            );
-            return 0;
-        }
-        boolean loadConditions = PreventBuildConfig.loadConditionConfigs();
-        if (!loadConditions) {
-            context.getSource().getPlayer().sendMessage(
-                    Text.translatable("preventbuild.configs_load_error"),
-                    false
-            );
-            return 0;
-        }
+        PreventBuildConfig.loadConfigs();
+        Text exceptionMessage = PreventBuildConfig.getExceptionMessage();
+
+        if (exceptionMessage != null) return 0;
 
         context.getSource().getPlayer().sendMessage(
                 Text.translatable("preventbuild.configs_updated"),
-                true);
-
+                true
+        );
         return 1;
     }
 

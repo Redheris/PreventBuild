@@ -208,10 +208,6 @@ public class ConditionConfig {
         };
     }
 
-    public ICondition getCondition() {
-        return new OrCondition(useItemCondition, interactBlockCondition, breakCondition, placeCondition, interactEntityCondition, attackEntityCondition);
-    }
-
     private static int getTabLevel(String line) {
         int tabLevel = 0;
         for (char ch : line.toCharArray()) {

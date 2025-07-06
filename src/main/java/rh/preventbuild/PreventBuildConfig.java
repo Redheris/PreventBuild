@@ -1,6 +1,11 @@
 package rh.preventbuild;
 
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Colors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -24,7 +29,30 @@ public class PreventBuildConfig {
     private static final Map<String, ConditionConfig> conditionConfigs = new java.util.HashMap<>();
     public static final Map<String, String[]> oreDictionary = new java.util.HashMap<>();
 
-    public static boolean loadConditionConfigs() {
+    private static Text exceptionMessage = null;
+
+    public static void loadConfigs() {
+        exceptionMessage = null;
+        MutableText current = Text.empty();
+        try {
+            current = Text.translatable("preventbuild.oredict_load_error");
+            PreventBuildConfig.loadOreDictionary();
+            current = Text.translatable("preventbuild.configs_load_error");
+            PreventBuildConfig.loadConditionConfigs();
+        } catch (Exception e) {
+            exceptionMessage = current.append(": " + e.getCause().getMessage()).withColor(Colors.LIGHT_RED);
+            PlayerEntity player = MinecraftClient.getInstance().player;
+            if (player != null) {
+                player.sendMessage(exceptionMessage, false);
+            }
+        }
+    }
+
+    public static Text getExceptionMessage() {
+        return exceptionMessage;
+    }
+
+    public static void loadConditionConfigs() {
         try {
             conditionConfigs.clear();
             File jsonFile = PBConfigsPath.resolve("condition_configs.json").toFile();
@@ -63,12 +91,12 @@ public class PreventBuildConfig {
 
                 if (!found) {
                     LOGGER.info("No conditions configs found");
-                    return false;
+                    return;
                 }
 
             } catch (IOException e) {
                 LOGGER.error("Failed to read condition configs directory", e);
-                return false;
+                return;
             }
 
             Object[] keys = condConfigsHandler.keySet().toArray();
@@ -91,18 +119,16 @@ public class PreventBuildConfig {
             printWriter.print(prettyPrintJSON(condConfigsHandler.toString()));
             printWriter.close();
             fileWriter.close();
-            return true;
-        }
-        catch (ParseException e) {
+        } catch (ParseException e) {
             LOGGER.error("Failed to parse JSON config file. Check the format of the file\n{}", e.getMessage(), e);
         }
         catch (Exception e) {
             LOGGER.error("Failed to load conditions configs: {}", e.getMessage(), e);
+            throw new RuntimeException(e);
         }
-        return false;
     }
 
-    public static boolean loadOreDictionary() {
+    public static void loadOreDictionary() {
         try {
             if (!Files.exists(PBConfigsPath))
                 Files.createDirectories(PBConfigsPath);
@@ -112,7 +138,7 @@ public class PreventBuildConfig {
                 PrintWriter writer = new PrintWriter(jsonFile);
                 writer.println("{}");
                 writer.close();
-                return true;
+                return;
             }
             Object o = new JSONParser().parse(new FileReader(jsonFile));
             JSONObject oreDictJSON = (JSONObject) o;
@@ -128,13 +154,10 @@ public class PreventBuildConfig {
         }
         catch (ParseException e) {
             LOGGER.error("Failed to parse JSON config file. Check the format of the file:\n{}", e.getMessage(), e);
-            return false;
         }
         catch (Exception e) {
             LOGGER.error("Failed to load ore dictionary file:\n{}", e.getMessage(), e);
-            return false;
         }
-        return true;
     }
 
     public static String[] getOreDictionary(String key) {
