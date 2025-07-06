@@ -17,9 +17,6 @@
   "entrypoints": {
     "client": [
       "rh.preventbuild.client.PreventBuildClient"
-    ],
-    "main": [
-      "rh.preventbuild.PreventBuild"
     ]
   },
   "mixins": [
