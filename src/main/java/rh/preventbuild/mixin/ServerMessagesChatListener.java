@@ -21,7 +21,8 @@ public class ServerMessagesChatListener {
 
         if (msg.contains("§p§b§r§e§s§e§t")) {
             ConditionRestrictions.resetRestrictions();
-            PreventBuildConfig.loadConfigs();
+            if (PreventBuildConfig.getExceptionMessage() == null)
+                PreventBuildConfig.loadConfigs();
             return;
         }
 
@@ -39,7 +40,7 @@ public class ServerMessagesChatListener {
             hasServerMessage = true;
         }
 
-        if (hasServerMessage) {
+        if (hasServerMessage && PreventBuildConfig.getExceptionMessage() == null) {
             PreventBuildConfig.loadConfigs();
         }
     }
