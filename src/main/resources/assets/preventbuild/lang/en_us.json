@@ -7,15 +7,23 @@
   "preventbuild.help_line_4": "/pb config switch <name> - enable/disable config by name",
   "preventbuild.help_line_5": "/pb config update - reload all configs",
   "preventbuild.config_without_arguments": "§3Type /rh help to see a list of commands",
-  "preventbuild.no_configs_found": "§3No configs found",
   "preventbuild.config_is_active": "enabled",
   "preventbuild.config_is_inactive": "disabled",
-  "preventbuild.config_not_found": "Config \"%s\" not found",
   "preventbuild.config_is_turned_on": "§3Config \"%s§3\" is now §aenabled",
   "preventbuild.config_is_turned_off": "§3Config \"%s§3\" is now §cdisabled",
-  "preventbuild.oredict_load_error": "§cError loading ore dictionary",
-  "preventbuild.configs_load_error": "§cError loading configs",
+
   "preventbuild.configs_updated": "§3Configs updated",
   "preventbuild.open_config_file": "[Click to open the config file]",
-  "preventbuild.toggle_enabled": "[Click to toggle]"
+  "preventbuild.toggle_enabled": "[Click to toggle]",
+
+  "preventbuild.no_configs_found": "§3No configs found",
+  "preventbuild.config_not_found": "Config \"%s\" not found",
+  "preventbuild.oredict_load_error": "§3[PreventBuild] §cError loading ore dictionary",
+  "preventbuild.configs_load_error": "§3[PreventBuild] §cError loading configs",
+  "preventbuild.unknown_keyword": "Unknown condition key: \"%s\"",
+  "preventbuild.restricted_condition": "The condition is restricted by the server: \"%s\"",
+  "preventbuild.not_expected_line_format": "Expected line of type \"%s\" but found \"%s\"",
+  "preventbuild.underline_restriction": "Configuration names must not contain '_' characters",
+  "preventbuild.empty_required_value": "Condition with empty required value: \"%s\"",
+  "preventbuild.empty_logical_condition": "Logical condition with zero arguments"
 }

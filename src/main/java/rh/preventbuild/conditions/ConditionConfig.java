@@ -1,6 +1,7 @@
 package rh.preventbuild.conditions;
 
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import rh.preventbuild.api.ConditionRegistry;
@@ -82,7 +83,7 @@ public class ConditionConfig {
                 if (tabLevel == 0) {
                     if (line.startsWith("name:")) {
                         if (line.contains("_"))
-                            throw new IllegalArgumentException("Configuration names must not contain '_' characters");
+                            throw new IllegalArgumentException(Text.translatable("preventbuild.underline_restriction").getString());
                         configurationName = line.substring(5).trim();
                     }
                 }
@@ -133,7 +134,7 @@ public class ConditionConfig {
             key = line.substring(0, divIndex + 1);
             value = line.substring(divIndex + 1).trim();
             if (value.isEmpty())
-                throw new IllegalArgumentException("Condition with empty required value: \"" + line + "\"");
+                throw new IllegalArgumentException(Text.translatable("preventbuild.empty_required_value", line).getString());
         }
         return ConditionRegistry.parse(category, key, value);
     }
@@ -181,7 +182,7 @@ public class ConditionConfig {
                 }
 
                 if (conditionsRes.length == 0)
-                    throw new IllegalArgumentException("Logical condition with zero arguments");
+                    throw new IllegalArgumentException(Text.translatable("preventbuild.empty_logical_condition").getString());
                 if (conditionsRes.length == 1)
                     return conditionsRes[0];
                 if (lines[0].trim().startsWith("and:"))

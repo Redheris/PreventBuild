@@ -1,5 +1,6 @@
 package rh.preventbuild.api;
 
+import net.minecraft.text.Text;
 import net.minecraft.util.math.Direction;
 import rh.preventbuild.PreventBuildConfig;
 import rh.preventbuild.conditions.advanced.*;
@@ -215,8 +216,10 @@ public class Conditions {
 
         ConditionRegistry.register("state:", ((category, value) -> {
             String[] val = value.split("=");
-            if (val.length != 2)
-                throw new IllegalArgumentException("Expected line of type \"state:key=value\" but found \"state:" + value + "\"");
+            if (val.length != 2) {
+                String message = Text.translatable("preventbuild.not_expected_line_format", "state:key=value", "state:" + value).getString();
+                throw new IllegalArgumentException(message);
+            }
             return new BlockStateCondition(category, val[0], val[1]);
         }));
 

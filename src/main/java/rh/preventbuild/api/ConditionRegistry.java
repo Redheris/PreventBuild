@@ -1,5 +1,6 @@
 package rh.preventbuild.api;
 
+import net.minecraft.text.Text;
 import rh.preventbuild.conditions.categories.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
 
@@ -22,9 +23,13 @@ public class ConditionRegistry {
 
     public static ICondition parse(ConditionCategory category, String key, String value) {
         ConditionFactory factory = get(key);
-        if (factory == null) throw new IllegalArgumentException("Unknown condition key: \"" + key + "\"");
+        String message = Text.translatable("preventbuild.unknown_keyword", key).getString();
+        if (factory == null) throw new IllegalArgumentException(message);
+
         ICondition condition = factory.parse(category, value);
         if (isAllowedCondition(condition, value)) return condition;
-        throw new IllegalArgumentException("Restricted condition: \"" + key + value + "\"");
+
+        message = Text.translatable("preventbuild.restricted_condition", key + value).getString();
+        throw new IllegalArgumentException(message);
     }
 }
