@@ -31,7 +31,7 @@ some conditions that they can consider as "cheating-like" actions.
 For now, there's only a few of such restrictions. To use them, you need to add the following strings to the server
 message sent to players on joining the game:
 
-`§p§b§i§t§e§m§d§a§m§a§g§e` - Disables the "Item Damage" condition
+`§p§b§i§t§e§m§d§a§m§a§g§e` - Disables all the "Item Damage" and "Item Durability" conditions
 
 `§p§b§s§t§a§t§e` - Disables the "Block State" condition
 

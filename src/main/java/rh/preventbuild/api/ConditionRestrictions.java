@@ -12,7 +12,7 @@ public class ConditionRestrictions {
     static boolean isAllowedCondition(ICondition condition, String value) {
         if (restrictItemDamage && condition instanceof ItemDamageCondition) return false;
         if (condition instanceof BlockStateCondition) {
-            if (restrictAgeBlockState) return !value.contains("age=");
+            if (restrictAgeBlockState) return !value.toLowerCase().contains("age=");
             return !restrictBlockState;
         }
         return true;
