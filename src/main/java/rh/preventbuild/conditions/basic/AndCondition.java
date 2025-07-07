@@ -25,7 +25,6 @@ public class AndCondition implements ICondition {
     @Override
     public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
         for (ICondition condition : nestedConditions) {
-//            ActionResult res = ConditionHandler.checkCondition(condition, player, hand, BlockPos.ofFloored(x, y, z));
             ActionResult res = condition.attackBlockCheck(player, hand, x, y, z);
             if (res == ActionResult.PASS)
                 return res;

@@ -6,8 +6,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -20,10 +18,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
+import static rh.preventbuild.client.PreventBuildClient.LOGGER;
+
 @SuppressWarnings("unchecked")
 public class PreventBuildConfig {
     private static final Path PBConfigsPath = FabricLoader.getInstance().getConfigDir().resolve("preventbuild");
-    private static final Logger LOGGER = LogManager.getLogger("PBConditionConfig");
     public static JSONObject condConfigsHandler = new JSONObject();
     private static final Map<String, Path> conditionConfigPaths = new java.util.HashMap<>();
     private static final Map<String, ConditionConfig> conditionConfigs = new java.util.HashMap<>();
