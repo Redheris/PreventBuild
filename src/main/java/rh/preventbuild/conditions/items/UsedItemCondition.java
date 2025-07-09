@@ -17,7 +17,7 @@ public class UsedItemCondition implements ICondition {
 
     @Override
     public ConditionCategory getCategory() {
-        return ConditionCategory.MISCELLANEOUS;
+        return ConditionCategory.USE_ITEM;
     }
 
     @Override

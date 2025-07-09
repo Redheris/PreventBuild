@@ -2,6 +2,7 @@ package rh.preventbuild.event.categories;
 
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -17,6 +18,11 @@ public class UseItemCategory {
         {
             if (!player.getWorld().isClient)
                 return ActionResult.PASS;
+
+            BlockState state = world.getBlockState(hitResult.getBlockPos());
+            ActionResult interactCheck = state.onUse(world, player, hitResult);
+            if (!(player.isSneaking()) && interactCheck != ActionResult.PASS)
+                return ActionResult.SUCCESS;
 
             for (String configName : PreventBuildConfig.getConfigsList().keySet()) {
                 ConditionConfig config = PreventBuildConfig.getConditionConfig(configName);
