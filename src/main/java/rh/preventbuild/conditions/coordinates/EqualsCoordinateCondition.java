@@ -6,7 +6,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.Direction;
 import rh.preventbuild.conditions.ICondition;
 import rh.preventbuild.conditions.basic.OrCondition;
-import rh.preventbuild.conditions.categories.ConditionCategory;
+import rh.preventbuild.conditions.ConditionCategory;
 
 import java.util.Arrays;
 

@@ -4,7 +4,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import rh.preventbuild.conditions.categories.ConditionCategory;
+import rh.preventbuild.conditions.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
 
 public class ItemCustomNameCondition implements ICondition {

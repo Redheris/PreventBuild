@@ -1,4 +1,4 @@
-package rh.preventbuild.conditions.categories;
+package rh.preventbuild.event.categories;
 
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.entity.player.PlayerEntity;
@@ -9,6 +9,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import rh.preventbuild.PreventBuildConfig;
 import rh.preventbuild.conditions.ConditionConfig;
+import rh.preventbuild.conditions.ConditionCategory;
 
 public class BreakBlockCategory {
     protected static void register() {

@@ -7,7 +7,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
-import rh.preventbuild.conditions.categories.ConditionCategory;
 
 public interface ICondition {
     ConditionCategory getCategory();

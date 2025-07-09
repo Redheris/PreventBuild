@@ -1,4 +1,4 @@
-package rh.preventbuild.conditions.categories;
+package rh.preventbuild.event.categories;
 
 public class CategoriesRegister {
     public static void registerAll() {

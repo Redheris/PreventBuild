@@ -1,4 +1,4 @@
-package rh.preventbuild.conditions.categories;
+package rh.preventbuild.conditions;
 
 public enum ConditionCategory {
     LOGIC,

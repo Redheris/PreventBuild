@@ -10,7 +10,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import rh.preventbuild.conditions.categories.ConditionCategory;
+import rh.preventbuild.conditions.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
 
 public class DoubleSlabCondition implements ICondition {

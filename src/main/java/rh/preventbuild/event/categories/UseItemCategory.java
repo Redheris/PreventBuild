@@ -1,4 +1,4 @@
-package rh.preventbuild.conditions.categories;
+package rh.preventbuild.event.categories;
 
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
@@ -9,6 +9,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
 import rh.preventbuild.PreventBuildConfig;
 import rh.preventbuild.conditions.ConditionConfig;
+import rh.preventbuild.conditions.ConditionCategory;
 
 public class UseItemCategory {
     protected static void register() {

@@ -5,7 +5,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Direction;
 import rh.preventbuild.conditions.ICondition;
-import rh.preventbuild.conditions.categories.ConditionCategory;
+import rh.preventbuild.conditions.ConditionCategory;
 
 public class CompareCoordinateCondition implements ICondition {
     private final int value;

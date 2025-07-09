@@ -8,7 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import rh.preventbuild.PreventBuildConfig;
 import rh.preventbuild.api.Conditions;
-import rh.preventbuild.conditions.categories.CategoriesRegister;
+import rh.preventbuild.event.categories.CategoriesRegister;
 import rh.preventbuild.event.PlayConnectionEventsHandler;
 import rh.preventbuild.packet.RestrictionMessageHandler;
 

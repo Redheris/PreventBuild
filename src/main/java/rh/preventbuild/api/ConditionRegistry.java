@@ -1,7 +1,7 @@
 package rh.preventbuild.api;
 
 import net.minecraft.text.Text;
-import rh.preventbuild.conditions.categories.ConditionCategory;
+import rh.preventbuild.conditions.ConditionCategory;
 import rh.preventbuild.conditions.ICondition;
 
 import java.util.HashMap;

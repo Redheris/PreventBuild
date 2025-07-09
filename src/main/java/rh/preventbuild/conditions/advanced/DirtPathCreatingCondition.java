@@ -13,7 +13,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import rh.preventbuild.conditions.ICondition;
-import rh.preventbuild.conditions.categories.ConditionCategory;
+import rh.preventbuild.conditions.ConditionCategory;
 
 import java.util.ArrayList;
 import java.util.Arrays;

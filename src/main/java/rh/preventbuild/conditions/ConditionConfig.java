@@ -9,7 +9,6 @@ import rh.preventbuild.conditions.basic.AndCondition;
 import rh.preventbuild.conditions.basic.NotCondition;
 import rh.preventbuild.conditions.basic.NullCondition;
 import rh.preventbuild.conditions.basic.OrCondition;
-import rh.preventbuild.conditions.categories.ConditionCategory;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
@@ -17,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import static rh.preventbuild.conditions.categories.ConditionCategory.*;
+import static rh.preventbuild.conditions.ConditionCategory.*;
 
 public class ConditionConfig {
     private static final Path conditionsDirPath = FabricLoader.getInstance().getConfigDir().resolve("preventbuild/conditions");

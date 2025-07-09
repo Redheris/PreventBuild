@@ -1,4 +1,4 @@
-package rh.preventbuild.conditions.categories;
+package rh.preventbuild.event.categories;
 
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.BlockState;
@@ -11,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import rh.preventbuild.PreventBuildConfig;
 import rh.preventbuild.conditions.ConditionConfig;
+import rh.preventbuild.conditions.ConditionCategory;
 
 public class PlaceBlockCategory {
     protected static void register() {
