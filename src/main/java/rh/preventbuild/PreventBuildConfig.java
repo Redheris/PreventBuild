@@ -3,6 +3,8 @@ package rh.preventbuild;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -29,7 +31,7 @@ public class PreventBuildConfig {
     public static final Map<String, String[]> oreDictionary = new java.util.HashMap<>();
 
     private static Text exceptionMessage;
-    private static String readingConfigFilename;
+    private static Path readingConfigFilePath;
 
     public static void loadConfigs() {
         exceptionMessage = null;
@@ -41,7 +43,13 @@ public class PreventBuildConfig {
             PreventBuildConfig.loadConditionConfigs();
         } catch (Exception e) {
             MutableText prefix = Text.literal("[PreventBuild] ").formatted(Formatting.DARK_AQUA);
-            exceptionMessage = prefix.append(Text.translatable(current, readingConfigFilename)
+            Text configFilename = Text.literal(readingConfigFilePath.getFileName().toString()).styled(
+                    style -> style
+                            .withClickEvent(new ClickEvent.OpenFile(readingConfigFilePath))
+                            .withHoverEvent(new HoverEvent.ShowText(Text.translatable("preventbuild.open_config_file")))
+                            .withUnderline(true)
+            );
+            exceptionMessage = prefix.append(Text.translatable(current, configFilename)
                     .append(": " + e.getCause().getMessage()).formatted(Formatting.RED));
             PlayerEntity player = MinecraftClient.getInstance().player;
             if (player != null) {
@@ -75,6 +83,7 @@ public class PreventBuildConfig {
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(conditionDir, "*.cfg")) {
                 boolean found = false;
                 for (Path path : stream) {
+                    readingConfigFilePath = path;
                     found = true;
                     readingConfigFilename = path.getFileName().toString();
                     String configName = readingConfigFilename.substring(0, readingConfigFilename.length() - 4);
