@@ -41,10 +41,10 @@ public class ClientCommands {
                             })
                             .then(literal("list").executes(ClientCommands::configList))
                             .then(literal("switch")
-                                    .then(argument("name", StringArgumentType.word())
+                                    .then(argument("name", StringArgumentType.string())
                                             .suggests((context, builder) -> {
                                                 for (String config : PreventBuildConfig.getConfigsList().keySet()) {
-                                                    builder.suggest(config.replace(" ", "_"));
+                                                    builder.suggest("\"" + config + "\"");
                                                 }
                                                 return builder.buildFuture();
                                             })
@@ -56,7 +56,7 @@ public class ClientCommands {
             );
             dispatcher.register(literal("preventbuild").redirect(pbNode));
             dispatcher.register(ClientCommandManager.literal("toggle_prevent_build_config_enabled")
-                    .then(ClientCommandManager.argument("name", StringArgumentType.word())
+                    .then(ClientCommandManager.argument("name", StringArgumentType.string())
                             .executes(context -> {
                                 context.getSource().getPlayer().sendMessage(Text.empty(), false);
                                 ClientCommands.configSwitch(context);
@@ -111,7 +111,7 @@ public class ClientCommands {
                             .withHoverEvent(new HoverEvent.ShowText(Text.translatable("preventbuild.open_config_file")))
                             .withClickEvent(new ClickEvent.OpenFile(configPath))
                     );
-            String toggleCommand = "/toggle_prevent_build_config_enabled " + config.replace(" ", "_");
+            String toggleCommand = "/toggle_prevent_build_config_enabled \"" + config + "\"";
             Text configIsActive = Text.translatable(isActive ? "preventbuild.config_is_active" : "preventbuild.config_is_inactive")
                     .styled(style -> style
                             .withColor(isActive ? Formatting.GREEN : Formatting.RED)
@@ -131,7 +131,7 @@ public class ClientCommands {
     }
 
     private static int configSwitch(CommandContext<FabricClientCommandSource> context) {
-        String name = context.getArgument("name", String.class).replace("_", " ");
+        String name = context.getArgument("name", String.class);
         if (PreventBuildConfig.switchConfigEnabled(name) == -1) {
             context.getSource().getPlayer().sendMessage(
                     Text.translatable("preventbuild.config_not_found", name)

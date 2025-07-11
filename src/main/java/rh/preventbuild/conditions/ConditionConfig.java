@@ -82,8 +82,6 @@ public class ConditionConfig {
                 String line = configLines[i].trim();
                 if (tabLevel == 0) {
                     if (line.startsWith("name:")) {
-                        if (line.contains("_"))
-                            throw new IllegalArgumentException(Text.translatable("preventbuild.underline_restriction").getString());
                         configurationName = line.substring(5).trim();
                         i++;
                     }
