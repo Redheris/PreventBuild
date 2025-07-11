@@ -191,7 +191,9 @@ public class ConditionConfig {
                     return new AndCondition(conditionsRes);
                 return new OrCondition(conditionsRes);
             }
-            default: return new NullCondition();
+            default:
+                String message = Text.translatable("preventbuild.unknown_keyword", lines[0].trim()).getString();
+                throw new IllegalArgumentException(message);
         }
     }
 
