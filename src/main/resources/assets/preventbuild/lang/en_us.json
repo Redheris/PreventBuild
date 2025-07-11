@@ -13,8 +13,9 @@
   "preventbuild.configs_updated": "Configs updated",
   "preventbuild.open_config_file": "[Click to open the config file]",
   "preventbuild.toggle_enabled": "[Click to toggle]",
-
+  "preventbuild.configs_list": "Loaded configs:",
   "preventbuild.no_configs_found": "No configs found",
+
   "preventbuild.config_not_found": "Config \"%s\" not found",
   "preventbuild.oredict_not_found": "Ore dictionary \"%s\" not found",
   "preventbuild.oredict_load_error": "Error loading ore dictionary",

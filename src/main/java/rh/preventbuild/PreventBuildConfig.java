@@ -85,10 +85,10 @@ public class PreventBuildConfig {
                 for (Path path : stream) {
                     readingConfigFilePath = path;
                     found = true;
-                    readingConfigFilename = path.getFileName().toString();
-                    String configName = readingConfigFilename.substring(0, readingConfigFilename.length() - 4);
 
-                    ConditionConfig config = new ConditionConfig(configName);
+                    String filename = path.getFileName().toString();
+
+                    ConditionConfig config = new ConditionConfig(filename);
                     conditionConfigs.put(config.getName(), config);
                     conditionConfigPaths.put(config.getName(), path);
 
@@ -169,6 +169,10 @@ public class PreventBuildConfig {
         catch (Exception e) {
             LOGGER.error("Failed to load ore dictionary file:\n{}", e.getMessage(), e);
         }
+    }
+
+    public static boolean hasConfig(String configName) {
+        return conditionConfigs.containsKey(configName);
     }
 
     public static String[] getOreDictionary(String key) {

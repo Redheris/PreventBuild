@@ -95,7 +95,12 @@ public class ClientCommands {
                     Text.translatable("preventbuild.no_configs_found")
                             .formatted(Formatting.DARK_AQUA),
                     false);
+            return 0;
         }
+        context.getSource().getPlayer().sendMessage(
+                Text.translatable("preventbuild.configs_list")
+                        .formatted(Formatting.GREEN),
+                false);
         for (String config : configs.keySet()) {
             boolean isActive = configs.get(config);
 

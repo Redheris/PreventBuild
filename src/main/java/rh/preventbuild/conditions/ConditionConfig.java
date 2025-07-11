@@ -4,6 +4,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import rh.preventbuild.PreventBuildConfig;
 import rh.preventbuild.api.ConditionRegistry;
 import rh.preventbuild.conditions.basic.AndCondition;
 import rh.preventbuild.conditions.basic.NotCondition;
@@ -51,10 +52,10 @@ public class ConditionConfig {
     }
 
     public static ConditionConfig getConditionFromConfig(String filename) {
-        LOGGER.info("Reading condition file: {}.cfg", conditionsDirPath + "\\" + filename);
-        ConditionConfig config = read(conditionsDirPath.resolve( filename + ".cfg"));
+        LOGGER.info("Reading condition file: {}", conditionsDirPath + "\\" + filename);
+        ConditionConfig config = read(conditionsDirPath.resolve( filename));
         assert config != null;
-        LOGGER.info("Successfully read config \"{}\" from file: {}.cfg", config.name, filename);
+        LOGGER.info("Successfully read config \"{}\" from file: {}", config.name, filename);
         return config;
     }
 
@@ -113,6 +114,16 @@ public class ConditionConfig {
                     }
                     i += configPart.length - 2;
                 }
+            }
+
+            if (PreventBuildConfig.hasConfig(configurationName)) {
+                String newName = configurationName;
+                int counter = 1;
+                while (PreventBuildConfig.hasConfig(newName)) {
+                    newName = configurationName + " (" + counter + ")";
+                    counter++;
+                }
+                configurationName = newName;
             }
 
             return new ConditionConfig(
