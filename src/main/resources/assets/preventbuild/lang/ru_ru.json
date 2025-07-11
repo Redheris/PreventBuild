@@ -18,7 +18,7 @@
   "preventbuild.config_not_found": "Конфиг \"%s\" не найден",
   "preventbuild.oredict_not_found": "Словарь для \"%s\" не найден",
   "preventbuild.oredict_load_error": "Ошибка при загрузке словаря руд",
-  "preventbuild.configs_load_error": "Ошибка при загрузке конфигов",
+  "preventbuild.configs_load_error": "Ошибка при загрузке конфига \"%s\"",
   "preventbuild.unknown_config_part": "Неизвестное ключевое слово категории: \"%s\"",
   "preventbuild.unknown_keyword": "Неизвестное ключевое слово условия: \"%s\"",
   "preventbuild.restricted_condition": "Сервером ограничено использование условия: \"%s\"",

@@ -28,19 +28,21 @@ public class PreventBuildConfig {
     private static final Map<String, ConditionConfig> conditionConfigs = new java.util.HashMap<>();
     public static final Map<String, String[]> oreDictionary = new java.util.HashMap<>();
 
-    private static Text exceptionMessage = null;
+    private static Text exceptionMessage;
+    private static String readingConfigFilename;
 
     public static void loadConfigs() {
         exceptionMessage = null;
-        MutableText current = Text.empty();
+        String current = "";
         try {
-            current = Text.translatable("preventbuild.oredict_load_error");
+            current = "preventbuild.oredict_load_error";
             PreventBuildConfig.loadOreDictionary();
-            current = Text.translatable("preventbuild.configs_load_error");
+            current = "preventbuild.configs_load_error";
             PreventBuildConfig.loadConditionConfigs();
         } catch (Exception e) {
             MutableText prefix = Text.literal("[PreventBuild] ").formatted(Formatting.DARK_AQUA);
-            exceptionMessage = prefix.append(current.append(": " + e.getCause().getMessage()).formatted(Formatting.RED));
+            exceptionMessage = prefix.append(Text.translatable(current, readingConfigFilename)
+                    .append(": " + e.getCause().getMessage()).formatted(Formatting.RED));
             PlayerEntity player = MinecraftClient.getInstance().player;
             if (player != null) {
                 player.sendMessage(exceptionMessage, false);
@@ -74,8 +76,8 @@ public class PreventBuildConfig {
                 boolean found = false;
                 for (Path path : stream) {
                     found = true;
-                    String fileName = path.getFileName().toString();
-                    String configName = fileName.substring(0, fileName.length() - 4);
+                    readingConfigFilename = path.getFileName().toString();
+                    String configName = readingConfigFilename.substring(0, readingConfigFilename.length() - 4);
 
                     ConditionConfig config = new ConditionConfig(configName);
                     conditionConfigs.put(config.getName(), config);

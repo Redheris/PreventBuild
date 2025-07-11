@@ -18,7 +18,7 @@
   "preventbuild.config_not_found": "Config \"%s\" not found",
   "preventbuild.oredict_not_found": "Ore dictionary \"%s\" not found",
   "preventbuild.oredict_load_error": "Error loading ore dictionary",
-  "preventbuild.configs_load_error": "Error loading configs",
+  "preventbuild.configs_load_error": "Error loading the config file \"%s\"",
   "preventbuild.unknown_config_part": "Unknown condition category keyword: \"%s\"",
   "preventbuild.unknown_keyword": "Unknown condition key: \"%s\"",
   "preventbuild.restricted_condition": "The condition is restricted by the server: \"%s\"",

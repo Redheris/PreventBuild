@@ -37,13 +37,13 @@ message via the `"preventbuild:restrictions"` channel and send it to players on 
 
 `NoAgeBlockState` - Disables only the use of the "age" state in the "Block State" condition
 
-`ResetAll`- Resets all restrictions
+`ResetAll` - Resets all restrictions
 
 Example:
 
 ```java
 @EventHandler
-public void onPlayerJoin(PlayerRegisterChannelEvent event) {
+public void onRegisterChannelJoin(PlayerRegisterChannelEvent event) {
 	if (event.getChannel().equals("preventbuild:restrictions")) {
 		Player player = event.getPlayer();
 		ByteArrayDataOutput out = ByteStreams.newDataOutput();
