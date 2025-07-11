@@ -84,6 +84,7 @@ public class ConditionConfig {
                         if (line.contains("_"))
                             throw new IllegalArgumentException(Text.translatable("preventbuild.underline_restriction").getString());
                         configurationName = line.substring(5).trim();
+                        i++;
                     }
                 }
                 else {
@@ -107,6 +108,8 @@ public class ConditionConfig {
                         case "attackEntity:":
                             attackEntityCondition = readLogicalCondition(ATTACK_ENTITY, configPart);
                             break;
+                        default:
+                            throw new IllegalArgumentException(Text.translatable("preventbuild.unknown_config_part", configPart[0].trim()).getString());
                     }
                     i += configPart.length - 2;
                 }

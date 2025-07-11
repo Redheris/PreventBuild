@@ -6,10 +6,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import rh.preventbuild.PreventBuildConfig;
 import rh.preventbuild.api.Conditions;
-import rh.preventbuild.event.categories.CategoriesRegister;
 import rh.preventbuild.event.PlayConnectionEventsHandler;
+import rh.preventbuild.event.categories.CategoriesRegister;
 import rh.preventbuild.packet.RestrictionMessageHandler;
 
 @Environment(EnvType.CLIENT)
@@ -19,7 +18,6 @@ public class PreventBuildClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         Conditions.register();
-        PreventBuildConfig.loadConfigs();
 
         RestrictionMessageHandler.register();
         PlayConnectionEventsHandler.register();

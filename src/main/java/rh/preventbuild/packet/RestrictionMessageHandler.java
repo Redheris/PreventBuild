@@ -15,13 +15,17 @@ public class RestrictionMessageHandler {
                 (payload, context) ->{
                     String msg = payload.value();
 
-                    if (msg.contains("Reset")) {
+                    if (msg.trim().equals("ResetAll")) {
                         ConditionRestrictions.resetRestrictions();
-                        if (PreventBuildConfig.getExceptionMessage() == null)
-                            PreventBuildConfig.loadConfigs();
+                        PreventBuildConfig.loadConfigs();
                         return;
                     }
+
                     boolean hasServerMessage = false;
+                    if (msg.contains("ResetAll")) {
+                        ConditionRestrictions.resetRestrictions();
+                        hasServerMessage = true;
+                    }
                     if (msg.contains("NoItemDamage")) {
                         ConditionRestrictions.setRestrictItemDamage();
                         hasServerMessage = true;
