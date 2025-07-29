@@ -8,7 +8,7 @@ This mod simply cancels the player's actions, so it's entirely client-side.
 
 ## How to use the mod
 
-It's almost mandatory to visit the [Wiki](https://github.com/Redheris/PreventBuild/wiki) to understand how to write a config, because there is no other way to write it except by hand.
+It's almost necessary to visit the [Wiki](https://github.com/Redheris/PreventBuild/wiki) to understand how to write a config, because there is no other way to write it except by hand.
 
 There are a few files in config/preventbuild/:
 - `conditions/` - contains config .cfg files
@@ -33,9 +33,9 @@ message via the `"preventbuild:restrictions"` channel and send it to players on 
 
 `NoItemDamage` - Disables all the "Item Damage" and "Item Durability" conditions
 
-`NoBlockState` - Disables the "Block State" condition
+`NoStateCondition` - Disables the "Block State" condition
 
-`NoAgeBlockState` - Disables only the use of the "age" state in the "Block State" condition
+`NoAgeState` - Disables only the use of the "age" state in the "Block State" condition
 
 `ResetAll` - Resets all restrictions
 
