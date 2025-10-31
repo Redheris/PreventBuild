@@ -45,7 +45,7 @@ public class AxeStrippingCondition implements ICondition {
         if (target.getType() != HitResult.Type.BLOCK)
             return ActionResult.PASS;
         BlockHitResult targetBlock = (BlockHitResult) target;
-        Block lookingAt = player.getWorld().getBlockState(targetBlock.getBlockPos()).getBlock();
+        Block lookingAt = player.getEntityWorld().getBlockState(targetBlock.getBlockPos()).getBlock();
 
         boolean shouldStopTripAttempt = hand == Hand.MAIN_HAND && player.getOffHandStack().contains(DataComponentTypes.BLOCKS_ATTACKS) && !player.shouldCancelInteraction();
         if (shouldStopTripAttempt)

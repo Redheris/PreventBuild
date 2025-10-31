@@ -27,7 +27,7 @@ public class DoubleSlabCondition implements ICondition {
 
     @Override
     public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
-        BlockState blockState = player.getWorld().getBlockState(new BlockPos(x, y, z));
+        BlockState blockState = player.getEntityWorld().getBlockState(new BlockPos(x, y, z));
         if (blockState.getBlock() instanceof SlabBlock && blockState.get(SlabBlock.TYPE) == SlabType.DOUBLE)
             return ActionResult.FAIL;
         return ActionResult.PASS;
@@ -35,14 +35,14 @@ public class DoubleSlabCondition implements ICondition {
 
     @Override
     public ActionResult placeBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
-        BlockState blockState = player.getWorld().getBlockState(new BlockPos(x, y, z));
+        BlockState blockState = player.getEntityWorld().getBlockState(new BlockPos(x, y, z));
         Block heldBlock = Block.getBlockFromItem(player.getStackInHand(hand).getItem());
         if (heldBlock instanceof SlabBlock) {
-            BlockState blockStateSide = player.getWorld().getBlockState(new BlockPos(x, y + 1, z));
+            BlockState blockStateSide = player.getEntityWorld().getBlockState(new BlockPos(x, y + 1, z));
             if (blockStateSide.getBlock() instanceof SlabBlock && hitResult.getSide() == Direction.DOWN && blockStateSide.get(SlabBlock.TYPE) == SlabType.TOP)
                 blockState = blockStateSide;
             else {
-                blockStateSide = player.getWorld().getBlockState(new BlockPos(x, y - 1, z));
+                blockStateSide = player.getEntityWorld().getBlockState(new BlockPos(x, y - 1, z));
                 if (blockStateSide.getBlock() instanceof SlabBlock && hitResult.getSide() == Direction.UP && blockStateSide.get(SlabBlock.TYPE) == SlabType.BOTTOM)
                     blockState = blockStateSide;
             }

@@ -30,7 +30,7 @@ public class BlockAdjacentCondition implements ICondition {
                 for (int k = -1; k <= 1; k++) {
                     if (Math.abs(i) + Math.abs(j) + Math.abs(k) != 1)
                         continue;
-                    String blockName = player.getWorld().getBlockState(new BlockPos(x + i, y + j, z + k)).getBlock().getTranslationKey();
+                    String blockName = player.getEntityWorld().getBlockState(new BlockPos(x + i, y + j, z + k)).getBlock().getTranslationKey();
                     if (Arrays.stream(this.blocks).anyMatch(blk -> blk.equalsIgnoreCase(blockName)))
                         return ActionResult.FAIL;
                 }

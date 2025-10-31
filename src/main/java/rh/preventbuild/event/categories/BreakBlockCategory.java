@@ -15,7 +15,7 @@ public class BreakBlockCategory {
     protected static void register() {
         AttackBlockCallback.EVENT.register((PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction) ->
         {
-            if (!player.getWorld().isClient)
+            if (!player.getEntityWorld().isClient())
                 return ActionResult.PASS;
 
             for (String configName : PreventBuildConfig.getConfigsList().keySet()) {

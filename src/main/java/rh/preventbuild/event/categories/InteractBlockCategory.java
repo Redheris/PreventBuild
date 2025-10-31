@@ -15,7 +15,7 @@ public class InteractBlockCategory {
     protected static void register() {
         UseBlockCallback.EVENT.register((PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) ->
         {
-            if (!player.getWorld().isClient)
+            if (!player.getEntityWorld().isClient())
                 return ActionResult.PASS;
 
             for (String configName : PreventBuildConfig.getConfigsList().keySet()) {

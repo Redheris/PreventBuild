@@ -30,7 +30,7 @@ public class LookingAtBlockCondition implements ICondition {
         if (target.getType() != HitResult.Type.BLOCK)
             return ActionResult.PASS;
         BlockHitResult targetBlock = (BlockHitResult) target;
-        String blockName = player.getWorld().getBlockState(targetBlock.getBlockPos()).getBlock().getTranslationKey();
+        String blockName = player.getEntityWorld().getBlockState(targetBlock.getBlockPos()).getBlock().getTranslationKey();
         if (Arrays.stream(this.blocks).anyMatch(i -> i.equalsIgnoreCase(blockName)))
             return ActionResult.FAIL;
         return ActionResult.PASS;

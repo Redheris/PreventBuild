@@ -17,7 +17,7 @@ public class PlaceBlockCategory {
     protected static void register() {
         UseBlockCallback.EVENT.register((PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) ->
         {
-            if (!player.getWorld().isClient)
+            if (!player.getEntityWorld().isClient())
                 return ActionResult.PASS;
 
             BlockState state = world.getBlockState(hitResult.getBlockPos());

@@ -25,7 +25,7 @@ public class BlockBelowCondition implements ICondition {
 
     @Override
     public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
-        String blockName = player.getWorld().getBlockState(new BlockPos(x, y - 1, z)).getBlock().getTranslationKey();
+        String blockName = player.getEntityWorld().getBlockState(new BlockPos(x, y - 1, z)).getBlock().getTranslationKey();
         if (Arrays.stream(this.blocks).anyMatch(i -> i.equalsIgnoreCase(blockName)))
             return ActionResult.FAIL;
         return ActionResult.PASS;

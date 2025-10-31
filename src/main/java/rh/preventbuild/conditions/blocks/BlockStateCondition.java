@@ -26,7 +26,7 @@ public class BlockStateCondition implements ICondition {
 
     @Override
     public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
-        BlockState state = player.getWorld().getBlockState(new BlockPos(x, y, z));
+        BlockState state = player.getEntityWorld().getBlockState(new BlockPos(x, y, z));
 
         boolean res = state.getProperties().stream().anyMatch(p ->
                 p.getName().equalsIgnoreCase(key) && state.get(p).toString().equalsIgnoreCase(value)

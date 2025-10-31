@@ -37,7 +37,7 @@ public class DirtPathCreatingCondition implements ICondition {
         if (target.getType() != HitResult.Type.BLOCK)
             return ActionResult.PASS;
         BlockHitResult targetBlock = (BlockHitResult) target;
-        BlockState lookingAt = player.getWorld().getBlockState(targetBlock.getBlockPos());
+        BlockState lookingAt = player.getEntityWorld().getBlockState(targetBlock.getBlockPos());
 
         if (!world.getBlockState(((BlockHitResult) target).getBlockPos().up()).isAir() || ((BlockHitResult) target).getSide() == Direction.DOWN)
             return ActionResult.PASS;

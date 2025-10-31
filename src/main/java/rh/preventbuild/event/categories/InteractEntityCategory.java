@@ -11,7 +11,7 @@ import rh.preventbuild.conditions.ConditionCategory;
 public class InteractEntityCategory {
     protected static void register() {
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-            if (!player.getWorld().isClient)
+            if (!player.getEntityWorld().isClient())
                 return ActionResult.PASS;
 
             for (String configName : PreventBuildConfig.getConfigsList().keySet()) {

@@ -33,7 +33,7 @@ public class CarpetOnCarpetCondition implements ICondition {
             if (!(heldBlock instanceof CarpetBlock || heldBlock instanceof PaleMossCarpetBlock))
                 return ActionResult.PASS;
         }
-        Block block = player.getWorld().getBlockState(new BlockPos(x, y - 1, z)).getBlock();
+        Block block = player.getEntityWorld().getBlockState(new BlockPos(x, y - 1, z)).getBlock();
         if (block instanceof CarpetBlock || block instanceof PaleMossCarpetBlock)
             return ActionResult.FAIL;
         return ActionResult.PASS;

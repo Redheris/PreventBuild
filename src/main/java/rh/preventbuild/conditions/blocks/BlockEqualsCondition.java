@@ -26,7 +26,7 @@ public class BlockEqualsCondition implements ICondition {
 
     @Override
     public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
-        String blockName = player.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock().getTranslationKey();
+        String blockName = player.getEntityWorld().getBlockState(new BlockPos(x, y, z)).getBlock().getTranslationKey();
         if (Arrays.stream(this.blocks).anyMatch(i -> i.equalsIgnoreCase(blockName)))
             return ActionResult.FAIL;
         return ActionResult.PASS;
@@ -42,7 +42,7 @@ public class BlockEqualsCondition implements ICondition {
 
     @Override
     public ActionResult interactBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
-        String blockName = player.getWorld().getBlockState(hitResult.getBlockPos()).getBlock().getTranslationKey();
+        String blockName = player.getEntityWorld().getBlockState(hitResult.getBlockPos()).getBlock().getTranslationKey();
         if (Arrays.stream(this.blocks).anyMatch(i -> i.equalsIgnoreCase(blockName)))
             return ActionResult.FAIL;
         return ActionResult.PASS;

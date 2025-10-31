@@ -16,7 +16,7 @@ public class UseItemCategory {
     protected static void register() {
         UseBlockCallback.EVENT.register((PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) ->
         {
-            if (!player.getWorld().isClient)
+            if (!player.getEntityWorld().isClient())
                 return ActionResult.PASS;
 
             BlockState state = world.getBlockState(hitResult.getBlockPos());
@@ -38,7 +38,7 @@ public class UseItemCategory {
 
         UseItemCallback.EVENT.register((player, world, hand) ->
         {
-            if (!player.getWorld().isClient)
+            if (!player.getEntityWorld().isClient())
                 return ActionResult.PASS;
 
             for (String configName : PreventBuildConfig.getConfigsList().keySet()) {

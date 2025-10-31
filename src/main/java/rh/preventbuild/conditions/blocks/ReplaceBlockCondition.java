@@ -26,9 +26,9 @@ public class ReplaceBlockCondition implements ICondition {
 
     @Override
     public ActionResult placeBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z, BlockHitResult hitResult) {
-        BlockState replaceBlock = player.getWorld().getBlockState(hitResult.getBlockPos());
+        BlockState replaceBlock = player.getEntityWorld().getBlockState(hitResult.getBlockPos());
         if (!replaceBlock.isReplaceable()) {
-            replaceBlock = player.getWorld().getBlockState(new BlockPos(x, y, z));
+            replaceBlock = player.getEntityWorld().getBlockState(new BlockPos(x, y, z));
             if (replaceBlock.getBlock() instanceof AirBlock || !replaceBlock.isReplaceable())
                 return ActionResult.PASS;
         }

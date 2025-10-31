@@ -23,7 +23,7 @@ public class DimensionCondition implements ICondition {
 
     @Override
     public ActionResult attackBlockCheck(PlayerEntity player, Hand hand, int x, int y, int z) {
-        if (player.getWorld().getDimensionEntry().getIdAsString().equals(dimension_id))
+        if (player.getEntityWorld().getDimensionEntry().getIdAsString().equals(dimension_id))
             return ActionResult.FAIL;
         return ActionResult.PASS;
     }
