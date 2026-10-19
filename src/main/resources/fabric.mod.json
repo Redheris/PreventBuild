@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "A flexible mod that prevents unwanted player actions described in the custom configs",
+  "authors": [
+    "Redheris"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/project/VYOvHxMm",
+    "sources": "https://github.com/Redheris/PreventBuild"
+  },
+  "license": "MIT",
+  "icon": "assets/preventbuild/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dev.redheris.preventbuild.PreventBuildClient"
+    ],
+    "main": [
+      "dev.redheris.preventbuild.PreventBuild"
+    ]
+  },
+  "mixins": [
+    "template.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${fabric_loader}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft}"
+  }
+}

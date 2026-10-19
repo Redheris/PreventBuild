@@ -1,0 +1,59 @@
+mod.id = "preventbuild"
+mod.name = "PreventBuild"
+mod.group = "dev.redheris.preventbuild"
+mod.version = "2.0.0-alpha.1"
+mod.version_type = "ALPHA"
+mod.fabric_loader = "0.19.5"
+loomx.loom_version = "1.18-SNAPSHOT"
+
+publish.modrinth = "# Modrinth mod slug"
+publish.curseforge_id = "# Curseforge numeric mod ID"
+publish.curseforge_slug = "# Curseforge mod slug"
+publish.github_repo = "Redheris/PreventBuild"
+publish.mod_icon_url = "https://cdn.modrinth.com/data/VYOvHxMm/45dbf9384e4b5cab665388eed65141b7fa8a4238.png"
+publish.announce_for = "none" # "none" if no announcement
+publish.dry_run = "false"
+
+["1.21.11"]
+# Minecraft dependency for fabric.mod.json e.g. ">=1.21.6 <=1.21.8"
+mc_dep = "1.21.11"
+# Release title for Modrinth and Curseforge
+release_title = "1.21.11"
+# Space-separated compatible versions for publishing e.g. "1.21.8 1.21.11 26.1"
+mc_targets = "1.21.11"
+# Dependencies
+fabric_api = "0.141.3+1.21.11"
+#yacl = "3.8.2+1.21.11-fabric"
+#modmenu = "17.0.0"
+# Mappings
+parchment = "1.21.11:2025.12.20"
+
+["26.1"]
+mc_dep = "26.1"
+mc_dep_fabric ="~26.1"
+release_title = "26.1"
+mc_targets = "26.1 26.1.1 26.1.2"
+# Dependencies
+fabric_api = "0.145.1+26.1"
+#yacl = "3.9.6+26.1-fabric"
+#modmenu = "18.0.0"
+
+["26.2"]
+mc_dep = "26.2"
+mc_dep_fabric = "~26.2"
+release_title = "26.2"
+mc_targets = "26.2"
+# Dependencies
+fabric_api = "0.155.2+26.2"
+#yacl = "3.9.6+26.2-fabric"
+#modmenu = "20.0.0"
+
+["26.3"]
+mc_dep = "26.3"
+mc_dep_fabric = "~26.3"
+release_title = "26.3"
+mc_targets = "26.3"
+# Dependencies
+fabric_api = "0.160.5+26.3"
+#yacl = "3.9.6+26.3-fabric"
+#modmenu = "21.0.0"
