@@ -76,6 +76,8 @@ dependencies {
 
 //    modImplementation("dev.isxander:yet-another-config-lib:${property("yacl")}")
 //    modApi("com.terraformersmc:modmenu:${property("modmenu")}")
+
+    include(implementation("org.snakeyaml:snakeyaml-engine:3.2")!!)
 }
 
 loom {
