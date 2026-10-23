@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.LiquidBlockContainer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -88,7 +89,7 @@ public abstract class ClientInteractionsMixin {
             ),
             cancellable = true
     )
-    public void preventUseBlockAndItemOn(CallbackInfo ci, @Local InteractionHand hand, @Local BlockHitResult blockHitResult) {
+    public void preventUseItemOn(CallbackInfo ci, @Local InteractionHand hand, @Local BlockHitResult blockHitResult) {
         if (player == null || level == null) return;
 
         if (pickItemFromBlockState.isWaitingSlotChange()) {
@@ -155,17 +156,70 @@ public abstract class ClientInteractionsMixin {
             ),
             cancellable = true
     )
-    public void onUseItem(CallbackInfo ci, @Local InteractionHand hand) {
+    public void preventUseItem(CallbackInfo ci, @Local InteractionHand hand) {
         if (player == null || level == null) return;
 
         // useItem category (with missed hit)
-        BlockHitResult missHitResult = hitResult == null ? null : (BlockHitResult) hitResult;
         for (ConditionConfig config : PreventBuildClient.conditionsManager.getConfigs()) {
             if (!config.isActive()) continue;
             Condition useItemCondition = config.getUseItem();
             if (useItemCondition == null) continue;
 
-            ConditionResult check = useItemCondition.checkUseItem(player, level, hand, missHitResult);
+            ConditionResult check = useItemCondition.checkUseItem(player, level, hand, hitResult);
+
+            if (check == ConditionResult.CANCEL) {
+                ci.cancel();
+            }
+        }
+    }
+
+    @Inject(
+            method = "startAttack",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;attack(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;)V"
+            ),
+            cancellable = true
+    )
+    public void preventAttackEntity(CallbackInfoReturnable<Boolean> cir) {
+        if (player == null || level == null) return;
+
+        // attackEntity category
+        for (ConditionConfig config : PreventBuildClient.conditionsManager.getConfigs()) {
+            if (!config.isActive()) continue;
+            Condition attackEntityCondition = config.getAttackEntity();
+            if (attackEntityCondition == null) continue;
+
+            ConditionResult check = attackEntityCondition.checkAttackEntity(
+                    player, level, (EntityHitResult) hitResult
+            );
+
+            if (check == ConditionResult.CANCEL) {
+                cir.setReturnValue(false);
+            }
+        }
+    }
+
+    @Inject(
+            method = "startUseItem",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;interactAt(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/EntityHitResult;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;"
+            ),
+            cancellable = true
+    )
+    public void preventInteractEntity(CallbackInfo ci) {
+        if (player == null || level == null) return;
+
+        // attackEntity category
+        for (ConditionConfig config : PreventBuildClient.conditionsManager.getConfigs()) {
+            if (!config.isActive()) continue;
+            Condition interactEntityCondition = config.getInteractEntity();
+            if (interactEntityCondition == null) continue;
+
+            ConditionResult check = interactEntityCondition.checkInteractEntity(
+                    player, level, (EntityHitResult) hitResult
+            );
 
             if (check == ConditionResult.CANCEL) {
                 ci.cancel();
