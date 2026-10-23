@@ -4,7 +4,10 @@
   "package": "dev.redheris.preventbuild.mixin",
   "compatibilityLevel": "${java}",
   "mixins": [],
-  "client": [],
+  "client": [
+    "HeldSlotChangeListenerMixin",
+    "PickItemFromBlockMixin"
+  ],
   "server": [],
   "injectors": {
     "defaultRequire": 1
