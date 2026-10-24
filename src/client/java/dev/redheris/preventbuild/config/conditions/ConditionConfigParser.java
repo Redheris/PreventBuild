@@ -1,6 +1,7 @@
 package dev.redheris.preventbuild.config.conditions;
 
 import dev.redheris.preventbuild.PreventBuild;
+import dev.redheris.preventbuild.conditions.Condition;
 import dev.redheris.preventbuild.conditions.MockCondition;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -26,15 +27,23 @@ public class ConditionConfigParser {
             Map<String, ?> root = (Map<String, ?>) requireMap(load.loadFromReader(reader));
 
             for (Map.Entry<String, ?> entry : root.entrySet()) {
-                switch (entry.getKey()) {
-                    case "name" -> builder.setName(requireString(entry.getValue()));
-                    // TODO: Replace mock conditions
-                    case "break" -> builder.setAttackBlock(new MockCondition(entry.getValue()));
-                    case "place" -> builder.setPlaceBlock(new MockCondition(entry.getValue()));
-                    case "interactBlock" -> builder.setInteractBlock(new MockCondition(entry.getValue()));
-                    case "useItem" -> builder.setUseItem(new MockCondition(entry.getValue()));
-                    case "interactEntity" -> builder.setInteractEntity(new MockCondition(entry.getValue()));
-                    case "attackEntity" -> builder.setAttackEntity(new MockCondition(entry.getValue()));
+                String key = entry.getKey();
+
+                if (key.equals("name")) {
+                    builder.setName(requireString(entry.getValue()));
+                } else {
+                    Condition condition = new MockCondition(entry.getValue());
+                    switch (key) {
+                        // TODO: Replace mock conditions
+                        case "attackAny" -> builder.setAttackAny(condition);
+                        case "attackBlock" -> builder.setAttackBlock(condition);
+                        case "attackEntity" -> builder.setAttackEntity(condition);
+                        case "interactAny" -> builder.setInteractAny(condition);
+                        case "interactBlock" -> builder.setInteractBlock(condition);
+                        case "interactEntity" -> builder.setInteractEntity(condition);
+                        case "useItem" -> builder.setUseItem(condition);
+                        case "placeBlock" -> builder.setPlaceBlock(condition);
+                    }
                 }
             }
 

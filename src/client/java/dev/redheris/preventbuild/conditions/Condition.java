@@ -10,15 +10,19 @@ import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 
 public interface Condition {
-    ConditionResult checkDefault(Player player, Level level);
+    ConditionResult checkAttackAny(Player player, Level level, HitResult hitResult);
 
     ConditionResult checkAttackBlock(Player player, Level level, BlockHitResult hitResult);
 
-    ConditionResult checkPlace(BlockPlaceContext placeContext);
-
-    ConditionResult checkUseItem(Player player, Level level, InteractionHand hand, @Nullable HitResult hitResult);
-
     ConditionResult checkAttackEntity(Player player, Level level, EntityHitResult hitResult);
 
-    ConditionResult checkInteractEntity(Player player, Level level, EntityHitResult hitResult);
+    ConditionResult checkInteractAny(Player player, Level level, InteractionHand hand, @Nullable HitResult hitResult);
+
+    ConditionResult checkInteractBlock(Player player, Level level, InteractionHand hand, BlockHitResult hitResult);
+
+    ConditionResult checkInteractEntity(Player player, Level level, InteractionHand hand, EntityHitResult hitResult);
+
+    ConditionResult checkUseItem(Player player, Level level, InteractionHand hand);
+
+    ConditionResult checkPlaceBlock(BlockPlaceContext placeContext);
 }

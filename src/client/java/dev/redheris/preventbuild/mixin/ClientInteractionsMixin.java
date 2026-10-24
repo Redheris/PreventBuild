@@ -7,6 +7,7 @@ import dev.redheris.preventbuild.conditions.ConditionResult;
 import dev.redheris.preventbuild.conditions.context.NoReplaceBlockPlaceContext;
 import dev.redheris.preventbuild.conditions.context.UseIntoBlockContext;
 import dev.redheris.preventbuild.config.conditions.ConditionConfig;
+import dev.redheris.preventbuild.config.conditions.ConditionsManager;
 import dev.redheris.preventbuild.state.PickItemFromBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -36,18 +37,42 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class ClientInteractionsMixin {
     @Unique
     private final PickItemFromBlockState pickItemFromBlockState = PickItemFromBlockState.getInstance();
+    @Unique
+    private final ConditionsManager conditionsManager = PreventBuildClient.conditionsManager;
 
     @Shadow
-    @Nullable
     public LocalPlayer player;
 
     @Shadow
-    @Nullable
     public ClientLevel level;
 
     @Shadow
     @Nullable
     public HitResult hitResult;
+
+    @Inject(
+            method = "startAttack",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/item/ItemStack;get(Lnet/minecraft/core/component/DataComponentType;)Ljava/lang/Object;",
+                    ordinal = 0
+            ),
+            cancellable = true
+    )
+    public void preventAttackAny(CallbackInfoReturnable<Boolean> cir) {
+        // attackAny category
+        for (ConditionConfig config : conditionsManager.getConfigs()) {
+            if (!config.isActive()) continue;
+            Condition attackAnyCondition = config.getAttackAny();
+            if (attackAnyCondition == null) continue;
+
+            ConditionResult check = attackAnyCondition.checkAttackAny(player, level, hitResult);
+
+            if (check == ConditionResult.CANCEL) {
+                cir.setReturnValue(false);
+            }
+        }
+    }
 
     @Inject(
             method = "startAttack",
@@ -82,98 +107,6 @@ public abstract class ClientInteractionsMixin {
     }
 
     @Inject(
-            method = "startUseItem",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;useItemOn(Lnet/minecraft/client/player/LocalPlayer;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/InteractionResult;"
-            ),
-            cancellable = true
-    )
-    public void preventUseItemOn(CallbackInfo ci, @Local InteractionHand hand, @Local BlockHitResult blockHitResult) {
-        if (player == null || level == null) return;
-
-        if (pickItemFromBlockState.isWaitingSlotChange()) {
-            // Pick item by block packet can change the selected slot on the server side before the client
-            // will be notified. It leads to a problem when client sends a useItemOn packet with
-            // different context from the server-side data.
-            // Usually it takes fractions of a second (I got 5-60 ms in my tests with ~40-60 ms ping)
-            // TODO: Make opt-out
-            return;
-        }
-
-        for (ConditionConfig config : PreventBuildClient.conditionsManager.getConfigs()) {
-            if (!config.isActive()) continue;
-
-            ConditionResult check = ConditionResult.PASS;
-
-            // placeBlock category
-            Condition placeBlockCondition = config.getPlaceBlock();
-            if (placeBlockCondition != null) {
-                ItemStack itemStack = player.getItemInHand(hand);
-                Item item = itemStack.getItem();
-                var placeContext = new BlockPlaceContext(player, hand, player.getItemInHand(hand), blockHitResult);
-
-                if (!(item instanceof BlockItem)) {
-                    boolean useSamePos = true;
-
-                    if (item instanceof BucketItem bucketItem && bucketItem.getContent() != Fluids.EMPTY) {
-                        useSamePos = false;
-                        BlockState blockState = level.getBlockState(blockHitResult.getBlockPos());
-
-                        if (blockState.getBlock() instanceof LiquidBlockContainer liquidBlockContainer) {
-                            useSamePos = !player.isShiftKeyDown() && liquidBlockContainer.canPlaceLiquid(
-                                    player, level, blockHitResult.getBlockPos(), blockState, bucketItem.getContent()
-                            );
-                        }
-                    }
-
-                    if (useSamePos) {
-                        placeContext = new UseIntoBlockContext(player, hand, itemStack, blockHitResult);
-                    } else {
-                        placeContext = new NoReplaceBlockPlaceContext(player, hand, itemStack, blockHitResult);
-                    }
-                }
-                check = placeBlockCondition.checkPlace(placeContext);
-            }
-
-            // useItem category (with block hit result)
-            Condition useItemCondition = config.getUseItem();
-            if (check != ConditionResult.CANCEL && useItemCondition != null) {
-                check = useItemCondition.checkUseItem(player, level, hand, blockHitResult);
-            }
-
-            if (check == ConditionResult.CANCEL) {
-                ci.cancel();
-            }
-        }
-    }
-
-    @Inject(
-            method = "startUseItem",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;useItem(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;"
-            ),
-            cancellable = true
-    )
-    public void preventUseItem(CallbackInfo ci, @Local InteractionHand hand) {
-        if (player == null || level == null) return;
-
-        // useItem category (with missed hit)
-        for (ConditionConfig config : PreventBuildClient.conditionsManager.getConfigs()) {
-            if (!config.isActive()) continue;
-            Condition useItemCondition = config.getUseItem();
-            if (useItemCondition == null) continue;
-
-            ConditionResult check = useItemCondition.checkUseItem(player, level, hand, hitResult);
-
-            if (check == ConditionResult.CANCEL) {
-                ci.cancel();
-            }
-        }
-    }
-
-    @Inject(
             method = "startAttack",
             at = @At(
                     value = "INVOKE",
@@ -182,8 +115,6 @@ public abstract class ClientInteractionsMixin {
             cancellable = true
     )
     public void preventAttackEntity(CallbackInfoReturnable<Boolean> cir) {
-        if (player == null || level == null) return;
-
         // attackEntity category
         for (ConditionConfig config : PreventBuildClient.conditionsManager.getConfigs()) {
             if (!config.isActive()) continue;
@@ -204,22 +135,27 @@ public abstract class ClientInteractionsMixin {
             method = "startUseItem",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;interactAt(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/EntityHitResult;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;"
+                    target = "Lnet/minecraft/client/player/LocalPlayer;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;"
             ),
             cancellable = true
     )
-    public void preventInteractEntity(CallbackInfo ci) {
-        if (player == null || level == null) return;
+    public void preventInteractAny(CallbackInfo ci, @Local InteractionHand hand) {
+        if (pickItemFromBlockState.isWaitingSlotChange()) {
+            // Pick item by block packet can change the selected slot on the server side before the client
+            // will be notified. It leads to a problem when client sends a useItemOn packet with
+            // different context from the server-side data.
+            // Usually it takes fractions of a second (I got 5-60 ms in my tests with ~40-60 ms ping)
+            // TODO: Make opt-out
+            ci.cancel();
+        }
 
-        // attackEntity category
-        for (ConditionConfig config : PreventBuildClient.conditionsManager.getConfigs()) {
+        // interactAny category
+        for (ConditionConfig config : conditionsManager.getConfigs()) {
             if (!config.isActive()) continue;
-            Condition interactEntityCondition = config.getInteractEntity();
-            if (interactEntityCondition == null) continue;
+            Condition interactAnyCondition = config.getInteractAny();
+            if (interactAnyCondition == null) continue;
 
-            ConditionResult check = interactEntityCondition.checkInteractEntity(
-                    player, level, (EntityHitResult) hitResult
-            );
+            ConditionResult check = interactAnyCondition.checkInteractAny(player, level, hand, hitResult);
 
             if (check == ConditionResult.CANCEL) {
                 ci.cancel();
@@ -227,11 +163,93 @@ public abstract class ClientInteractionsMixin {
         }
     }
 
+    @Inject(
+            method = "startUseItem",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;useItemOn(Lnet/minecraft/client/player/LocalPlayer;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/InteractionResult;"
+            ),
+            cancellable = true
+    )
+    public void preventInteractBlock(CallbackInfo ci, @Local InteractionHand hand, @Local BlockHitResult blockHitResult) {
+        for (ConditionConfig config : conditionsManager.getConfigs()) {
+            if (!config.isActive()) continue;
+
+            // TODO: Think about adding and implementing this check.
+            //  I believe this could potentially interfere with some conditions
+            // Built-in interaction suppression check from ServerPlayerGameMode#useItemOn.
+            // There's a tiny chance that the server could have modified it, so I believe it should be opt-out
+//            boolean haveSomethingInOurHands = !player.getMainHandItem().isEmpty() || !player.getOffhandItem().isEmpty();
+//            boolean suppressUsingBlock = player.isSecondaryUseActive() && haveSomethingInOurHands;
+//            if (suppressUsingBlock) return;
+
+            ConditionResult check = ConditionResult.PASS;
+
+            Condition interactBlockCondition = config.getInteractBlock();
+            if (interactBlockCondition != null) {
+                // interactBlock category
+                check = interactBlockCondition.checkInteractBlock(player, level, hand, blockHitResult);
+            }
+
+            Condition placeBlockCondition = config.getPlaceBlock();
+            if (check == ConditionResult.PASS && placeBlockCondition != null) {
+                // placeBlock category
+                check = preventPlaceBlock(placeBlockCondition, hand, blockHitResult);
+            }
+
+            if (check == ConditionResult.CANCEL) {
+                ci.cancel();
+            }
+        }
+    }
+
+    @Inject(
+            method = "startUseItem",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;interactAt(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/EntityHitResult;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;"
+            ),
+            cancellable = true
+    )
+    public void preventInteractEntity(CallbackInfo ci, @Local InteractionHand hand, @Local EntityHitResult entityHitResult) {
+        // interactEntity category
+        for (ConditionConfig config : PreventBuildClient.conditionsManager.getConfigs()) {
+            if (!config.isActive()) continue;
+            Condition interactEntityCondition = config.getInteractEntity();
+            if (interactEntityCondition == null) continue;
+
+            ConditionResult check = interactEntityCondition.checkInteractEntity(player, level, hand, entityHitResult);
+
+            if (check == ConditionResult.CANCEL) {
+                ci.cancel();
+            }
+        }
+    }
+
+    @Inject(
+            method = "startUseItem",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;useItem(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;"
+            ),
+            cancellable = true
+    )
+    public void preventUseItem(CallbackInfo ci, @Local InteractionHand hand) {
+        for (ConditionConfig config : conditionsManager.getConfigs()) {
+            if (!config.isActive()) continue;
+            Condition useItemCondition = config.getUseItem();
+            if (useItemCondition == null) continue;
+
+            ConditionResult check = useItemCondition.checkUseItem(player, level, hand);
+
+            if (check == ConditionResult.CANCEL) {
+                ci.cancel();
+            }
+        }
+    }
 
     @Unique
     private boolean preventAttackBlock(BlockHitResult blockHitResult) {
-        if (player == null || level == null) return false;
-
         for (ConditionConfig config : PreventBuildClient.conditionsManager.getConfigs()) {
             if (!config.isActive()) continue;
             Condition attackBlockCondition = config.getAttackBlock();
@@ -244,5 +262,35 @@ public abstract class ClientInteractionsMixin {
             }
         }
         return false;
+    }
+
+    @Unique
+    private ConditionResult preventPlaceBlock(Condition placeBlockCondition, InteractionHand hand, BlockHitResult blockHitResult) {
+        ItemStack itemStack = player.getItemInHand(hand);
+        Item item = itemStack.getItem();
+        var placeContext = new BlockPlaceContext(player, hand, player.getItemInHand(hand), blockHitResult);
+
+        if (!(item instanceof BlockItem)) {
+            boolean useSamePos = true;
+
+            if (item instanceof BucketItem bucketItem && bucketItem.getContent() != Fluids.EMPTY) {
+                useSamePos = false;
+                BlockState blockState = level.getBlockState(blockHitResult.getBlockPos());
+
+                if (blockState.getBlock() instanceof LiquidBlockContainer liquidBlockContainer) {
+                    useSamePos = !player.isShiftKeyDown() && liquidBlockContainer.canPlaceLiquid(
+                            player, level, blockHitResult.getBlockPos(), blockState, bucketItem.getContent()
+                    );
+                }
+            }
+
+            if (useSamePos) {
+                placeContext = new UseIntoBlockContext(player, hand, itemStack, blockHitResult);
+            } else {
+                placeContext = new NoReplaceBlockPlaceContext(player, hand, itemStack, blockHitResult);
+            }
+        }
+
+        return placeBlockCondition.checkPlaceBlock(placeContext);
     }
 }

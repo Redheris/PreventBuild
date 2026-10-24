@@ -6,10 +6,9 @@ import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import org.jetbrains.annotations.Nullable;
 
 public class MockCondition extends ConditionBase {
     private final Object content;
@@ -20,20 +19,20 @@ public class MockCondition extends ConditionBase {
 
     @Override
     public ConditionResult checkAttackBlock(Player player, Level level, BlockHitResult hitResult) {
-        return player.isCrouching() ? ConditionResult.PASS : ConditionResult.CANCEL;
+        return player.isShiftKeyDown() ? ConditionResult.PASS : ConditionResult.CANCEL;
     }
 
     @Override
-    public ConditionResult checkPlace(BlockPlaceContext placeContext) {
-        if (true) return ConditionResult.PASS;
-        return placeContext.getClickedPos().getY() == -58 ? ConditionResult.PASS : ConditionResult.CANCEL;
-    }
-
-    @Override
-    public ConditionResult checkUseItem(Player player, Level level, InteractionHand hand, @Nullable HitResult hitResult) {
+    public ConditionResult checkPlaceBlock(BlockPlaceContext placeContext) {
 //        if (true) return ConditionResult.PASS;
-        if (hitResult == null) return ConditionResult.PASS;
-//        return hitResult.getBlockPos().getY() == -58 ? ConditionResult.PASS : ConditionResult.CANCEL;
+        return placeContext.getClickedPos().getY() < -58 ? ConditionResult.PASS : ConditionResult.CANCEL;
+    }
+
+    @Override
+    public ConditionResult checkInteractBlock(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
+        if (level.getBlockState(hitResult.getBlockPos()).getBlock() instanceof AbstractFurnaceBlock) {
+            return ConditionResult.CANCEL;
+        }
         return ConditionResult.PASS;
     }
 
@@ -43,7 +42,7 @@ public class MockCondition extends ConditionBase {
     }
 
     @Override
-    public ConditionResult checkInteractEntity(Player player, Level level, EntityHitResult hitResult) {
+    public ConditionResult checkInteractEntity(Player player, Level level, InteractionHand hand, EntityHitResult hitResult) {
         return hitResult.getEntity() instanceof Sheep ? ConditionResult.CANCEL : ConditionResult.PASS;
     }
 }

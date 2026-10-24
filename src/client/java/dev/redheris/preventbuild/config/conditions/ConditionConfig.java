@@ -12,8 +12,8 @@ public class ConditionConfig {
     private final Condition interactAny;
     private final Condition interactBlock;
     private final Condition interactEntity;
-    private final Condition placeBlock;
     private final Condition useItem;
+    private final Condition placeBlock;
 
     public ConditionConfig(
             String name,
@@ -23,8 +23,8 @@ public class ConditionConfig {
             Condition interactAny,
             Condition interactBlock,
             Condition interactEntity,
-            Condition placeBlock,
-            Condition useItem
+            Condition useItem,
+            Condition placeBlock
     ) {
         this.name = name;
         this.attackAny = attackAny;
@@ -33,8 +33,8 @@ public class ConditionConfig {
         this.interactAny = interactAny;
         this.interactBlock = interactBlock;
         this.interactEntity = interactEntity;
-        this.placeBlock = placeBlock;
         this.useItem = useItem;
+        this.placeBlock = placeBlock;
     }
 
     ConditionConfig setActive(boolean active) {
@@ -74,12 +74,12 @@ public class ConditionConfig {
         return interactEntity;
     }
 
-    public Condition getPlaceBlock() {
-        return placeBlock;
-    }
-
     public Condition getUseItem() {
         return useItem;
+    }
+
+    public Condition getPlaceBlock() {
+        return placeBlock;
     }
 
     public static Builder builder() {
@@ -95,8 +95,8 @@ public class ConditionConfig {
         private Condition interactAny;
         private Condition interactBlock;
         private Condition interactEntity;
-        private Condition placeBlock;
         private Condition useItem;
+        private Condition placeBlock;
 
         public void setName(String name) {
             this.name = name;
@@ -130,12 +130,12 @@ public class ConditionConfig {
             this.interactEntity = interactEntity;
         }
 
-        public void setPlaceBlock(Condition placeBlock) {
-            this.placeBlock = placeBlock;
-        }
-
         public void setUseItem(Condition useItem) {
             this.useItem = useItem;
+        }
+
+        public void setPlaceBlock(Condition placeBlock) {
+            this.placeBlock = placeBlock;
         }
 
         public ConditionConfig build() {
@@ -147,8 +147,8 @@ public class ConditionConfig {
                     interactAny,
                     interactBlock,
                     interactEntity,
-                    placeBlock,
-                    useItem
+                    useItem,
+                    placeBlock
             ).setActive(active);
         }
     }
