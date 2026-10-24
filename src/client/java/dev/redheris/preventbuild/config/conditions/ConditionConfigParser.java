@@ -1,14 +1,15 @@
 package dev.redheris.preventbuild.config.conditions;
 
 import dev.redheris.preventbuild.PreventBuild;
-import dev.redheris.preventbuild.conditions.Condition;
 import dev.redheris.preventbuild.conditions.MockCondition;
+import dev.redheris.preventbuild.conditions.impl.logical.OrCondition;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
 import static dev.redheris.preventbuild.config.conditions.ConditionConfigValidator.requireMap;
@@ -32,7 +33,9 @@ public class ConditionConfigParser {
                 if (key.equals("name")) {
                     builder.setName(requireString(entry.getValue()));
                 } else {
-                    Condition condition = new MockCondition(entry.getValue());
+                    OrCondition condition = new OrCondition(List.of(
+                            new MockCondition(entry.getValue())
+                    ));
                     switch (key) {
                         // TODO: Replace mock conditions
                         case "attackAny" -> builder.setAttackAny(condition);

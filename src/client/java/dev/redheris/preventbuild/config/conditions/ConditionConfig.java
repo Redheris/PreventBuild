@@ -1,30 +1,29 @@
 package dev.redheris.preventbuild.config.conditions;
 
-import dev.redheris.preventbuild.conditions.Condition;
+import dev.redheris.preventbuild.conditions.impl.logical.OrCondition;
 
 public class ConditionConfig {
     private final String name;
     private transient boolean active = false;
-    // TODO: Replace every category with OrCondition
-    private final Condition attackAny;
-    private final Condition attackBlock;
-    private final Condition attackEntity;
-    private final Condition interactAny;
-    private final Condition interactBlock;
-    private final Condition interactEntity;
-    private final Condition useItem;
-    private final Condition placeBlock;
+    private final OrCondition attackAny;
+    private final OrCondition attackBlock;
+    private final OrCondition attackEntity;
+    private final OrCondition interactAny;
+    private final OrCondition interactBlock;
+    private final OrCondition interactEntity;
+    private final OrCondition useItem;
+    private final OrCondition placeBlock;
 
     public ConditionConfig(
             String name,
-            Condition attackAny,
-            Condition attackBlock,
-            Condition attackEntity,
-            Condition interactAny,
-            Condition interactBlock,
-            Condition interactEntity,
-            Condition useItem,
-            Condition placeBlock
+            OrCondition attackAny,
+            OrCondition attackBlock,
+            OrCondition attackEntity,
+            OrCondition interactAny,
+            OrCondition interactBlock,
+            OrCondition interactEntity,
+            OrCondition useItem,
+            OrCondition placeBlock
     ) {
         this.name = name;
         this.attackAny = attackAny;
@@ -50,35 +49,35 @@ public class ConditionConfig {
         return active;
     }
 
-    public Condition getAttackAny() {
+    public OrCondition getAttackAny() {
         return attackAny;
     }
 
-    public Condition getAttackBlock() {
+    public OrCondition getAttackBlock() {
         return attackBlock;
     }
 
-    public Condition getAttackEntity() {
+    public OrCondition getAttackEntity() {
         return attackEntity;
     }
 
-    public Condition getInteractAny() {
+    public OrCondition getInteractAny() {
         return interactAny;
     }
 
-    public Condition getInteractBlock() {
+    public OrCondition getInteractBlock() {
         return interactBlock;
     }
 
-    public Condition getInteractEntity() {
+    public OrCondition getInteractEntity() {
         return interactEntity;
     }
 
-    public Condition getUseItem() {
+    public OrCondition getUseItem() {
         return useItem;
     }
 
-    public Condition getPlaceBlock() {
+    public OrCondition getPlaceBlock() {
         return placeBlock;
     }
 
@@ -89,14 +88,14 @@ public class ConditionConfig {
     public static class Builder {
         private String name;
         private boolean active = false;
-        private Condition attackAny;
-        private Condition attackBlock;
-        private Condition attackEntity;
-        private Condition interactAny;
-        private Condition interactBlock;
-        private Condition interactEntity;
-        private Condition useItem;
-        private Condition placeBlock;
+        private OrCondition attackAny;
+        private OrCondition attackBlock;
+        private OrCondition attackEntity;
+        private OrCondition interactAny;
+        private OrCondition interactBlock;
+        private OrCondition interactEntity;
+        private OrCondition useItem;
+        private OrCondition placeBlock;
 
         public void setName(String name) {
             this.name = name;
@@ -106,35 +105,35 @@ public class ConditionConfig {
             this.active = active;
         }
 
-        public void setAttackAny(Condition attackAny) {
+        public void setAttackAny(OrCondition attackAny) {
             this.attackAny = attackAny;
         }
 
-        public void setAttackBlock(Condition attackBlock) {
+        public void setAttackBlock(OrCondition attackBlock) {
             this.attackBlock = attackBlock;
         }
 
-        public void setAttackEntity(Condition attackEntity) {
+        public void setAttackEntity(OrCondition attackEntity) {
             this.attackEntity = attackEntity;
         }
 
-        public void setInteractAny(Condition interactAny) {
+        public void setInteractAny(OrCondition interactAny) {
             this.interactAny = interactAny;
         }
 
-        public void setInteractBlock(Condition interactBlock) {
+        public void setInteractBlock(OrCondition interactBlock) {
             this.interactBlock = interactBlock;
         }
 
-        public void setInteractEntity(Condition interactEntity) {
+        public void setInteractEntity(OrCondition interactEntity) {
             this.interactEntity = interactEntity;
         }
 
-        public void setUseItem(Condition useItem) {
+        public void setUseItem(OrCondition useItem) {
             this.useItem = useItem;
         }
 
-        public void setPlaceBlock(Condition placeBlock) {
+        public void setPlaceBlock(OrCondition placeBlock) {
             this.placeBlock = placeBlock;
         }
 
