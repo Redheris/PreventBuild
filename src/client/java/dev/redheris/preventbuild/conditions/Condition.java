@@ -22,7 +22,7 @@ public interface Condition {
 
     ConditionResult checkInteractEntity(Player player, Level level, InteractionHand hand, EntityHitResult hitResult);
 
-    ConditionResult checkUseItem(Player player, Level level, InteractionHand hand);
+    ConditionResult checkUseItem(Player player, Level level, InteractionHand hand, @Nullable HitResult hitResult);
 
     ConditionResult checkPlaceBlock(BlockPlaceContext placeContext);
 }

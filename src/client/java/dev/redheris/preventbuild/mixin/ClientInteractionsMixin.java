@@ -252,7 +252,7 @@ public abstract class ClientInteractionsMixin {
             Condition useItemCondition = config.getUseItem();
             if (useItemCondition == null) continue;
 
-            ConditionResult check = useItemCondition.checkUseItem(player, level, hand);
+            ConditionResult check = useItemCondition.checkUseItem(player, level, hand, hitResult);
 
             if (check == ConditionResult.CANCEL) {
                 ci.cancel();

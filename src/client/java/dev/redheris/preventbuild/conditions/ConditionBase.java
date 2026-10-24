@@ -46,7 +46,7 @@ public abstract class ConditionBase implements Condition {
     }
 
     @Override
-    public ConditionResult checkUseItem(Player player, Level level, InteractionHand hand) {
+    public ConditionResult checkUseItem(Player player, Level level, InteractionHand hand, @Nullable HitResult hitResult) {
         return checkDefault(player, level);
     }
 
