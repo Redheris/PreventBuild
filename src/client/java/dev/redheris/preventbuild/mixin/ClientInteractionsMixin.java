@@ -1,6 +1,7 @@
 package dev.redheris.preventbuild.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import dev.redheris.preventbuild.PreventBuild;
 import dev.redheris.preventbuild.PreventBuildClient;
 import dev.redheris.preventbuild.conditions.Condition;
 import dev.redheris.preventbuild.conditions.ConditionResult;
@@ -12,6 +13,7 @@ import dev.redheris.preventbuild.state.PickItemFromBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
@@ -145,8 +147,18 @@ public abstract class ClientInteractionsMixin {
             // will be notified. It leads to a problem when client sends a useItemOn packet with
             // different context from the server-side data.
             // Usually it takes fractions of a second (I got 5-60 ms in my tests with ~40-60 ms ping)
-            // TODO: Make opt-out
-            ci.cancel();
+            // TODO: Make opt-out and configurable max waiting time
+            long maxWaitingTime = 3000;
+            long waitingTime = Util.getMillis() - pickItemFromBlockState.getWaitingStartTimeMs();
+            if (waitingTime > maxWaitingTime) {
+                PreventBuild.LOGGER.warn(
+                        "Waiting for SetHeldSlot packet took more than {} ms. Stopping waiting...",
+                        maxWaitingTime
+                );
+                pickItemFromBlockState.setWaitingSlotChange(false);
+            } else {
+                ci.cancel();
+            }
         }
 
         // interactAny category
