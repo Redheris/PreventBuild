@@ -1,25 +1,25 @@
 package dev.redheris.preventbuild.config.conditions;
 
 import dev.redheris.preventbuild.PreventBuild;
+import dev.redheris.preventbuild.api.ConditionRegistry;
 import dev.redheris.preventbuild.api.UnexpectedValueTypeException;
 import dev.redheris.preventbuild.conditions.ConditionConfig;
-import dev.redheris.preventbuild.conditions.impl.NullCondition;
 import dev.redheris.preventbuild.conditions.impl.logical.OrCondition;
 import org.apache.commons.io.FilenameUtils;
+import org.jetbrains.annotations.Nullable;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
 
-import static dev.redheris.preventbuild.config.conditions.ConditionConfigValidator.requireMap;
-import static dev.redheris.preventbuild.config.conditions.ConditionConfigValidator.requireString;
+import static dev.redheris.preventbuild.util.ConditionValueValidator.requireMap;
+import static dev.redheris.preventbuild.util.ConditionValueValidator.requireString;
 
 public class ConditionConfigParser {
-    public static ConditionConfig readFromFile(Path filepath) {
+    public static @Nullable ConditionConfig readFromFile(Path filepath) {
         try (var reader = new FileReader(filepath.toFile())) {
             var builder = ConditionConfig.builder();
 
@@ -31,6 +31,7 @@ public class ConditionConfigParser {
                     .build();
             Load load = new Load(settings);
 
+            @SuppressWarnings("unchecked")
             Map<String, ?> root = (Map<String, ?>) requireMap(load.loadFromReader(reader));
 
             for (Map.Entry<String, ?> entry : root.entrySet()) {
@@ -39,11 +40,9 @@ public class ConditionConfigParser {
                 if (key.equals("name")) {
                     builder.setName(requireString(entry.getValue()));
                 } else {
-                    OrCondition condition = new OrCondition(List.of(
-                            new NullCondition()
-                    ));
+                    OrCondition condition = (OrCondition) ConditionRegistry.getInstance()
+                            .parseCondition("or", entry.getValue());
                     switch (key) {
-                        // TODO: Replace mock conditions
                         case "attackAny" -> builder.setAttackAny(condition);
                         case "attackBlock" -> builder.setAttackBlock(condition);
                         case "attackEntity" -> builder.setAttackEntity(condition);
@@ -59,10 +58,10 @@ public class ConditionConfigParser {
             return builder.build();
         } catch (UnexpectedValueTypeException e) {
             PreventBuild.LOGGER.error("Invalid structure in the condition file: {}", filepath);
-            throw new RuntimeException(e);
+            return null;
         } catch (IOException e) {
             PreventBuild.LOGGER.error("Exception during reading the condition file: {}", filepath);
-            throw new RuntimeException(e);
+            return null;
         }
     }
 }

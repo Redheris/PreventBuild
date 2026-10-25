@@ -59,6 +59,9 @@ public class ConditionsManager {
             throw new RuntimeException(e);
         }
 
+        PreventBuild.LOGGER.info("Found and read {} condition config file", updated.size());
+        PreventBuild.LOGGER.info("Currently active condition configs count: {}", activeConfigs.size());
+
         save();
     }
 

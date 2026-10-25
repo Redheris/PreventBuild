@@ -1,67 +1,22 @@
 package dev.redheris.preventbuild.conditions.impl.entities;
 
-import dev.redheris.preventbuild.conditions.ConditionBase;
 import dev.redheris.preventbuild.conditions.ConditionResult;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import org.jetbrains.annotations.Nullable;
 
-public class EntityEqualsCondition extends ConditionBase {
-    // TODO: Make List
-    private final Identifier entityId;
+import java.util.List;
 
-    public EntityEqualsCondition(Identifier entityId) {
-        this.entityId = entityId;
-    }
+public class EntityEqualsCondition extends EntityConditionBase {
+    private final List<Identifier> entityIds;
 
-    private boolean entityEquals(Entity entity) {
-        if (!BuiltInRegistries.ENTITY_TYPE.containsKey(entityId)) return false;
-        return BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).equals(entityId);
+    public EntityEqualsCondition(List<Identifier> entityIds) {
+        this.entityIds = entityIds;
     }
 
     @Override
-    public ConditionResult checkAttackAny(Player player, Level level, HitResult hitResult) {
-        if (hitResult instanceof EntityHitResult entityHitResult) {
-            if (entityEquals(entityHitResult.getEntity())) {
-                return ConditionResult.CANCEL;
-            }
-        }
-        return ConditionResult.PASS;
-    }
-
-    @Override
-    public ConditionResult checkAttackEntity(Player player, Level level, EntityHitResult hitResult) {
-        return super.checkAttackEntity(player, level, hitResult);
-    }
-
-    @Override
-    public ConditionResult checkInteractAny(Player player, Level level, InteractionHand hand, @Nullable HitResult hitResult) {
-        if (hitResult instanceof EntityHitResult entityHitResult) {
-            if (entityEquals(entityHitResult.getEntity())) {
-                return ConditionResult.CANCEL;
-            }
-        }
-        return ConditionResult.PASS;
-    }
-
-    @Override
-    public ConditionResult checkInteractEntity(Player player, Level level, InteractionHand hand, EntityHitResult hitResult) {
-        return super.checkInteractEntity(player, level, hand, hitResult);
-    }
-
-    @Override
-    public ConditionResult checkUseItem(Player player, Level level, InteractionHand hand, @Nullable HitResult hitResult) {
-        if (hitResult instanceof EntityHitResult entityHitResult) {
-            if (entityEquals(entityHitResult.getEntity())) {
-                return ConditionResult.CANCEL;
-            }
-        }
-        return ConditionResult.PASS;
+    protected ConditionResult checkEntity(Entity entity) {
+        Identifier entityId = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
+        return entityIds.contains(entityId) ? ConditionResult.CANCEL : ConditionResult.PASS;
     }
 }

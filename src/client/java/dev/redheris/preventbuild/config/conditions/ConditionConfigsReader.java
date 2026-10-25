@@ -17,6 +17,7 @@ public class ConditionConfigsReader {
 
             for (Path path : stream) {
                 ConditionConfig config = ConditionConfigParser.readFromFile(path);
+                if (config == null) continue;
                 configs.add(config);
             }
 

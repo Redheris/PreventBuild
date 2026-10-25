@@ -1,6 +1,7 @@
 package dev.redheris.preventbuild;
 
 import dev.redheris.preventbuild.conditions.ConditionsManager;
+import dev.redheris.preventbuild.conditions.impl.Conditions;
 import dev.redheris.preventbuild.config.PreventBuildConfig;
 import net.fabricmc.api.ClientModInitializer;
 
@@ -10,6 +11,7 @@ public class PreventBuildClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        Conditions.registerAll();
         commonConfig.read();
         conditionsManager.read();
     }

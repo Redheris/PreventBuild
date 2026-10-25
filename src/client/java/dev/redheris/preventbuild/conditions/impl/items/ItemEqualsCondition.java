@@ -1,6 +1,5 @@
 package dev.redheris.preventbuild.conditions.impl.items;
 
-import dev.redheris.preventbuild.conditions.ConditionBase;
 import dev.redheris.preventbuild.conditions.ConditionResult;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -14,64 +13,62 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemEqualsCondition extends ConditionBase {
-    // TODO: Make List
-    private final Identifier itemId;
+import java.util.List;
 
-    public ItemEqualsCondition(Identifier itemId) {
-        this.itemId = itemId;
+public class ItemEqualsCondition extends ItemConditionBase {
+    private final List<Identifier> itemIds;
+
+    public ItemEqualsCondition(List<Identifier> itemIds) {
+        this.itemIds = itemIds;
     }
 
-    private ConditionResult itemEquals(Item heldItem) {
-        if (!BuiltInRegistries.ITEM.containsKey(itemId)) return ConditionResult.PASS;
-        if (BuiltInRegistries.ITEM.getKey(heldItem).equals(itemId)) {
-            return ConditionResult.CANCEL;
-        }
-        return ConditionResult.PASS;
+    protected ConditionResult checkItem(Item item) {
+        Identifier itemId = BuiltInRegistries.ITEM.getKey(item);
+        return itemIds.contains(itemId) ? ConditionResult.CANCEL : ConditionResult.PASS;
     }
 
-    private ConditionResult itemEquals(Player player, InteractionHand hand) {
+    private ConditionResult checkItem(Player player, InteractionHand hand) {
         Item heldItem = player.getItemInHand(hand).getItem();
-        return itemEquals(heldItem);
+        return this.checkItem(heldItem);
     }
 
     @Override
     public ConditionResult checkAttackAny(Player player, Level level, HitResult hitResult) {
-        return itemEquals(player, InteractionHand.MAIN_HAND);
+        return checkItem(player, InteractionHand.MAIN_HAND);
     }
 
     @Override
     public ConditionResult checkAttackBlock(Player player, Level level, BlockHitResult hitResult) {
-        return itemEquals(player, InteractionHand.MAIN_HAND);
+        return checkItem(player, InteractionHand.MAIN_HAND);
     }
 
     @Override
     public ConditionResult checkAttackEntity(Player player, Level level, EntityHitResult hitResult) {
-        return itemEquals(player, InteractionHand.MAIN_HAND);
+        return checkItem(player, InteractionHand.MAIN_HAND);
     }
 
     @Override
     public ConditionResult checkInteractAny(Player player, Level level, InteractionHand hand, @Nullable HitResult hitResult) {
-        return itemEquals(player, hand);
+        return checkItem(player, hand);
     }
 
     @Override
     public ConditionResult checkInteractBlock(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
-        return itemEquals(player, hand);
+        return checkItem(player, hand);
     }
 
     @Override
     public ConditionResult checkInteractEntity(Player player, Level level, InteractionHand hand, EntityHitResult hitResult) {
-        return itemEquals(player, hand);
+        return checkItem(player, hand);
     }
 
     @Override
     public ConditionResult checkUseItem(Player player, Level level, InteractionHand hand, @Nullable HitResult hitResult) {
-        return itemEquals(player, hand);
+        return checkItem(player, hand);
     }
 
     @Override
     public ConditionResult checkPlaceBlock(BlockPlaceContext placeContext) {
-        return itemEquals(placeContext.getItemInHand().getItem());
+        return this.checkItem(placeContext.getItemInHand().getItem());
     }
 }
