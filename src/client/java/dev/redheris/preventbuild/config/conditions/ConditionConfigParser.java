@@ -1,8 +1,11 @@
 package dev.redheris.preventbuild.config.conditions;
 
 import dev.redheris.preventbuild.PreventBuild;
-import dev.redheris.preventbuild.conditions.MockCondition;
+import dev.redheris.preventbuild.api.UnexpectedValueTypeException;
+import dev.redheris.preventbuild.conditions.ConditionConfig;
+import dev.redheris.preventbuild.conditions.impl.NullCondition;
 import dev.redheris.preventbuild.conditions.impl.logical.OrCondition;
+import org.apache.commons.io.FilenameUtils;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
 
@@ -20,6 +23,9 @@ public class ConditionConfigParser {
         try (var reader = new FileReader(filepath.toFile())) {
             var builder = ConditionConfig.builder();
 
+            String filename = filepath.getFileName().toString();
+            builder.setName(FilenameUtils.getBaseName(filename));
+
             var settings = LoadSettings.builder()
                     .setLabel("Condition config file (" + filepath.getFileName() + ")")
                     .build();
@@ -34,7 +40,7 @@ public class ConditionConfigParser {
                     builder.setName(requireString(entry.getValue()));
                 } else {
                     OrCondition condition = new OrCondition(List.of(
-                            new MockCondition(entry.getValue())
+                            new NullCondition()
                     ));
                     switch (key) {
                         // TODO: Replace mock conditions
@@ -51,7 +57,9 @@ public class ConditionConfigParser {
             }
 
             return builder.build();
-
+        } catch (UnexpectedValueTypeException e) {
+            PreventBuild.LOGGER.error("Invalid structure in the condition file: {}", filepath);
+            throw new RuntimeException(e);
         } catch (IOException e) {
             PreventBuild.LOGGER.error("Exception during reading the condition file: {}", filepath);
             throw new RuntimeException(e);
