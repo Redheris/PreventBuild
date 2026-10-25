@@ -4,11 +4,11 @@ import com.llamalad7.mixinextras.sugar.Local;
 import dev.redheris.preventbuild.PreventBuild;
 import dev.redheris.preventbuild.PreventBuildClient;
 import dev.redheris.preventbuild.conditions.Condition;
+import dev.redheris.preventbuild.conditions.ConditionConfig;
 import dev.redheris.preventbuild.conditions.ConditionResult;
+import dev.redheris.preventbuild.conditions.ConditionsManager;
 import dev.redheris.preventbuild.conditions.context.NoReplaceBlockPlaceContext;
 import dev.redheris.preventbuild.conditions.context.UseIntoBlockContext;
-import dev.redheris.preventbuild.config.conditions.ConditionConfig;
-import dev.redheris.preventbuild.config.conditions.ConditionsManager;
 import dev.redheris.preventbuild.state.PickItemFromBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -63,9 +63,8 @@ public abstract class ClientInteractionsMixin {
     )
     public void preventAttackAny(CallbackInfoReturnable<Boolean> cir) {
         // attackAny category
-        for (ConditionConfig config : conditionsManager.getConfigs()) {
-            if (!config.isActive()) continue;
-            Condition attackAnyCondition = config.getAttackAny();
+        for (ConditionConfig config : conditionsManager.getActiveConfigs()) {
+            Condition attackAnyCondition = config.attackAny();
             if (attackAnyCondition == null) continue;
 
             ConditionResult check = attackAnyCondition.checkAttackAny(player, level, hitResult);
@@ -118,9 +117,8 @@ public abstract class ClientInteractionsMixin {
     )
     public void preventAttackEntity(CallbackInfoReturnable<Boolean> cir) {
         // attackEntity category
-        for (ConditionConfig config : PreventBuildClient.conditionsManager.getConfigs()) {
-            if (!config.isActive()) continue;
-            Condition attackEntityCondition = config.getAttackEntity();
+        for (ConditionConfig config : conditionsManager.getActiveConfigs()) {
+            Condition attackEntityCondition = config.attackEntity();
             if (attackEntityCondition == null) continue;
 
             ConditionResult check = attackEntityCondition.checkAttackEntity(
@@ -162,9 +160,8 @@ public abstract class ClientInteractionsMixin {
         }
 
         // interactAny category
-        for (ConditionConfig config : conditionsManager.getConfigs()) {
-            if (!config.isActive()) continue;
-            Condition interactAnyCondition = config.getInteractAny();
+        for (ConditionConfig config : conditionsManager.getActiveConfigs()) {
+            Condition interactAnyCondition = config.interactAny();
             if (interactAnyCondition == null) continue;
 
             ConditionResult check = interactAnyCondition.checkInteractAny(player, level, hand, hitResult);
@@ -184,8 +181,7 @@ public abstract class ClientInteractionsMixin {
             cancellable = true
     )
     public void preventInteractBlock(CallbackInfo ci, @Local InteractionHand hand, @Local BlockHitResult blockHitResult) {
-        for (ConditionConfig config : conditionsManager.getConfigs()) {
-            if (!config.isActive()) continue;
+        for (ConditionConfig config : conditionsManager.getActiveConfigs()) {
 
             // TODO: Think about adding and implementing this check.
             //  I believe this could potentially interfere with some conditions
@@ -197,13 +193,13 @@ public abstract class ClientInteractionsMixin {
 
             ConditionResult check = ConditionResult.PASS;
 
-            Condition interactBlockCondition = config.getInteractBlock();
+            Condition interactBlockCondition = config.interactBlock();
             if (interactBlockCondition != null) {
                 // interactBlock category
                 check = interactBlockCondition.checkInteractBlock(player, level, hand, blockHitResult);
             }
 
-            Condition placeBlockCondition = config.getPlaceBlock();
+            Condition placeBlockCondition = config.placeBlock();
             if (check == ConditionResult.PASS && placeBlockCondition != null) {
                 // placeBlock category
                 check = preventPlaceBlock(placeBlockCondition, hand, blockHitResult);
@@ -225,9 +221,8 @@ public abstract class ClientInteractionsMixin {
     )
     public void preventInteractEntity(CallbackInfo ci, @Local InteractionHand hand, @Local EntityHitResult entityHitResult) {
         // interactEntity category
-        for (ConditionConfig config : PreventBuildClient.conditionsManager.getConfigs()) {
-            if (!config.isActive()) continue;
-            Condition interactEntityCondition = config.getInteractEntity();
+        for (ConditionConfig config : conditionsManager.getActiveConfigs()) {
+            Condition interactEntityCondition = config.interactEntity();
             if (interactEntityCondition == null) continue;
 
             ConditionResult check = interactEntityCondition.checkInteractEntity(player, level, hand, entityHitResult);
@@ -247,9 +242,8 @@ public abstract class ClientInteractionsMixin {
             cancellable = true
     )
     public void preventUseItem(CallbackInfo ci, @Local InteractionHand hand) {
-        for (ConditionConfig config : conditionsManager.getConfigs()) {
-            if (!config.isActive()) continue;
-            Condition useItemCondition = config.getUseItem();
+        for (ConditionConfig config : conditionsManager.getActiveConfigs()) {
+            Condition useItemCondition = config.useItem();
             if (useItemCondition == null) continue;
 
             ConditionResult check = useItemCondition.checkUseItem(player, level, hand, hitResult);
@@ -262,9 +256,8 @@ public abstract class ClientInteractionsMixin {
 
     @Unique
     private boolean preventAttackBlock(BlockHitResult blockHitResult) {
-        for (ConditionConfig config : PreventBuildClient.conditionsManager.getConfigs()) {
-            if (!config.isActive()) continue;
-            Condition attackBlockCondition = config.getAttackBlock();
+        for (ConditionConfig config : conditionsManager.getActiveConfigs()) {
+            Condition attackBlockCondition = config.attackBlock();
             if (attackBlockCondition == null) continue;
 
             ConditionResult check = attackBlockCondition.checkAttackBlock(player, level, blockHitResult);

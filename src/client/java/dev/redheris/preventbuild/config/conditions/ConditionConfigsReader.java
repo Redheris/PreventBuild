@@ -1,6 +1,8 @@
 package dev.redheris.preventbuild.config.conditions;
 
 import dev.redheris.preventbuild.PreventBuild;
+import dev.redheris.preventbuild.conditions.ConditionConfig;
+import dev.redheris.preventbuild.config.PreventBuildConfig;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,7 +12,7 @@ import java.util.List;
 
 public class ConditionConfigsReader {
     public static List<ConditionConfig> readConditions() {
-        try (var stream = Files.newDirectoryStream(ConditionsManager.CONDITIONS_DIR, "*.yml")) {
+        try (var stream = Files.newDirectoryStream(PreventBuildConfig.CONDITIONS_DIR, "*.yml")) {
             List<ConditionConfig> configs = new ArrayList<>();
 
             for (Path path : stream) {
