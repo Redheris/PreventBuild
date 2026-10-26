@@ -1,6 +1,6 @@
 mod.id = "preventbuild"
 mod.name = "PreventBuild"
-mod.group = "dev.redheris.preventbuild"
+mod.group = "dev.redheris"
 mod.version = "2.0.0-alpha.1"
 mod.version_type = "ALPHA"
 mod.fabric_loader = "0.19.5"

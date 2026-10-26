@@ -275,18 +275,18 @@ public abstract class ClientInteractionsMixin {
         Item item = itemStack.getItem();
         var placeContext = new BlockPlaceContext(player, hand, player.getItemInHand(hand), blockHitResult);
 
-        if (!(item instanceof BlockItem)) {
-            boolean useSamePos = true;
+        if (item instanceof BlockItem) {
+            return placeBlockCondition.checkPlaceBlock(placeContext);
+        }
 
-            if (item instanceof BucketItem bucketItem && bucketItem.getContent() != Fluids.EMPTY) {
-                useSamePos = false;
-                BlockState blockState = level.getBlockState(blockHitResult.getBlockPos());
+        if (item instanceof BucketItem bucketItem && bucketItem.getContent() != Fluids.EMPTY) {
+            boolean useSamePos = false;
+            BlockState blockState = level.getBlockState(blockHitResult.getBlockPos());
 
-                if (blockState.getBlock() instanceof LiquidBlockContainer liquidBlockContainer) {
-                    useSamePos = !player.isShiftKeyDown() && liquidBlockContainer.canPlaceLiquid(
-                            player, level, blockHitResult.getBlockPos(), blockState, bucketItem.getContent()
-                    );
-                }
+            if (blockState.getBlock() instanceof LiquidBlockContainer liquidBlockContainer) {
+                useSamePos = !player.isShiftKeyDown() && liquidBlockContainer.canPlaceLiquid(
+                        player, level, blockHitResult.getBlockPos(), blockState, bucketItem.getContent()
+                );
             }
 
             if (useSamePos) {
@@ -294,8 +294,10 @@ public abstract class ClientInteractionsMixin {
             } else {
                 placeContext = new NoReplaceBlockPlaceContext(player, hand, itemStack, blockHitResult);
             }
+
+            return placeBlockCondition.checkPlaceBlock(placeContext);
         }
 
-        return placeBlockCondition.checkPlaceBlock(placeContext);
+        return ConditionResult.PASS;
     }
 }

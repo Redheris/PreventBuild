@@ -239,30 +239,17 @@ publishMods {
     }
 }
 
-
 /*
-// Publishes builds to a maven repository under `com.example:template:0.1.0+mc`
+// Publishes builds to a maven repository
 publishing {
-    repositories {
-        maven("https://maven.example.com/releases") {
-            name = "myMaven"
-            // To authenticate, create `myMavenUsername` and `myMavenPassword` properties in your Gradle home properties.
-            // See https://stonecutter.kikugie.dev/wiki/tips/properties#defining-properties
-            credentials(PasswordCredentials::class.java)
-            authentication {
-                create<BasicAuthentication>("basic")
-            }
-        }
-    }
-
     publications {
         create<MavenPublication>("mavenJava") {
-            groupId = "${property("mod.group")}.${property("mod.id")}"
+            groupId = property("mod.group") as String
             artifactId = property("mod.id") as String
-            version = project.version
+            version = project.version as String
 
             from(components["java"])
         }
     }
 }
- */
+*/
