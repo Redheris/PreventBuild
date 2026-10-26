@@ -6,10 +6,8 @@ import dev.redheris.preventbuild.config.conditions.ActiveConfigsStorage;
 import dev.redheris.preventbuild.config.conditions.ConditionConfigsReader;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ConditionsManager {
@@ -39,13 +37,22 @@ public class ConditionsManager {
         save();
     }
 
-    public void read() {
+    /// @return a {@link Map} containing pairs "config file path":"fail reason"
+    public Map<Path, String> read() {
         PreventBuildConfig.ensureConfigDirectoriesExists();
         configs.clear();
         activeConfigs.clear();
 
-        List<ConditionConfig> updated = ConditionConfigsReader.readConditions();
-        configs.addAll(List.copyOf(updated));
+        Map<Path, String> failedConfigFiles = new HashMap<>();
+        List<ConditionConfig> updated;
+
+        try {
+            updated = ConditionConfigsReader.readConditions(failedConfigFiles);
+        } catch (IOException e) {
+            PreventBuild.LOGGER.error("Exception during reading conditions directory", e);
+            return failedConfigFiles;
+        }
+        configs.addAll(updated);
 
         try {
             Set<String> activeConfigNames = ActiveConfigsStorage.read();
@@ -56,13 +63,14 @@ public class ConditionsManager {
             }
         } catch (IOException e) {
             PreventBuild.LOGGER.error("Exception during reading common conditions config file");
-            throw new RuntimeException(e);
+            return failedConfigFiles;
         }
 
         PreventBuild.LOGGER.info("Found and read {} condition config file", updated.size());
         PreventBuild.LOGGER.info("Currently active condition configs count: {}", activeConfigs.size());
 
         save();
+        return failedConfigFiles;
     }
 
     public void save() {
@@ -73,7 +81,6 @@ public class ConditionsManager {
             ActiveConfigsStorage.save(activeConfigNames);
         } catch (IOException e) {
             PreventBuild.LOGGER.error("Exception during saving common conditions config file");
-            throw new RuntimeException(e);
         }
     }
 }

@@ -1,8 +1,11 @@
 package dev.redheris.preventbuild.util;
 
 import dev.redheris.preventbuild.api.ConditionRegistry;
+import dev.redheris.preventbuild.api.IllegalConditionValueException;
+import dev.redheris.preventbuild.api.UnknownConditionFactoryException;
 import dev.redheris.preventbuild.api.UnknownIdentifierValueException;
 import dev.redheris.preventbuild.conditions.Condition;
+import dev.redheris.preventbuild.config.conditions.FailedToParseException;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 
@@ -48,7 +51,13 @@ public class ConditionValueExtractor {
         List<Condition> conditions = new ArrayList<>();
         for (Object obj : list) {
             var entry = extractEntry(obj);
-            conditions.add(registry.parseCondition(entry.getKey(), entry.getValue()));
+            Condition condition;
+            try {
+                condition = registry.parseCondition(entry.getKey(), entry.getValue());
+            } catch (UnknownConditionFactoryException | IllegalConditionValueException e) {
+                throw new FailedToParseException("Failed to parse \"" + entry.getKey() + "\" condition value", e);
+            }
+            conditions.add(condition);
         }
         return conditions;
     }
