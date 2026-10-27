@@ -7,6 +7,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import dev.redheris.preventbuild.PreventBuildClient;
 import dev.redheris.preventbuild.conditions.ConditionConfig;
 import dev.redheris.preventbuild.conditions.ConditionsManager;
+import dev.redheris.preventbuild.gui.RunCodeClickEvent;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.network.chat.ClickEvent;
@@ -126,8 +127,8 @@ public class ClientCommands {
 
     private static int configsList(CommandContext<FabricClientCommandSource> context) {
         var msg = Component.translatable("preventbuild.configs_list");
+        msg.append("\n");
         for (ConditionConfig config : conditionsManager.getConfigs()) {
-            msg.append("\n");
             msg.append(Component.literal(config.name())
                     .withStyle(style -> style
                             .withColor(CommonColors.LIGHT_GRAY)
@@ -147,14 +148,15 @@ public class ClientCommands {
             }
 
             toggleActive.withStyle(style -> style
-//                    .withClickEvent(() -> {
-//                        conditionsManager.setActive(config, !active);
-//                        return ClickEvent.Action.CUSTOM;
-//                    })
+                    .withClickEvent(new RunCodeClickEvent(() -> {
+                        conditionsManager.setActive(config, !active);
+                        configsList(context);
+                    }))
                     .withHoverEvent(new HoverEvent.ShowText(
-                            Component.translatable("preventbuild.toggle_enabled"))
-                    ));
+                            Component.translatable("preventbuild.toggle_enabled")
+                    )));
             msg.append(toggleActive);
+            msg.append("\n");
         }
         context.getSource().getPlayer().displayClientMessage(msg, false);
         return 0;
