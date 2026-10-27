@@ -4,7 +4,6 @@ import dev.redheris.preventbuild.conditions.ConditionResult;
 import net.minecraft.core.Direction;
 
 public class CoordinateEqualsCondition extends CoordinateConditionBase {
-    // TODO: Make List
     private final int[] values;
 
     public CoordinateEqualsCondition(Direction.Axis axis, int[] values) {

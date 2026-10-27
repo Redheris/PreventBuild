@@ -19,6 +19,9 @@ public class ConditionValueExtractor {
     private final static ConditionRegistry registry = ConditionRegistry.getInstance();
 
     public static int[] extractIntArray(Object value) {
+        if (value instanceof Integer integer) {
+            return new int[]{integer};
+        }
         List<?> list = requireList(value);
         int[] ints = new int[list.size()];
         for (int i = 0; i < list.size(); i++) {
@@ -28,6 +31,9 @@ public class ConditionValueExtractor {
     }
 
     public static List<Identifier> extractIdentifierList(String registryName, Registry<?> registry, Object value) {
+        if (value instanceof String) {
+            return List.of(extractIdentifier(registryName, registry, value));
+        }
         List<?> list = requireList(value);
         List<Identifier> identifiers = new ArrayList<>();
         for (Object obj : list) {
