@@ -2,9 +2,11 @@ package dev.redheris.preventbuild.conditions;
 
 import dev.redheris.preventbuild.conditions.impl.logical.OrCondition;
 
-public record ConditionConfig(String name, OrCondition attackAny, OrCondition attackBlock, OrCondition attackEntity,
-                              OrCondition interactAny, OrCondition interactBlock, OrCondition interactEntity,
-                              OrCondition useItem, OrCondition placeBlock) {
+import java.nio.file.Path;
+
+public record ConditionConfig(String name, Path filepath, OrCondition attackAny, OrCondition attackBlock,
+                              OrCondition attackEntity, OrCondition interactAny, OrCondition interactBlock,
+                              OrCondition interactEntity, OrCondition useItem, OrCondition placeBlock) {
 
     public static Builder builder() {
         return new Builder();
@@ -12,6 +14,7 @@ public record ConditionConfig(String name, OrCondition attackAny, OrCondition at
 
     public static class Builder {
         private String name;
+        private Path filepath;
         private OrCondition attackAny;
         private OrCondition attackBlock;
         private OrCondition attackEntity;
@@ -23,6 +26,10 @@ public record ConditionConfig(String name, OrCondition attackAny, OrCondition at
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public void setFilepath(Path filepath) {
+            this.filepath = filepath;
         }
 
         public void setAttackAny(OrCondition attackAny) {
@@ -60,6 +67,7 @@ public record ConditionConfig(String name, OrCondition attackAny, OrCondition at
         public ConditionConfig build() {
             return new ConditionConfig(
                     name,
+                    filepath,
                     attackAny,
                     attackBlock,
                     attackEntity,

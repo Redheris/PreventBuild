@@ -25,6 +25,7 @@ public class ConditionConfigParser {
 
             String filename = filepath.getFileName().toString();
             builder.setName(FilenameUtils.getBaseName(filename));
+            builder.setFilepath(filepath);
 
             var settings = LoadSettings.builder()
                     .setLabel("Condition config file (" + filepath.getFileName() + ")")
