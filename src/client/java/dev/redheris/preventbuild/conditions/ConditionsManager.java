@@ -4,6 +4,7 @@ import dev.redheris.preventbuild.PreventBuild;
 import dev.redheris.preventbuild.config.PreventBuildConfig;
 import dev.redheris.preventbuild.config.conditions.ActiveConfigsStorage;
 import dev.redheris.preventbuild.config.conditions.ConditionConfigsReader;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -20,6 +21,15 @@ public class ConditionsManager {
 
     public Set<ConditionConfig> getActiveConfigs() {
         return activeConfigs;
+    }
+
+    public @Nullable ConditionConfig findConfigByName(String configName) {
+        for (ConditionConfig config : configs) {
+            if (config.name().equals(configName)) {
+                return config;
+            }
+        }
+        return null;
     }
 
     public boolean isActive(ConditionConfig config) {

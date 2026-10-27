@@ -1,5 +1,16 @@
 {
   "modmenu.descriptionTranslation.preventbuild": "Простой, но гибкий мод, предотвращающий нежелательные действия игрока, описанные в пользовательских конфигах",
+
+  "preventbuild.configs_read": "%d конфига(-ов) успешно прочитано",
+  "preventbuild.failed_to_parse_configs": "Не удалось прочитать %d конфига(-ов):",
+  "preventbuild.open_file": "[Нажмите, чтобы открыть файл]",
+  "preventbuild.toggle_config": "[Нажмите, чтобы переключить]",
+  "preventbuild.unknown_config": "Неизвестный конфиг: \"%s\"",
+  "preventbuild.active": "активен",
+  "preventbuild.inactive": "неактивен",
+  "preventbuild.config_status_changed": "Конфиг \"%s\" теперь %s",
+  "preventbuild.configs_list": "Загруженные конфиги:",
+
   "preventbuild.command_with_no_arguments": "Вызван /pb без аргументов",
   "preventbuild.help_line_1": "PreventBuild commands:",
   "preventbuild.help_line_2": "/pb help - вывести список команд",
@@ -10,10 +21,8 @@
   "preventbuild.config_is_active": "активен",
   "preventbuild.config_is_inactive": "неактивен",
   "preventbuild.config_is_toggled": "Конфиг \"%s\" теперь ",
-  "preventbuild.configs_updated": "Конфиги обновлены",
   "preventbuild.open_config_file": "[Нажмите, чтобы открыть файл конфига]",
   "preventbuild.toggle_enabled": "[Нажмите для переключения]",
-  "preventbuild.configs_list": "Загруженные конфигурации:",
   "preventbuild.no_configs_found": "Не найдено файлов конфигов",
 
   "preventbuild.config_not_found": "Конфиг \"%s\" не найден",

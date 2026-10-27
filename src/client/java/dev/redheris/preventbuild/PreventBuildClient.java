@@ -1,5 +1,6 @@
 package dev.redheris.preventbuild;
 
+import dev.redheris.preventbuild.command.ClientCommands;
 import dev.redheris.preventbuild.conditions.ConditionsManager;
 import dev.redheris.preventbuild.conditions.impl.Conditions;
 import dev.redheris.preventbuild.config.PreventBuildConfig;
@@ -15,5 +16,6 @@ public class PreventBuildClient implements ClientModInitializer {
         Conditions.registerAll();
         TagsLoadedTrigger.init();
         commonConfig.read();
+        ClientCommands.registerCommands();
     }
 }

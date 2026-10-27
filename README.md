@@ -28,10 +28,10 @@ implementation approaches. I still don't have a lot of time, but here I will be 
 new version of PreventBuild.
 
 Essential points I'd like to achieve with 2.0:
-- Weird custom .cfg configs format + unstable custom parser → YAML + parser dependency;
-- Translation keys → Identifiers;
+- ✔️ Weird custom .cfg configs format + unstable custom parser → YAML + parser dependency;
+- ✔️ Translation keys → Identifiers;
+- ✔️ More stable and direct preventions;
 - Custom ore dictionaries → custom and built-in tags;
-- More stable and straightforward preventions;
 - Adequate examples of complex conditions.
 
 You can still find the old version's sources in another [branch](https://github.com/Redheris/PreventBuild/tree/1.x)
