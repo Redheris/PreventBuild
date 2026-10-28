@@ -1,7 +1,5 @@
 package dev.redheris.preventbuild.config.conditions;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import dev.redheris.preventbuild.config.PreventBuildConfig;
 
 import java.io.FileReader;
@@ -11,11 +9,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
 
+import static dev.redheris.preventbuild.config.PreventBuildConfig.gson;
+
 public class ActiveConfigsStorage {
     public static final Path STORAGE_FILE_PATH = PreventBuildConfig.CONFIGS_DIR.resolve("conditions.json");
-    private static final Gson gson = new GsonBuilder()
-            .setPrettyPrinting()
-            .create();
 
     public static Set<String> read() throws IOException {
         PreventBuildConfig.ensureConfigDirectoriesExists();

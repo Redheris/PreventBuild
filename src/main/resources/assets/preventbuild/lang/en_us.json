@@ -10,6 +10,7 @@
   "preventbuild.inactive": "inactive",
   "preventbuild.config_status_changed": "Config \"%s\" is now %s",
   "preventbuild.configs_list": "Loaded configs:",
+  "preventbuild.failed_to_read_custom_tags": "Failed to read custom tags",
 
   "preventbuild.command_with_no_arguments": "Called /pb without arguments",
   "preventbuild.help_line_1": "PreventBuild commands:",

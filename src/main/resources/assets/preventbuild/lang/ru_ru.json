@@ -10,6 +10,7 @@
   "preventbuild.inactive": "неактивен",
   "preventbuild.config_status_changed": "Конфиг \"%s\" теперь %s",
   "preventbuild.configs_list": "Загруженные конфиги:",
+  "preventbuild.failed_to_read_custom_tags": "Не удалось прочитать пользовательские теги",
 
   "preventbuild.command_with_no_arguments": "Вызван /pb без аргументов",
   "preventbuild.help_line_1": "PreventBuild commands:",
