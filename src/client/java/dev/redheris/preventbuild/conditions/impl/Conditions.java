@@ -12,11 +12,18 @@ import dev.redheris.preventbuild.conditions.impl.items.ItemEqualsCondition;
 import dev.redheris.preventbuild.conditions.impl.logical.AndCondition;
 import dev.redheris.preventbuild.conditions.impl.logical.NotCondition;
 import dev.redheris.preventbuild.conditions.impl.logical.OrCondition;
+import dev.redheris.preventbuild.conditions.impl.player.GameModeCondition;
 import dev.redheris.preventbuild.conditions.impl.player.InteractionHandCondition;
 import dev.redheris.preventbuild.conditions.impl.player.IsCrouchingCondition;
+import dev.redheris.preventbuild.conditions.impl.world.BiomeCondition;
+import dev.redheris.preventbuild.conditions.impl.world.DimensionCondition;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
 
 import static dev.redheris.preventbuild.conditions.util.ConditionValueExtractor.*;
 import static dev.redheris.preventbuild.conditions.util.ConditionValueValidator.*;
@@ -93,6 +100,29 @@ public class Conditions {
         register("hand", value ->
                 new InteractionHandCondition(InteractionHand.valueOf(requireString(value).toUpperCase()))
         );
+        register("gameMode", value ->
+                new GameModeCondition(GameType.byName(requireString(value)))
+        );
+
+        // World
+        register("dimension", value -> {
+            Level level = Minecraft.getInstance().level;
+            if (level == null) {
+                System.out.println("Naaaaah");
+                throw new IllegalStateException("Cannot create the condition without a Level");
+            }
+            var registry = level.registryAccess().lookupOrThrow(Registries.DIMENSION_TYPE);
+            return new DimensionCondition(extractIdentifierTagList("DIMENSION_TYPE", registry, value));
+        });
+        register("biome", value -> {
+            Level level = Minecraft.getInstance().level;
+            if (level == null) {
+                System.out.println("Naaaaah");
+                throw new IllegalStateException("Cannot create the condition without a Level");
+            }
+            var registry = level.registryAccess().lookupOrThrow(Registries.BIOME);
+            return new BiomeCondition(extractIdentifierTagList("BIOME", registry, value));
+        });
 
         // Coordinates
         register("x", value -> parseCoordinateEqualsOrWithin(Direction.Axis.X, value));

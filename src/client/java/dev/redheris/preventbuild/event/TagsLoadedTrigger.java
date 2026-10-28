@@ -11,6 +11,7 @@ public class TagsLoadedTrigger {
         CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
             if (tagsLoaded) return;
             CustomTagsManager.read();
+            // FIXME: fix conditions failed to create without Level/RegistryAccess
             PreventBuildClient.conditionsManager.read();
             tagsLoaded = true;
         });

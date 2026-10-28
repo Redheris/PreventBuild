@@ -3,6 +3,7 @@ package dev.redheris.preventbuild.conditions.util;
 import dev.redheris.preventbuild.config.customtags.CustomTagsManager;
 import dev.redheris.preventbuild.config.customtags.UnknownCustomTagException;
 import net.fabricmc.fabric.api.tag.convention.v2.TagUtil;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 
@@ -34,8 +35,12 @@ public class IdentifierTagWrapper<T> {
     }
 
     public boolean isIn(T obj, Identifier objId) {
+        return isIn(obj, objId, null);
+    }
+
+    public boolean isIn(T obj, Identifier objId, RegistryAccess registryAccess) {
         if (tagKey != null) {
-            return TagUtil.isIn(tagKey, obj);
+            return TagUtil.isIn(registryAccess, tagKey, obj);
         }
 
         if (identifier != null) {
