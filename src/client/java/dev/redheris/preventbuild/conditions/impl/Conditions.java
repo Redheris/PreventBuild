@@ -16,13 +16,10 @@ import dev.redheris.preventbuild.conditions.impl.player.InteractionHandCondition
 import dev.redheris.preventbuild.conditions.impl.player.IsCrouchingCondition;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 
-import java.util.List;
-
-import static dev.redheris.preventbuild.util.ConditionValueExtractor.*;
-import static dev.redheris.preventbuild.util.ConditionValueValidator.*;
+import static dev.redheris.preventbuild.conditions.util.ConditionValueExtractor.*;
+import static dev.redheris.preventbuild.conditions.util.ConditionValueValidator.*;
 
 public class Conditions {
     private static boolean alreadyRegistered = false;
@@ -41,49 +38,58 @@ public class Conditions {
 
         // Blocks
         register("block", value -> {
-            List<Identifier> identifiers = extractIdentifierList("BLOCK", BuiltInRegistries.BLOCK, value);
+            var identifiers =
+                    extractIdentifierTagList("BLOCK", BuiltInRegistries.BLOCK, value);
             return new BlockEqualsCondition(identifiers);
         });
         register("blockAbove", value -> {
-            List<Identifier> identifiers = extractIdentifierList("BLOCK", BuiltInRegistries.BLOCK, value);
+            var identifiers =
+                    extractIdentifierTagList("BLOCK", BuiltInRegistries.BLOCK, value);
             return new BlockBesideCondition(identifiers, Direction.UP);
         });
         register("blockBelow", value -> {
-            List<Identifier> identifiers = extractIdentifierList("BLOCK", BuiltInRegistries.BLOCK, value);
+            var identifiers =
+                    extractIdentifierTagList("BLOCK", BuiltInRegistries.BLOCK, value);
             return new BlockBesideCondition(identifiers, Direction.DOWN);
         });
         register("blockNorth", value -> {
-            List<Identifier> identifiers = extractIdentifierList("BLOCK", BuiltInRegistries.BLOCK, value);
+            var identifiers =
+                    extractIdentifierTagList("BLOCK", BuiltInRegistries.BLOCK, value);
             return new BlockBesideCondition(identifiers, Direction.NORTH);
         });
         register("blockSouth", value -> {
-            List<Identifier> identifiers = extractIdentifierList("BLOCK", BuiltInRegistries.BLOCK, value);
+            var identifiers =
+                    extractIdentifierTagList("BLOCK", BuiltInRegistries.BLOCK, value);
             return new BlockBesideCondition(identifiers, Direction.SOUTH);
         });
         register("blockWest", value -> {
-            List<Identifier> identifiers = extractIdentifierList("BLOCK", BuiltInRegistries.BLOCK, value);
+            var identifiers =
+                    extractIdentifierTagList("BLOCK", BuiltInRegistries.BLOCK, value);
             return new BlockBesideCondition(identifiers, Direction.WEST);
         });
         register("blockEast", value -> {
-            List<Identifier> identifiers = extractIdentifierList("BLOCK", BuiltInRegistries.BLOCK, value);
+            var identifiers =
+                    extractIdentifierTagList("BLOCK", BuiltInRegistries.BLOCK, value);
             return new BlockBesideCondition(identifiers, Direction.EAST);
         });
 
         // Items
         register("item", value -> {
-            List<Identifier> identifiers = extractIdentifierList("ITEM", BuiltInRegistries.ITEM, value);
+            var identifiers =
+                    extractIdentifierTagList("ITEM", BuiltInRegistries.ITEM, value);
             return new ItemEqualsCondition(identifiers);
         });
 
         // Entities
         register("entity", value -> {
-            List<Identifier> identifiers = extractIdentifierList("ENTITY_TYPE", BuiltInRegistries.ENTITY_TYPE, value);
+            var identifiers =
+                    extractIdentifierTagList("ENTITY_TYPE", BuiltInRegistries.ENTITY_TYPE, value);
             return new EntityEqualsCondition(identifiers);
         });
 
         // Player
         register("isCrouching", value -> new IsCrouchingCondition(requireBoolean(value)));
-        register("isCrouching", value -> new IsCrouchingCondition(requireBoolean(value)));
+        register("isShiftKeyDown", value -> new IsCrouchingCondition(requireBoolean(value)));
         register("hand", value ->
                 new InteractionHandCondition(InteractionHand.valueOf(requireString(value).toUpperCase()))
         );

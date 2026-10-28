@@ -7,6 +7,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import dev.redheris.preventbuild.PreventBuildClient;
 import dev.redheris.preventbuild.conditions.ConditionConfig;
 import dev.redheris.preventbuild.conditions.ConditionsManager;
+import dev.redheris.preventbuild.config.customtags.CustomTagsManager;
 import dev.redheris.preventbuild.gui.RunCodeClickEvent;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -47,39 +48,54 @@ public class ClientCommands {
 
     private static int updateConfigs(CommandContext<FabricClientCommandSource> context) {
         Player player = context.getSource().getPlayer();
-        var failedFiles = conditionsManager.read();
-        int count = conditionsManager.getConfigs().size();
 
-        if (count > 0) {
+        String errorMessage = CustomTagsManager.read();
+        if (errorMessage != null) {
             player.displayClientMessage(
-                    Component.translatable("preventbuild.configs_read", count)
+                    Component.translatable("preventbuild.failed_to_read_custom_tags")
+                            .append(": ")
+                            .append(Component.literal(errorMessage))
+                            .withColor(CommonColors.SOFT_RED),
+                    false
+            );
+            return -2;
+        }
+
+        var failedFiles = conditionsManager.read();
+        int successCount = conditionsManager.getConfigs().size();
+
+        if (successCount > 0) {
+            player.displayClientMessage(
+                    Component.translatable("preventbuild.configs_read", successCount)
                             .withColor(CommonColors.GREEN),
                     false
             );
-            return 0;
         }
 
-        var msg = Component.translatable(
-                "preventbuild.failed_to_parse_configs", failedFiles.size()
-        );
-        for (Map.Entry<Path, String> entry : failedFiles.entrySet()) {
-            msg.append("\n");
-            Path filepath = entry.getKey();
-            String filename = filepath.getFileName().toString();
-            String description = entry.getValue();
-            msg.append(Component.literal(filename)
-                    .withStyle(style -> style
-                            .withColor(CommonColors.LIGHT_GRAY)
-                            .withUnderlined(true)
-                            .withClickEvent(new ClickEvent.OpenFile(filepath))
-                            .withHoverEvent(new HoverEvent.ShowText(
-                                    Component.translatable("preventbuild.open_file")
-                            ))));
-            msg.append(" : ");
-            msg.append(Component.literal(description).withColor(CommonColors.SOFT_RED));
+        if (!failedFiles.isEmpty()) {
+            var msg = Component.translatable(
+                    "preventbuild.failed_to_parse_configs", failedFiles.size()
+            );
+            for (Map.Entry<Path, String> entry : failedFiles.entrySet()) {
+                msg.append("\n");
+                Path filepath = entry.getKey();
+                String filename = filepath.getFileName().toString();
+                String description = entry.getValue();
+                msg.append(Component.literal(filename)
+                        .withStyle(style -> style
+                                .withColor(CommonColors.LIGHT_GRAY)
+                                .withUnderlined(true)
+                                .withClickEvent(new ClickEvent.OpenFile(filepath))
+                                .withHoverEvent(new HoverEvent.ShowText(
+                                        Component.translatable("preventbuild.open_file")
+                                ))));
+                msg.append(" : ");
+                msg.append(Component.literal(description).withColor(CommonColors.SOFT_RED));
+            }
+            player.displayClientMessage(msg, false);
         }
-        player.displayClientMessage(msg, false);
-        return -1;
+
+        return successCount > 0 ? 0 : -1;
     }
 
     private static int toggleConfig(CommandContext<FabricClientCommandSource> context) {

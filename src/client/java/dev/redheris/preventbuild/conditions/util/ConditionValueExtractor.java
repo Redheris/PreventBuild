@@ -1,4 +1,4 @@
-package dev.redheris.preventbuild.util;
+package dev.redheris.preventbuild.conditions.util;
 
 import dev.redheris.preventbuild.api.ConditionRegistry;
 import dev.redheris.preventbuild.api.IllegalConditionValueException;
@@ -8,12 +8,13 @@ import dev.redheris.preventbuild.conditions.Condition;
 import dev.redheris.preventbuild.config.conditions.FailedToParseException;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static dev.redheris.preventbuild.util.ConditionValueValidator.*;
+import static dev.redheris.preventbuild.conditions.util.ConditionValueValidator.*;
 
 public class ConditionValueExtractor {
     private final static ConditionRegistry registry = ConditionRegistry.getInstance();
@@ -30,21 +31,37 @@ public class ConditionValueExtractor {
         return ints;
     }
 
-    public static List<Identifier> extractIdentifierList(String registryName, Registry<?> registry, Object value) {
-        if (value instanceof String) {
-            return List.of(extractIdentifier(registryName, registry, value));
+    public static <T> List<IdentifierTagWrapper<T>> extractIdentifierTagList(String registryName, Registry<T> registry, Object value) {
+        if (value instanceof String string) {
+            return List.of(extractIdentifierTag(registryName, registry, string));
         }
         List<?> list = requireList(value);
-        List<Identifier> identifiers = new ArrayList<>();
+        List<IdentifierTagWrapper<T>> identifiers = new ArrayList<>();
+
         for (Object obj : list) {
-            Identifier id = extractIdentifier(registryName, registry, obj);
-            identifiers.add(id);
+            String string = requireString(obj);
+            identifiers.add(extractIdentifierTag(registryName, registry, string));
         }
+
         return identifiers;
     }
 
-    public static Identifier extractIdentifier(String registryName, Registry<?> registry, Object value) {
-        String idValue = requireString(value);
+    public static <T> IdentifierTagWrapper<T> extractIdentifierTag(String registryName, Registry<T> registry, String value) {
+        if (value.startsWith("##")) {
+            return new IdentifierTagWrapper<>(value.substring(2));
+        }
+
+        if (value.startsWith("#")) {
+            TagKey<T> tagKey = TagKey.create(
+                    registry.key(), Identifier.parse(value.substring(1))
+            );
+            return new IdentifierTagWrapper<>(tagKey);
+        }
+
+        return new IdentifierTagWrapper<>(extractIdentifier(registryName, registry, value));
+    }
+
+    public static Identifier extractIdentifier(String registryName, Registry<?> registry, String idValue) {
         Identifier id = Identifier.parse(idValue);
         if (!registry.containsKey(id)) {
             throw new UnknownIdentifierValueException(registryName, idValue);

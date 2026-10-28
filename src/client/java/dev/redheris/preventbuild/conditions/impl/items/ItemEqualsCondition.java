@@ -1,6 +1,7 @@
 package dev.redheris.preventbuild.conditions.impl.items;
 
 import dev.redheris.preventbuild.conditions.ConditionResult;
+import dev.redheris.preventbuild.conditions.util.IdentifierTagWrapper;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
@@ -16,15 +17,20 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class ItemEqualsCondition extends ItemConditionBase {
-    private final List<Identifier> itemIds;
+    private final List<IdentifierTagWrapper<Item>> itemIds;
 
-    public ItemEqualsCondition(List<Identifier> itemIds) {
+    public ItemEqualsCondition(List<IdentifierTagWrapper<Item>> itemIds) {
         this.itemIds = itemIds;
     }
 
     protected ConditionResult checkItem(Item item) {
         Identifier itemId = BuiltInRegistries.ITEM.getKey(item);
-        return itemIds.contains(itemId) ? ConditionResult.CANCEL : ConditionResult.PASS;
+        for (IdentifierTagWrapper<Item> wrapper : itemIds) {
+            if (wrapper.isIn(item, itemId)) {
+                return ConditionResult.CANCEL;
+            }
+        }
+        return ConditionResult.PASS;
     }
 
     private ConditionResult checkItem(Player player, InteractionHand hand) {

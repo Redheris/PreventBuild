@@ -1,4 +1,4 @@
-package dev.redheris.preventbuild.util;
+package dev.redheris.preventbuild.conditions.util;
 
 import dev.redheris.preventbuild.api.UnexpectedValueTypeException;
 

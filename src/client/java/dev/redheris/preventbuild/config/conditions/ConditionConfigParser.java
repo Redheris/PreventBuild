@@ -5,6 +5,7 @@ import dev.redheris.preventbuild.api.IllegalConditionValueException;
 import dev.redheris.preventbuild.api.UnknownConditionFactoryException;
 import dev.redheris.preventbuild.conditions.ConditionConfig;
 import dev.redheris.preventbuild.conditions.impl.logical.OrCondition;
+import dev.redheris.preventbuild.config.customtags.UnknownCustomTagException;
 import org.apache.commons.io.FilenameUtils;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -14,8 +15,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 
-import static dev.redheris.preventbuild.util.ConditionValueValidator.requireMap;
-import static dev.redheris.preventbuild.util.ConditionValueValidator.requireString;
+import static dev.redheris.preventbuild.conditions.util.ConditionValueValidator.requireMap;
+import static dev.redheris.preventbuild.conditions.util.ConditionValueValidator.requireString;
 
 public class ConditionConfigParser {
     public static ConditionConfig readFromFile(Path filepath) throws IOException, UnknownConditionFactoryException, FailedToParseException {
@@ -57,7 +58,8 @@ public class ConditionConfigParser {
             }
 
             return builder.build();
-        } catch (FailedToParseException | UnknownConditionFactoryException | IllegalConditionValueException e) {
+        } catch (UnknownCustomTagException | FailedToParseException | UnknownConditionFactoryException |
+                 IllegalConditionValueException e) {
             throw new FailedToParseException("Failed to parse the \"" + configBlockKey + "\" category", e);
         } catch (Exception e) {
             throw new FailedToParseException(

@@ -1,6 +1,7 @@
 package dev.redheris.preventbuild.conditions.impl.blocks;
 
 import dev.redheris.preventbuild.conditions.ConditionResult;
+import dev.redheris.preventbuild.conditions.util.IdentifierTagWrapper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -13,28 +14,33 @@ import net.minecraft.world.level.block.Block;
 import java.util.List;
 
 public class BlockEqualsCondition extends BlockConditionBase {
-    private final List<Identifier> blockIds;
+    private final List<IdentifierTagWrapper<Block>> blockIds;
 
-    public BlockEqualsCondition(List<Identifier> blockIds) {
+    public BlockEqualsCondition(List<IdentifierTagWrapper<Block>> blockIds) {
         this.blockIds = blockIds;
     }
 
-    private ConditionResult checkBlock(Block block) {
+    protected ConditionResult containsBlock(Block block) {
         Identifier blockId = BuiltInRegistries.BLOCK.getKey(block);
-        return blockIds.contains(blockId) ? ConditionResult.CANCEL : ConditionResult.PASS;
+        for (IdentifierTagWrapper<Block> wrapper : blockIds) {
+            if (wrapper.isIn(block, blockId)) {
+                return ConditionResult.CANCEL;
+            }
+        }
+        return ConditionResult.PASS;
     }
 
     @Override
     protected ConditionResult checkBlock(Level level, BlockPos blockPos) {
         Block block = level.getBlockState(blockPos).getBlock();
-        return checkBlock(block);
+        return containsBlock(block);
     }
 
     @Override
     public ConditionResult checkPlaceBlock(BlockPlaceContext placeContext) {
         Item item = placeContext.getItemInHand().getItem();
         if (item instanceof BlockItem blockItem) {
-            return checkBlock(blockItem.getBlock());
+            return containsBlock(blockItem.getBlock());
         }
         return ConditionResult.PASS;
     }

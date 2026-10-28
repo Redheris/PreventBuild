@@ -26,13 +26,13 @@ public class CustomTagsManager {
     private static final Path TAGS_FILE_PATH = PreventBuildConfig.CONFIGS_DIR.resolve("custom_tags.json");
     private static final Map<String, List<Identifier>> tags = new HashMap<>();
 
-    public static boolean isIn(String tagName, Identifier value) throws UnknownCustomTagException {
+    public static boolean isIn(String tagName, Identifier value) {
         var list = tags.get(tagName);
         return list != null && list.contains(value);
     }
 
-    public static boolean isIn(CustomTagKey tagName, Identifier value) throws UnknownCustomTagException {
-        return isIn(tagName.key(), value);
+    public static boolean containsTag(String tagName) {
+        return tags.containsKey(tagName);
     }
 
     /// @return exception message, {@code null} if no exceptions were caught

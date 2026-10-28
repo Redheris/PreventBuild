@@ -1,6 +1,6 @@
 # PreventBuild
 
-Adds control over preventing the player from performing certain actions
+Adds client-side control over preventing the player from performing certain actions
 that are set in configs.
 Configs, in turn, have a very flexible structure that allows you to build complex
 logical conditions describing what actions the mod should prevent.
@@ -17,21 +17,20 @@ Depending on:
 - a specific block's state;
 - whether the held item has a specific custom name or enchantment;
 - dimension;
-- etc.
+- and much more.
 
 This mod simply cancels the player's actions, so it's entirely client-side.
 
 ## Currently under major rewriting
 
-It's been a while since the last updates. And there are were few issues I couldn't fix with the original
-implementation approaches. I still don't have a lot of time, but here I will be working on the completely
-new version of PreventBuild.
+It's been a while since the last updates. And there were a few issues I couldn't fix with the original
+implementation approaches. Here I will be working on the completely new version of PreventBuild.
 
 Essential points I'd like to achieve with 2.0:
 - ✔️ Weird custom .cfg configs format + unstable custom parser → YAML + parser dependency;
 - ✔️ Translation keys → Identifiers;
 - ✔️ More stable and direct preventions;
-- Custom ore dictionaries → custom and built-in tags;
+- ✔️ Custom ore dictionaries → custom and built-in tags;
 - Adequate examples of complex conditions.
 
 You can still find the old version's sources in another [branch](https://github.com/Redheris/PreventBuild/tree/1.x)
@@ -42,4 +41,4 @@ You can still find the old version's sources in another [branch](https://github.
 
 ## Contacts
 - GitHub: https://github.com/Redheris/PreventBuild/issues
-- Discord: [Server](https://discord.gg/QTykTF8D5p) or @redheris
+- Discord: [Server](https://discord.gg/QTykTF8D5p)
