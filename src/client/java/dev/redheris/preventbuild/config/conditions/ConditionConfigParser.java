@@ -62,9 +62,10 @@ public class ConditionConfigParser {
                  IllegalConditionValueException e) {
             throw new FailedToParseException("Failed to parse the \"" + configBlockKey + "\" category", e);
         } catch (Exception e) {
-            throw new FailedToParseException(
-                    "Unexpected exception during parsing the condition file \"" + filepath + "\"", e
-            );
+            if (configBlockKey != null) {
+                throw new FailedToParseException("Unexpected exception during parsing the \"" + configBlockKey + "\" category", e);
+            }
+            throw new FailedToParseException("Unexpected exception occurred:", e);
         }
     }
 }
