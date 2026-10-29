@@ -5,6 +5,7 @@ import dev.redheris.preventbuild.conditions.ConditionResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -43,5 +44,10 @@ public abstract class BlockConditionBase extends ConditionBase {
     @Override
     public ConditionResult checkUseItem(Player player, Level level, InteractionHand hand, @Nullable HitResult hitResult) {
         return checkInteractAny(player, level, hand, hitResult);
+    }
+
+    @Override
+    public ConditionResult checkPlaceBlock(BlockPlaceContext placeContext) {
+        return checkBlock(placeContext.getLevel(), placeContext.getClickedPos());
     }
 }
