@@ -4,7 +4,6 @@ import dev.redheris.preventbuild.conditions.ConditionResult;
 import dev.redheris.preventbuild.conditions.util.IdentifierTagWrapper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
@@ -22,10 +21,5 @@ public class BlockBesideCondition extends BlockEqualsCondition {
     protected ConditionResult checkBlock(Level level, BlockPos blockPos) {
         Block block = level.getBlockState(blockPos.relative(direction)).getBlock();
         return super.containsBlock(block);
-    }
-
-    @Override
-    public ConditionResult checkPlaceBlock(BlockPlaceContext placeContext) {
-        return checkBlock(placeContext.getLevel(), placeContext.getClickedPos());
     }
 }

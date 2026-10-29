@@ -6,8 +6,12 @@ import dev.redheris.preventbuild.api.ConditionValueFormatException;
 import dev.redheris.preventbuild.conditions.Condition;
 import dev.redheris.preventbuild.conditions.impl.blocks.BlockBesideCondition;
 import dev.redheris.preventbuild.conditions.impl.blocks.BlockEqualsCondition;
+import dev.redheris.preventbuild.conditions.impl.blocks.BlockReplaceCondition;
+import dev.redheris.preventbuild.conditions.impl.blocks.BlockStateCondition;
 import dev.redheris.preventbuild.conditions.impl.coordinates.*;
 import dev.redheris.preventbuild.conditions.impl.entities.EntityEqualsCondition;
+import dev.redheris.preventbuild.conditions.impl.items.ItemCustomNameCondition;
+import dev.redheris.preventbuild.conditions.impl.items.ItemEnchantmentCondition;
 import dev.redheris.preventbuild.conditions.impl.items.ItemEqualsCondition;
 import dev.redheris.preventbuild.conditions.impl.logical.AndCondition;
 import dev.redheris.preventbuild.conditions.impl.logical.NotCondition;
@@ -17,11 +21,17 @@ import dev.redheris.preventbuild.conditions.impl.player.InteractionHandCondition
 import dev.redheris.preventbuild.conditions.impl.player.IsCrouchingCondition;
 import dev.redheris.preventbuild.conditions.impl.world.BiomeCondition;
 import dev.redheris.preventbuild.conditions.impl.world.DimensionCondition;
+import dev.redheris.preventbuild.conditions.impl.world.IsSingleplayerCondition;
+import dev.redheris.preventbuild.conditions.util.IdentifierTagWrapper;
 import net.minecraft.core.Direction;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.GameType;
+
+import java.util.Map;
 
 import static dev.redheris.preventbuild.conditions.util.ConditionValueExtractor.*;
 import static dev.redheris.preventbuild.conditions.util.ConditionValueValidator.*;
@@ -81,6 +91,13 @@ public class Conditions {
                     extractIdentifierTagList("BLOCK", BuiltInRegistries.BLOCK, value);
             return new BlockBesideCondition(identifiers, Direction.EAST);
         });
+        register("blockState", (regs, value) -> {
+            var entry = extractEntry(value);
+            return new BlockStateCondition(entry.getKey(), extractStringList(entry.getValue()));
+        });
+        register("replaceBlock", (regs, value) ->
+                new BlockReplaceCondition(requireBoolean(value))
+        );
 
         // Items
         register("item", (regs, value) -> {
@@ -88,6 +105,8 @@ public class Conditions {
                     extractIdentifierTagList("ITEM", BuiltInRegistries.ITEM, value);
             return new ItemEqualsCondition(identifiers);
         });
+        register("customName", (regs, value) -> parseCustomNameCondition(value));
+        register("enchant", Conditions::parseItemEnchantmentCondition);
 
         // Entities
         register("entity", (regs, value) -> {
@@ -119,6 +138,9 @@ public class Conditions {
             var registry = regs.lookupOrThrow(Registries.BIOME);
             return new BiomeCondition(extractIdentifierTagList("BIOME", registry, value));
         });
+        register("isSingleplayer", (regs, value) ->
+                new IsSingleplayerCondition(requireBoolean(value))
+        );
 
         // Coordinates
         register("x", (regs, value) -> parseCoordinateEqualsOrWithin(Direction.Axis.X, value));
@@ -223,6 +245,41 @@ public class Conditions {
         );
 
         alreadyRegistered = true;
+    }
+
+    private static Condition parseItemEnchantmentCondition(RegistryAccess regs, Object value) {
+        if (value instanceof Map<?, ?> map) {
+            Integer level = null;
+            if (map.containsKey("level")) {
+                level = requireInt(map.get("level"));
+            }
+            IdentifierTagWrapper<Enchantment> enchantment = extractIdentifierTag(
+                    "ENCHANTMENT",
+                    regs.lookupOrThrow(Registries.ENCHANTMENT),
+                    requireString(map.get("id"))
+            );
+            return new ItemEnchantmentCondition(enchantment, level);
+        }
+        IdentifierTagWrapper<Enchantment> enchantment = extractIdentifierTag(
+                "ENCHANTMENT",
+                regs.lookupOrThrow(Registries.ENCHANTMENT),
+                requireString(value)
+        );
+        return new ItemEnchantmentCondition(enchantment, null);
+    }
+
+    private static Condition parseCustomNameCondition(Object value) {
+        if (value instanceof Map<?, ?> map) {
+            boolean regex = false;
+            if (map.containsKey("regex")) {
+                regex = requireBoolean(map.get("regex"));
+            }
+            String name = requireString(map.get("name"));
+            return new ItemCustomNameCondition(regex, name);
+        }
+
+        String name = requireString(value);
+        return new ItemCustomNameCondition(false, name);
     }
 
     private static Condition parseCoordinateEqualsOrWithin(Direction.Axis axis, Object value) {

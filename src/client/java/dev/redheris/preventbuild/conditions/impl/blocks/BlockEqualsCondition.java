@@ -5,9 +5,6 @@ import dev.redheris.preventbuild.conditions.util.IdentifierTagWrapper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
@@ -34,14 +31,5 @@ public class BlockEqualsCondition extends BlockConditionBase {
     protected ConditionResult checkBlock(Level level, BlockPos blockPos) {
         Block block = level.getBlockState(blockPos).getBlock();
         return containsBlock(block);
-    }
-
-    @Override
-    public ConditionResult checkPlaceBlock(BlockPlaceContext placeContext) {
-        Item item = placeContext.getItemInHand().getItem();
-        if (item instanceof BlockItem blockItem) {
-            return containsBlock(blockItem.getBlock());
-        }
-        return ConditionResult.PASS;
     }
 }

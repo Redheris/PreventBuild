@@ -1,7 +1,6 @@
 package dev.redheris.preventbuild.conditions.util;
 
 import dev.redheris.preventbuild.config.customtags.CustomTagsManager;
-import dev.redheris.preventbuild.config.customtags.UnknownCustomTagException;
 import net.fabricmc.fabric.api.tag.convention.v2.TagUtil;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.Identifier;
@@ -28,10 +27,6 @@ public class IdentifierTagWrapper<T> {
         this.identifier = null;
         this.tagKey = null;
         this.customTagKey = customTagKey;
-
-        if (!CustomTagsManager.containsTag(customTagKey)) {
-            throw new UnknownCustomTagException(customTagKey);
-        }
     }
 
     public boolean isIn(T obj, Identifier objId) {

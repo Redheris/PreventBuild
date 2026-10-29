@@ -6,6 +6,8 @@ import dev.redheris.preventbuild.api.UnknownConditionFactoryException;
 import dev.redheris.preventbuild.api.UnknownIdentifierValueException;
 import dev.redheris.preventbuild.conditions.Condition;
 import dev.redheris.preventbuild.config.conditions.FailedToParseException;
+import dev.redheris.preventbuild.config.customtags.CustomTagsManager;
+import dev.redheris.preventbuild.config.customtags.UnknownCustomTagException;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.Identifier;
@@ -52,7 +54,11 @@ public class ConditionValueExtractor {
 
     public static <T> IdentifierTagWrapper<T> extractIdentifierTag(String registryName, Registry<T> registry, String value) {
         if (value.startsWith("##")) {
-            return new IdentifierTagWrapper<>(value.substring(2));
+            String customTagKey = value.substring(2);
+            if (!CustomTagsManager.containsTag(customTagKey)) {
+                throw new UnknownCustomTagException(customTagKey);
+            }
+            return new IdentifierTagWrapper<>(customTagKey);
         }
 
         if (value.startsWith("#")) {
