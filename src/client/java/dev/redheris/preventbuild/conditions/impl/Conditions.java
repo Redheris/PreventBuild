@@ -17,13 +17,11 @@ import dev.redheris.preventbuild.conditions.impl.player.InteractionHandCondition
 import dev.redheris.preventbuild.conditions.impl.player.IsCrouchingCondition;
 import dev.redheris.preventbuild.conditions.impl.world.BiomeCondition;
 import dev.redheris.preventbuild.conditions.impl.world.DimensionCondition;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.Level;
 
 import static dev.redheris.preventbuild.conditions.util.ConditionValueExtractor.*;
 import static dev.redheris.preventbuild.conditions.util.ConditionValueValidator.*;
@@ -36,197 +34,193 @@ public class Conditions {
         if (alreadyRegistered) return;
 
         // Logical
-        register("and", value -> new AndCondition(extractConditionList(value)));
-        register("or", value -> new OrCondition(extractConditionList(value)));
-        register("not", value -> {
+        register("and", (regs, value) ->
+                new AndCondition(extractConditionList(regs, value))
+        );
+        register("or", (regs, value) ->
+                new OrCondition(extractConditionList(regs, value))
+        );
+        register("not", (regs, value) -> {
             var entry = extractEntry(value);
-            return new NotCondition(registry.parseCondition(entry.getKey(), entry.getValue()));
+            return new NotCondition(registry.parseCondition(regs, entry.getKey(), entry.getValue()));
         });
 
         // Blocks
-        register("block", value -> {
+        register("block", (regs, value) -> {
             var identifiers =
                     extractIdentifierTagList("BLOCK", BuiltInRegistries.BLOCK, value);
             return new BlockEqualsCondition(identifiers);
         });
-        register("blockAbove", value -> {
+        register("blockAbove", (regs, value) -> {
             var identifiers =
                     extractIdentifierTagList("BLOCK", BuiltInRegistries.BLOCK, value);
             return new BlockBesideCondition(identifiers, Direction.UP);
         });
-        register("blockBelow", value -> {
+        register("blockBelow", (regs, value) -> {
             var identifiers =
                     extractIdentifierTagList("BLOCK", BuiltInRegistries.BLOCK, value);
             return new BlockBesideCondition(identifiers, Direction.DOWN);
         });
-        register("blockNorth", value -> {
+        register("blockNorth", (regs, value) -> {
             var identifiers =
                     extractIdentifierTagList("BLOCK", BuiltInRegistries.BLOCK, value);
             return new BlockBesideCondition(identifiers, Direction.NORTH);
         });
-        register("blockSouth", value -> {
+        register("blockSouth", (regs, value) -> {
             var identifiers =
                     extractIdentifierTagList("BLOCK", BuiltInRegistries.BLOCK, value);
             return new BlockBesideCondition(identifiers, Direction.SOUTH);
         });
-        register("blockWest", value -> {
+        register("blockWest", (regs, value) -> {
             var identifiers =
                     extractIdentifierTagList("BLOCK", BuiltInRegistries.BLOCK, value);
             return new BlockBesideCondition(identifiers, Direction.WEST);
         });
-        register("blockEast", value -> {
+        register("blockEast", (regs, value) -> {
             var identifiers =
                     extractIdentifierTagList("BLOCK", BuiltInRegistries.BLOCK, value);
             return new BlockBesideCondition(identifiers, Direction.EAST);
         });
 
         // Items
-        register("item", value -> {
+        register("item", (regs, value) -> {
             var identifiers =
                     extractIdentifierTagList("ITEM", BuiltInRegistries.ITEM, value);
             return new ItemEqualsCondition(identifiers);
         });
 
         // Entities
-        register("entity", value -> {
+        register("entity", (regs, value) -> {
             var identifiers =
                     extractIdentifierTagList("ENTITY_TYPE", BuiltInRegistries.ENTITY_TYPE, value);
             return new EntityEqualsCondition(identifiers);
         });
 
         // Player
-        register("isCrouching", value -> new IsCrouchingCondition(requireBoolean(value)));
-        register("isShiftKeyDown", value -> new IsCrouchingCondition(requireBoolean(value)));
-        register("hand", value ->
+        register("isCrouching", (regs, value) ->
+                new IsCrouchingCondition(requireBoolean(value))
+        );
+        register("isShiftKeyDown", (regs, value) ->
+                new IsCrouchingCondition(requireBoolean(value))
+        );
+        register("hand", (regs, value) ->
                 new InteractionHandCondition(InteractionHand.valueOf(requireString(value).toUpperCase()))
         );
-        register("gameMode", value ->
+        register("gameMode", (regs, value) ->
                 new GameModeCondition(GameType.byName(requireString(value)))
         );
 
         // World
-        register("dimension", value -> {
-            Level level = Minecraft.getInstance().level;
-            if (level == null) {
-                System.out.println("Naaaaah");
-                throw new IllegalStateException("Cannot create the condition without a Level");
-            }
-            var registry = level.registryAccess().lookupOrThrow(Registries.DIMENSION_TYPE);
+        register("dimension", (regs, value) -> {
+            var registry = regs.lookupOrThrow(Registries.DIMENSION_TYPE);
             return new DimensionCondition(extractIdentifierTagList("DIMENSION_TYPE", registry, value));
         });
-        register("biome", value -> {
-            Level level = Minecraft.getInstance().level;
-            if (level == null) {
-                System.out.println("Naaaaah");
-                throw new IllegalStateException("Cannot create the condition without a Level");
-            }
-            var registry = level.registryAccess().lookupOrThrow(Registries.BIOME);
+        register("biome", (regs, value) -> {
+            var registry = regs.lookupOrThrow(Registries.BIOME);
             return new BiomeCondition(extractIdentifierTagList("BIOME", registry, value));
         });
 
         // Coordinates
-        register("x", value -> parseCoordinateEqualsOrWithin(Direction.Axis.X, value));
-        register("y", value -> parseCoordinateEqualsOrWithin(Direction.Axis.Y, value));
-        register("z", value -> parseCoordinateEqualsOrWithin(Direction.Axis.Z, value));
-        register("x<", value ->
+        register("x", (regs, value) -> parseCoordinateEqualsOrWithin(Direction.Axis.X, value));
+        register("y", (regs, value) -> parseCoordinateEqualsOrWithin(Direction.Axis.Y, value));
+        register("z", (regs, value) -> parseCoordinateEqualsOrWithin(Direction.Axis.Z, value));
+        register("x<", (regs, value) ->
                 new CoordinateCompareCondition(
                         Direction.Axis.X, requireInt(value), IntComparator.LESS
                 ));
-        register("y<", value ->
+        register("y<", (regs, value) ->
                 new CoordinateCompareCondition(
                         Direction.Axis.Y, requireInt(value), IntComparator.LESS
                 ));
-        register("z<", value ->
+        register("z<", (regs, value) ->
                 new CoordinateCompareCondition(
                         Direction.Axis.Z, requireInt(value), IntComparator.LESS
                 ));
-        register("x<=", value ->
+        register("x<=", (regs, value) ->
                 new CoordinateCompareCondition(
                         Direction.Axis.X, requireInt(value), IntComparator.LESS_EQ
                 ));
-        register("y<=", value ->
+        register("y<=", (regs, value) ->
                 new CoordinateCompareCondition(
                         Direction.Axis.Y, requireInt(value), IntComparator.LESS_EQ
                 ));
-        register("z<=", value ->
+        register("z<=", (regs, value) ->
                 new CoordinateCompareCondition(
                         Direction.Axis.Z, requireInt(value), IntComparator.LESS_EQ
                 ));
-        register("x>", value ->
+        register("x>", (regs, value) ->
                 new CoordinateCompareCondition(
                         Direction.Axis.X, requireInt(value), IntComparator.GREATER
                 ));
-        register("y>", value ->
+        register("y>", (regs, value) ->
                 new CoordinateCompareCondition(
                         Direction.Axis.Y, requireInt(value), IntComparator.GREATER
                 ));
-        register("z>", value ->
-                new CoordinateCompareCondition(
-                        Direction.Axis.Z, requireInt(value), IntComparator.GREATER
-                ));
-        register("x>=", value ->
+        register("z>", (regs, value) ->
+                new CoordinateCompareCondition(Direction.Axis.Z, requireInt(value), IntComparator.GREATER)
+        );
+        register("x>=", (regs, value) ->
                 new CoordinateCompareCondition(
                         Direction.Axis.X, requireInt(value), IntComparator.GREATER_EQ
                 ));
-        register("y>=", value ->
+        register("y>=", (regs, value) ->
                 new CoordinateCompareCondition(
                         Direction.Axis.Y, requireInt(value), IntComparator.GREATER_EQ
                 ));
-        register("z>=", value ->
-                new CoordinateCompareCondition(
-                        Direction.Axis.Z, requireInt(value), IntComparator.GREATER_EQ
-                ));
-        register("player_x", value -> parsePlayerCoordinateEqualsOrWithin(Direction.Axis.X, value));
-        register("player_y", value -> parsePlayerCoordinateEqualsOrWithin(Direction.Axis.Y, value));
-        register("player_z", value -> parsePlayerCoordinateEqualsOrWithin(Direction.Axis.Z, value));
-        register("player_x<", value ->
+        register("z>=", (regs, value) ->
+                new CoordinateCompareCondition(Direction.Axis.Z, requireInt(value), IntComparator.GREATER_EQ)
+        );
+        register("player_x", (regs, value) -> parsePlayerCoordinateEqualsOrWithin(Direction.Axis.X, value));
+        register("player_y", (regs, value) -> parsePlayerCoordinateEqualsOrWithin(Direction.Axis.Y, value));
+        register("player_z", (regs, value) -> parsePlayerCoordinateEqualsOrWithin(Direction.Axis.Z, value));
+        register("player_x<", (regs, value) ->
                 new PlayerCoordinateCompareCondition(
-                        Direction.Axis.X, requireInt(value), IntComparator.LESS
-                ));
-        register("player_y<", value ->
+                        Direction.Axis.X, requireInt(value), IntComparator.LESS)
+        );
+        register("player_y<", (regs, value) ->
                 new PlayerCoordinateCompareCondition(
-                        Direction.Axis.Y, requireInt(value), IntComparator.LESS
-                ));
-        register("player_z<", value ->
+                        Direction.Axis.Y, requireInt(value), IntComparator.LESS)
+        );
+        register("player_z<", (regs, value) ->
                 new PlayerCoordinateCompareCondition(
-                        Direction.Axis.Z, requireInt(value), IntComparator.LESS
-                ));
-        register("player_x<=", value ->
+                        Direction.Axis.Z, requireInt(value), IntComparator.LESS)
+        );
+        register("player_x<=", (regs, value) ->
                 new PlayerCoordinateCompareCondition(
-                        Direction.Axis.X, requireInt(value), IntComparator.LESS_EQ
-                ));
-        register("player_y<=", value ->
+                        Direction.Axis.X, requireInt(value), IntComparator.LESS_EQ)
+        );
+        register("player_y<=", (regs, value) ->
                 new PlayerCoordinateCompareCondition(
-                        Direction.Axis.Y, requireInt(value), IntComparator.LESS_EQ
-                ));
-        register("player_z<=", value ->
+                        Direction.Axis.Y, requireInt(value), IntComparator.LESS_EQ)
+        );
+        register("player_z<=", (regs, value) ->
                 new PlayerCoordinateCompareCondition(
-                        Direction.Axis.Z, requireInt(value), IntComparator.LESS_EQ
-                ));
-        register("player_x>", value ->
+                        Direction.Axis.Z, requireInt(value), IntComparator.LESS_EQ)
+        );
+        register("player_x>", (regs, value) ->
                 new PlayerCoordinateCompareCondition(
-                        Direction.Axis.X, requireInt(value), IntComparator.GREATER
-                ));
-        register("player_y>", value ->
+                        Direction.Axis.X, requireInt(value), IntComparator.GREATER)
+        );
+        register("player_y>", (regs, value) ->
                 new PlayerCoordinateCompareCondition(
-                        Direction.Axis.Y, requireInt(value), IntComparator.GREATER
-                ));
-        register("player_z>", value ->
+                        Direction.Axis.Y, requireInt(value), IntComparator.GREATER)
+        );
+        register("player_z>", (regs, value) ->
                 new PlayerCoordinateCompareCondition(
-                        Direction.Axis.Z, requireInt(value), IntComparator.GREATER
-                ));
-        register("player_x>=", value ->
+                        Direction.Axis.Z, requireInt(value), IntComparator.GREATER)
+        );
+        register("player_x>=", (regs, value) ->
                 new PlayerCoordinateCompareCondition(
-                        Direction.Axis.X, requireInt(value), IntComparator.GREATER_EQ
-                ));
-        register("player_y>=", value ->
+                        Direction.Axis.X, requireInt(value), IntComparator.GREATER_EQ)
+        );
+        register("player_y>=", (regs, value) ->
                 new PlayerCoordinateCompareCondition(
-                        Direction.Axis.Y, requireInt(value), IntComparator.GREATER_EQ
-                ));
-        register("player_z>=", value ->
+                        Direction.Axis.Y, requireInt(value), IntComparator.GREATER_EQ)
+        );
+        register("player_z>=", (regs, value) ->
                 new PlayerCoordinateCompareCondition(
-                        Direction.Axis.Z, requireInt(value), IntComparator.GREATER_EQ
-                ));
+                        Direction.Axis.Z, requireInt(value), IntComparator.GREATER_EQ)
+        );
 
         alreadyRegistered = true;
     }

@@ -11,6 +11,7 @@ import dev.redheris.preventbuild.config.customtags.CustomTagsManager;
 import dev.redheris.preventbuild.gui.RunCodeClickEvent;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -61,7 +62,8 @@ public class ClientCommands {
             return -2;
         }
 
-        var failedFiles = conditionsManager.read();
+        RegistryAccess registries = context.getSource().registryAccess();
+        var failedFiles = conditionsManager.read(registries);
         int successCount = conditionsManager.getConfigs().size();
 
         if (successCount > 0) {

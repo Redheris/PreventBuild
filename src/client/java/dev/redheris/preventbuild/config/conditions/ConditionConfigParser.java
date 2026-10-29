@@ -6,6 +6,7 @@ import dev.redheris.preventbuild.api.UnknownConditionFactoryException;
 import dev.redheris.preventbuild.conditions.ConditionConfig;
 import dev.redheris.preventbuild.conditions.impl.logical.OrCondition;
 import dev.redheris.preventbuild.config.customtags.UnknownCustomTagException;
+import net.minecraft.core.RegistryAccess;
 import org.apache.commons.io.FilenameUtils;
 import org.snakeyaml.engine.v2.api.Load;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -19,7 +20,7 @@ import static dev.redheris.preventbuild.conditions.util.ConditionValueValidator.
 import static dev.redheris.preventbuild.conditions.util.ConditionValueValidator.requireString;
 
 public class ConditionConfigParser {
-    public static ConditionConfig readFromFile(Path filepath) throws IOException, UnknownConditionFactoryException, FailedToParseException {
+    public static ConditionConfig readFromFile(RegistryAccess registries, Path filepath) throws IOException, UnknownConditionFactoryException, FailedToParseException {
         String configBlockKey = null;
         try (var reader = new FileReader(filepath.toFile())) {
             var builder = ConditionConfig.builder();
@@ -43,7 +44,7 @@ public class ConditionConfigParser {
                     builder.setName(requireString(entry.getValue()));
                 } else {
                     OrCondition condition = (OrCondition) ConditionRegistry.getInstance()
-                            .parseCondition("or", entry.getValue());
+                            .parseCondition(registries, "or", entry.getValue());
                     switch (configBlockKey) {
                         case "attackAny" -> builder.setAttackAny(condition);
                         case "attackBlock" -> builder.setAttackBlock(condition);

@@ -3,6 +3,7 @@ package dev.redheris.preventbuild.config.conditions;
 import dev.redheris.preventbuild.PreventBuild;
 import dev.redheris.preventbuild.conditions.ConditionConfig;
 import dev.redheris.preventbuild.config.PreventBuildConfig;
+import net.minecraft.core.RegistryAccess;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -13,12 +14,12 @@ import java.util.List;
 import java.util.Map;
 
 public class ConditionConfigsReader {
-    public static List<ConditionConfig> readConditions(Map<Path, String> failedConfigFiles) throws IOException {
+    public static List<ConditionConfig> readConditions(RegistryAccess registries, Map<Path, String> failedConfigFiles) throws IOException {
         try (var stream = Files.newDirectoryStream(PreventBuildConfig.CONDITIONS_DIR, "*.yml")) {
             List<ConditionConfig> configs = new ArrayList<>();
 
             for (Path path : stream) {
-                ConditionConfig config = tryReadAndParse(path, failedConfigFiles);
+                ConditionConfig config = tryReadAndParse(registries, path, failedConfigFiles);
                 if (config == null) continue;
                 configs.add(config);
             }
@@ -27,9 +28,11 @@ public class ConditionConfigsReader {
         }
     }
 
-    private static @Nullable ConditionConfig tryReadAndParse(Path filepath, Map<Path, String> failedConfigFiles) {
+    private static @Nullable ConditionConfig tryReadAndParse(
+            RegistryAccess registries, Path filepath, Map<Path, String> failedConfigFiles
+    ) {
         try {
-            return ConditionConfigParser.readFromFile(filepath);
+            return ConditionConfigParser.readFromFile(registries, filepath);
         } catch (IOException e) {
             PreventBuild.LOGGER.error("Exception during reading the condition file: {}", filepath, e);
             failedConfigFiles.put(filepath, e.getMessage());

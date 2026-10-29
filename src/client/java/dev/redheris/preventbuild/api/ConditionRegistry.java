@@ -1,6 +1,7 @@
 package dev.redheris.preventbuild.api;
 
 import dev.redheris.preventbuild.conditions.Condition;
+import net.minecraft.core.RegistryAccess;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,18 +38,19 @@ public class ConditionRegistry {
     /**
      * Creates {@link Condition} from given key and raw value if the key is registered
      *
-     * @param key   registered factory's key
-     * @param value given condition's value object
+     * @param registries a {@link RegistryAccess} used in {@link ConditionFactory#parse ConditionFactory#parse}
+     * @param key        registered factory's key
+     * @param value      given condition's value object
      * @return a {@link Condition} created with a registered factory
      * @throws UnknownConditionFactoryException if the key is unregistered
-     * @throws IllegalConditionValueException if the value's type/structure/content is unexpected
+     * @throws IllegalConditionValueException   if the value's type/structure/content is unexpected
      */
-    public Condition parseCondition(String key, Object value) throws UnknownConditionFactoryException, IllegalConditionValueException {
+    public Condition parseCondition(RegistryAccess registries, String key, Object value) throws UnknownConditionFactoryException, IllegalConditionValueException {
         ConditionFactory factory = getFactory(key);
         if (factory == null) {
             throw new UnknownConditionFactoryException(key);
         }
 
-        return factory.parse(value);
+        return factory.parse(registries, value);
     }
 }

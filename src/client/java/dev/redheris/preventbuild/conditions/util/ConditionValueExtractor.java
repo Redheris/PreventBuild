@@ -7,6 +7,7 @@ import dev.redheris.preventbuild.api.UnknownIdentifierValueException;
 import dev.redheris.preventbuild.conditions.Condition;
 import dev.redheris.preventbuild.config.conditions.FailedToParseException;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 
@@ -32,18 +33,21 @@ public class ConditionValueExtractor {
     }
 
     public static <T> List<IdentifierTagWrapper<T>> extractIdentifierTagList(String registryName, Registry<T> registry, Object value) {
-        if (value instanceof String string) {
-            return List.of(extractIdentifierTag(registryName, registry, string));
+        List<String> values = extractStringList(value);
+
+        return values.stream()
+                .map(s -> extractIdentifierTag(registryName, registry, s))
+                .toList();
+    }
+
+    public static List<String> extractStringList(Object value) {
+        if (!(value instanceof List)) {
+            return List.of(value.toString());
         }
         List<?> list = requireList(value);
-        List<IdentifierTagWrapper<T>> identifiers = new ArrayList<>();
-
-        for (Object obj : list) {
-            String string = requireString(obj);
-            identifiers.add(extractIdentifierTag(registryName, registry, string));
-        }
-
-        return identifiers;
+        return list.stream()
+                .map(Object::toString)
+                .toList();
     }
 
     public static <T> IdentifierTagWrapper<T> extractIdentifierTag(String registryName, Registry<T> registry, String value) {
@@ -69,19 +73,21 @@ public class ConditionValueExtractor {
         return id;
     }
 
-    public static List<Condition> extractConditionList(Object value) {
+    public static List<Condition> extractConditionList(RegistryAccess registries, Object value) {
         List<?> list = requireList(value);
         List<Condition> conditions = new ArrayList<>();
+
         for (Object obj : list) {
             var entry = extractEntry(obj);
             Condition condition;
             try {
-                condition = registry.parseCondition(entry.getKey(), entry.getValue());
+                condition = registry.parseCondition(registries, entry.getKey(), entry.getValue());
             } catch (UnknownConditionFactoryException | IllegalConditionValueException e) {
                 throw new FailedToParseException("Failed to parse \"" + entry.getKey() + "\" condition value", e);
             }
             conditions.add(condition);
         }
+
         return conditions;
     }
 

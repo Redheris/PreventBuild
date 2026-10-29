@@ -4,6 +4,7 @@ import dev.redheris.preventbuild.PreventBuild;
 import dev.redheris.preventbuild.config.PreventBuildConfig;
 import dev.redheris.preventbuild.config.conditions.ActiveConfigsStorage;
 import dev.redheris.preventbuild.config.conditions.ConditionConfigsReader;
+import net.minecraft.core.RegistryAccess;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class ConditionsManager {
     }
 
     /// @return a {@link Map} containing pairs "config file path":"fail reason"
-    public Map<Path, String> read() {
+    public Map<Path, String> read(RegistryAccess registries) {
         PreventBuildConfig.ensureConfigDirectoriesExists();
         configs.clear();
         activeConfigs.clear();
@@ -57,7 +58,7 @@ public class ConditionsManager {
         List<ConditionConfig> updated;
 
         try {
-            updated = ConditionConfigsReader.readConditions(failedConfigFiles);
+            updated = ConditionConfigsReader.readConditions(registries, failedConfigFiles);
         } catch (IOException e) {
             PreventBuild.LOGGER.error("Exception during reading conditions directory", e);
             return failedConfigFiles;
