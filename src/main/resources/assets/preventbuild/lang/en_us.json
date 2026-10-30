@@ -14,6 +14,8 @@
   "preventbuild.common_config_updated": "[PreventBuild] Config successfully updated",
   "preventbuild.failed_to_update_common_config": "[PreventBuild] Failed to update config",
 
+  "preventbuild.gui.condition_configs_screen": "Condition configs screen",
+
   "maparthelper.config.title": "PreventBuild Configuration",
   "preventbuild.config.category.common": "General Settings",
   "preventbuild.config.common.fixPickItemByBlock": "Fix pick item by block desync fix",
@@ -21,32 +23,5 @@
   "preventbuild.config.common.maxWaitingTimeoutMs": "Maximum waiting time (ms) after picking item by block",
   "preventbuild.config.common.description.maxWaitingTimeoutMs": "Just-in-case setting to ensure the client won't get interactions blocked forever by a server-side or network problem. When the timeout is reached and the player interacts with anything, the mod stops waiting for an answer from the server",
   "preventbuild.config.common.logWaitingTime": "Log waiting time (sec) for a new held slot",
-  "preventbuild.config.common.description.logWaitingTime": "Prints the time elapsed between picking item by block request and receiving a new held slot value in logs. Use it to make sure how long this fix blocks any interactions",
-
-
-  "preventbuild.command_with_no_arguments": "Called /pb without arguments",
-  "preventbuild.help_line_1": "PreventBuild commands:",
-  "preventbuild.help_line_2": "/pb help - display a list of commands",
-  "preventbuild.help_line_3": "/pb config list - display a list of configs",
-  "preventbuild.help_line_4": "/pb config switch <name> - enable/disable config by name",
-  "preventbuild.help_line_5": "/pb config update - reload all configs",
-  "preventbuild.config_without_arguments": "Type /rh help to see a list of commands",
-  "preventbuild.config_is_active": "enabled",
-  "preventbuild.config_is_inactive": "disabled",
-  "preventbuild.config_is_toggled": "Config \"%s\" is now ",
-  "preventbuild.open_config_file": "[Click to open the config file]",
-  "preventbuild.toggle_enabled": "[Click to toggle]",
-  "preventbuild.no_configs_found": "No configs found",
-
-  "preventbuild.config_not_found": "Config \"%s\" not found",
-  "preventbuild.oredict_not_found": "Ore dictionary \"%s\" not found",
-  "preventbuild.oredict_load_error": "Error loading ore dictionary",
-  "preventbuild.configs_load_error": "Error loading the config file \"%s\"",
-  "preventbuild.unknown_config_part": "Unknown condition category keyword: \"%s\"",
-  "preventbuild.unknown_keyword": "Unknown condition key: \"%s\"",
-  "preventbuild.restricted_condition": "The condition is restricted by the server: \"%s\"",
-  "preventbuild.not_expected_line_format": "Expected line of type \"%s\" but found \"%s\"",
-  "preventbuild.underline_restriction": "Configuration names must not contain '_' characters",
-  "preventbuild.empty_required_value": "Condition with empty required value: \"%s\"",
-  "preventbuild.empty_logical_condition": "Logical condition with zero arguments"
+  "preventbuild.config.common.description.logWaitingTime": "Prints the time elapsed between picking item by block request and receiving a new held slot value in logs. Use it to make sure how long this fix blocks any interactions"
 }

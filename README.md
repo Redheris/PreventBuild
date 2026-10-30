@@ -2,7 +2,7 @@
 
 Adds client-side control over preventing the player from performing certain actions
 that are set in configs.
-Configs, in turn, have a very flexible structure that allows you to build complex
+Configs, in turn, have a very flexible YAML structure that allows you to build complex
 logical conditions describing what actions the mod should prevent.
 
 With PreventBuild, you can prevent:
@@ -11,33 +11,32 @@ With PreventBuild, you can prevent:
 - interacting with a block/entity
 - using an item;
 
-Depending on:
+...depending:
 - block/item/entity;
 - block/player's coordinates;
 - a specific block's state;
 - whether the held item has a specific custom name or enchantment;
-- dimension;
-- and much more.
+- and much more
 
-This mod simply cancels the player's actions, so it's entirely client-side.
+This mod simply cancels the player's actions on client-side, so it's entirely client-side.
 
-## Currently under major rewriting
+## 2.0 update
+There were a few issues I couldn't fix with the original implementation approaches.
+And the best decision was to recreate the mod from a scratch.
 
-It's been a while since the last updates. And there were a few issues I couldn't fix with the original
-implementation approaches. Here I will be working on the completely new version of PreventBuild.
-
-Essential points I'd like to achieve with 2.0:
-- ✔️ Weird custom .cfg configs format + unstable custom parser → YAML + parser dependency;
-- ✔️ Translation keys → Identifiers;
-- ✔️ More stable and direct preventions;
-- ✔️ Custom ore dictionaries → custom and built-in tags;
-- Adequate examples of complex conditions.
-
-You can still find the old version's sources in another [branch](https://github.com/Redheris/PreventBuild/tree/1.x)
+Here are essential points that differ 2.x from 1.x:
+- More stable and direct preventions;
+- Weird custom .cfg configs format + unstable custom parser → YAML + parser dependency;
+- Translation keys → Identifiers;
+- Custom ore dictionaries → custom and built-in tags;
+- Simple GUI instead of commands-only;
+- Cleaner code;
+- Adequate examples of complex conditions on wiki.
 
 ## Official links to download the mod
 - [Modrinth](https://modrinth.com/project/VYOvHxMm)
-- This GitHub repository (only source code)
+- [Curseforge] (https://www.curseforge.com/minecraft/mc-mods/preventbuild)
+- [GitHub](https://github.com/Redheris/PreventBuild)
 
 ## Contacts
 - GitHub: https://github.com/Redheris/PreventBuild/issues

@@ -8,9 +8,11 @@ import dev.redheris.preventbuild.PreventBuildClient;
 import dev.redheris.preventbuild.conditions.ConditionConfig;
 import dev.redheris.preventbuild.conditions.ConditionsManager;
 import dev.redheris.preventbuild.config.customtags.CustomTagsManager;
+import dev.redheris.preventbuild.gui.ConditionConfigsScreen;
 import dev.redheris.preventbuild.gui.RunCodeClickEvent;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -33,6 +35,9 @@ public class ClientCommands {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             var pbNode = dispatcher
                     .register(literal("pb")
+                            .executes(ClientCommands::openConditionsConfigsScreen)
+                            .then(literal("gui")
+                                    .executes(ClientCommands::openConditionsConfigsScreen))
                             .then(literal("update")
                                     .executes(ClientCommands::updateConfigs))
                             .then(literal("toggle")
@@ -48,6 +53,11 @@ public class ClientCommands {
                     .register(literal("preventbuild")
                             .redirect(pbNode));
         });
+    }
+
+    private static int openConditionsConfigsScreen(CommandContext<FabricClientCommandSource> context) {
+        Minecraft.getInstance().execute(() -> Minecraft.getInstance().setScreen(new ConditionConfigsScreen()));
+        return 0;
     }
 
     private static int updateCommonConfig(CommandContext<FabricClientCommandSource> context) {
@@ -195,7 +205,7 @@ public class ClientCommands {
                         configsList(context);
                     }))
                     .withHoverEvent(new HoverEvent.ShowText(
-                            Component.translatable("preventbuild.toggle_enabled")
+                            Component.translatable("preventbuild.toggle_config")
                     )));
             msg.append(toggleActive);
             msg.append("\n");

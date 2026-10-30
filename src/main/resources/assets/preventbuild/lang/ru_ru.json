@@ -14,6 +14,8 @@
   "preventbuild.common_config_updated": "[PreventBuild] Конфиг успешно обновлён",
   "preventbuild.failed_to_update_common_config": "[PreventBuild] Не удалось обновить конфиг",
 
+  "preventbuild.gui.condition_configs_screen": "Экран списка конфигов",
+
   "maparthelper.config.title": "Конфигурация PreventBuild",
   "preventbuild.config.category.common": "Общие настройки",
   "preventbuild.config.common.fixPickItemByBlock": "Фикс контекста при выборе блока",
@@ -21,32 +23,5 @@
   "preventbuild.config.common.maxWaitingTimeoutMs": "Максимальное время ожидания (мс) после выбора блока",
   "preventbuild.config.common.description.maxWaitingTimeoutMs": "дополнительная настройка, чтобы гарантировать, что у клиент не окажутся навсегда заблокированы взаимодействия в случае проблемы на стороне сервера или сети. Когда достигнуто максимальное время ожидания и игрок пытается с чем-то взаимодействовать, мод прекращает ждать ответ от сервера",
   "preventbuild.config.common.logWaitingTime": "Логировать время ожидания (сек) нового слота",
-  "preventbuild.config.common.description.logWaitingTime": "Печатает в логи время, прошедшее между запросом выбора блока и получением нового значения выбранного слота. Используйте, чтобы убедиться в количестве времени, на которое фикс блокирует все взаимодействия",
-
-
-  "preventbuild.command_with_no_arguments": "Вызван /pb без аргументов",
-  "preventbuild.help_line_1": "PreventBuild commands:",
-  "preventbuild.help_line_2": "/pb help - вывести список команд",
-  "preventbuild.help_line_3": "/pb config list - вывести список конфигов",
-  "preventbuild.help_line_4": "/pb config switch <name> - включить/выключить конфиг name",
-  "preventbuild.help_line_5": "/pb config update - перезагрузить конфиги и словарь руд",
-  "preventbuild.config_without_arguments": "Напишите /rh help для получения списка команд",
-  "preventbuild.config_is_active": "активен",
-  "preventbuild.config_is_inactive": "неактивен",
-  "preventbuild.config_is_toggled": "Конфиг \"%s\" теперь ",
-  "preventbuild.open_config_file": "[Нажмите, чтобы открыть файл конфига]",
-  "preventbuild.toggle_enabled": "[Нажмите для переключения]",
-  "preventbuild.no_configs_found": "Не найдено файлов конфигов",
-
-  "preventbuild.config_not_found": "Конфиг \"%s\" не найден",
-  "preventbuild.oredict_not_found": "Словарь для \"%s\" не найден",
-  "preventbuild.oredict_load_error": "Ошибка при загрузке словаря руд",
-  "preventbuild.configs_load_error": "Ошибка при загрузке конфига \"%s\"",
-  "preventbuild.unknown_config_part": "Неизвестное ключевое слово категории: \"%s\"",
-  "preventbuild.unknown_keyword": "Неизвестное условие: \"%s\"",
-  "preventbuild.restricted_condition": "Сервером ограничено использование условия: \"%s\"",
-  "preventbuild.not_expected_line_format": "Ожидалась строка формата \"%s\", но получена \"%s\"",
-  "preventbuild.underline_restriction": "Название конфигурации не должно содержать символы '_'",
-  "preventbuild.empty_required_value": "Условие с пустым обязательным значением: \"%s\"",
-  "preventbuild.empty_logical_condition": "Логическое условие без аргументов"
+  "preventbuild.config.common.description.logWaitingTime": "Печатает в логи время, прошедшее между запросом выбора блока и получением нового значения выбранного слота. Используйте, чтобы убедиться в количестве времени, на которое фикс блокирует все взаимодействия"
 }
