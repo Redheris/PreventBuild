@@ -2,11 +2,14 @@ package dev.redheris.preventbuild.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
 import dev.redheris.preventbuild.PreventBuild;
 import dev.redheris.preventbuild.config.gson.IdentifierAdapter;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
 
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,17 +17,58 @@ import java.nio.file.Path;
 public class PreventBuildConfig {
     public static final Path CONFIGS_DIR = FabricLoader.getInstance().getConfigDir().resolve("preventbuild");
     public static final Path CONDITIONS_DIR = CONFIGS_DIR.resolve("conditions");
+    public static final Path COMMON_CONFIG = CONFIGS_DIR.resolve("preventbuild.json");
     public static final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeHierarchyAdapter(Identifier.class, new IdentifierAdapter())
             .create();
 
-    public void read() {
+    @SerializedName("fix_pick_item_by_block")
+    private boolean fixPickItemByBlock = true;
+    @SerializedName("max_slot_change_waiting_timeout_ms")
+    private int maxWaitingTimeoutMs = 3000;
+    @SerializedName("log_slot_change_waiting_timeout")
+    private boolean logWaitingTime = false;
+
+    public boolean fixPickItemByBlock() {
+        return fixPickItemByBlock;
+    }
+
+    public int maxWaitingTimeoutMs() {
+        return maxWaitingTimeoutMs;
+    }
+
+    public boolean logWaitingTime() {
+        return logWaitingTime;
+    }
+
+    public boolean read(boolean requestedByUser) {
         ensureConfigDirectoriesExists();
+
+        PreventBuildConfig config;
+        try (var reader = new FileReader(COMMON_CONFIG.toFile())) {
+            config = gson.fromJson(reader, PreventBuildConfig.class);
+        } catch (IOException e) {
+            PreventBuild.LOGGER.error("Failed to read common config file \"{}\"", COMMON_CONFIG, e);
+            return false;
+        }
+
+        this.fixPickItemByBlock = config.fixPickItemByBlock;
+        this.maxWaitingTimeoutMs = config.maxWaitingTimeoutMs;
+        if (requestedByUser) {
+            this.logWaitingTime = config.logWaitingTime;
+        }
+
+        return true;
     }
 
     public void save() {
-
+        ensureConfigDirectoriesExists();
+        try (var writer = new FileWriter(COMMON_CONFIG.toFile())) {
+            gson.toJson(this, writer);
+        } catch (IOException e) {
+            PreventBuild.LOGGER.error("Failed to save common config file \"{}\"", COMMON_CONFIG, e);
+        }
     }
 
     public static void ensureConfigDirectoriesExists() {

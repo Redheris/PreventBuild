@@ -40,11 +40,35 @@ public class ClientCommands {
                                             .suggests(ClientCommands::suggestConditionConfigs)
                                             .executes(ClientCommands::toggleConfig)))
                             .then(literal("list")
-                                    .executes(ClientCommands::configsList)));
+                                    .executes(ClientCommands::configsList))
+                            .then(literal("config")
+                                    .then(literal("update")
+                                            .executes(ClientCommands::updateCommonConfig))));
             dispatcher
                     .register(literal("preventbuild")
                             .redirect(pbNode));
         });
+    }
+
+    private static int updateCommonConfig(CommandContext<FabricClientCommandSource> context) {
+        Player player = context.getSource().getPlayer();
+
+        if (PreventBuildClient.commonConfig.read(true)) {
+            player.displayClientMessage(
+                    Component.translatable("preventbuild.common_config_updated")
+                            .withColor(CommonColors.GREEN),
+                    false
+            );
+        } else {
+            player.displayClientMessage(
+                    Component.translatable("preventbuild.failed_to_update_common_config")
+                            .withColor(CommonColors.GREEN),
+                    false
+            );
+            return -1;
+        }
+
+        return 0;
     }
 
     private static int updateConfigs(CommandContext<FabricClientCommandSource> context) {

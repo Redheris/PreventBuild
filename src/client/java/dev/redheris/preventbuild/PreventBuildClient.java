@@ -15,7 +15,8 @@ public class PreventBuildClient implements ClientModInitializer {
     public void onInitializeClient() {
         Conditions.registerAll();
         TagsLoadedTrigger.init();
-        commonConfig.read();
+        commonConfig.read(false);
+        commonConfig.save();
         ClientCommands.registerCommands();
     }
 }

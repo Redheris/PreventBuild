@@ -1,5 +1,7 @@
 package dev.redheris.preventbuild.state;
 
+import dev.redheris.preventbuild.PreventBuild;
+import dev.redheris.preventbuild.PreventBuildClient;
 import net.minecraft.util.Util;
 
 public class PickItemFromBlockState {
@@ -19,10 +21,12 @@ public class PickItemFromBlockState {
     }
 
     public void setWaitingSlotChange(boolean waitingSlotChange) {
-        // TODO: Maybe opt-in delay logging? To be able to estimate whether this thing is too long
         this.waitingSlotChange = waitingSlotChange;
         if (waitingSlotChange) {
             waitingStartTimeMs = Util.getMillis();
+        } else if (PreventBuildClient.commonConfig.logWaitingTime()) {
+            double seconds = (Util.getMillis() - waitingStartTimeMs) / 1000.0;
+            PreventBuild.LOGGER.info("Received SetHeldSlot packet after {} seconds", seconds);
         }
     }
 

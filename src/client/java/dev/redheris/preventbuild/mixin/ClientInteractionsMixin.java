@@ -140,13 +140,12 @@ public abstract class ClientInteractionsMixin {
             cancellable = true
     )
     public void preventInteractAny(CallbackInfo ci, @Local InteractionHand hand) {
-        if (pickItemFromBlockState.isWaitingSlotChange()) {
+        if (PreventBuildClient.commonConfig.fixPickItemByBlock() && pickItemFromBlockState.isWaitingSlotChange()) {
             // Pick item by block packet can change the selected slot on the server side before the client
             // will be notified. It leads to a problem when client sends a useItemOn packet with
             // different context from the server-side data.
             // Usually it takes fractions of a second (I got 5-60 ms in my tests with ~40-60 ms ping)
-            // TODO: Make opt-out and configurable max waiting time
-            long maxWaitingTime = 3000;
+            long maxWaitingTime = PreventBuildClient.commonConfig.maxWaitingTimeoutMs();
             long waitingTime = Util.getMillis() - pickItemFromBlockState.getWaitingStartTimeMs();
             if (waitingTime > maxWaitingTime) {
                 PreventBuild.LOGGER.warn(
@@ -182,15 +181,6 @@ public abstract class ClientInteractionsMixin {
     )
     public void preventInteractBlock(CallbackInfo ci, @Local InteractionHand hand, @Local BlockHitResult blockHitResult) {
         for (ConditionConfig config : conditionsManager.getActiveConfigs()) {
-
-            // TODO: Think about adding and implementing this check.
-            //  I believe this could potentially interfere with some conditions
-            // Built-in interaction suppression check from ServerPlayerGameMode#useItemOn.
-            // There's a tiny chance that the server could have modified it, so I believe it should be opt-out
-//            boolean haveSomethingInOurHands = !player.getMainHandItem().isEmpty() || !player.getOffhandItem().isEmpty();
-//            boolean suppressUsingBlock = player.isSecondaryUseActive() && haveSomethingInOurHands;
-//            if (suppressUsingBlock) return;
-
             ConditionResult check = ConditionResult.PASS;
 
             Condition interactBlockCondition = config.interactBlock();
