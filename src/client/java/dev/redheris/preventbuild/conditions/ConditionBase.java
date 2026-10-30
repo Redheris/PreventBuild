@@ -11,6 +11,10 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class ConditionBase implements Condition {
 
+    /**
+     * Additional method which value is default for any category. Allows to implement only needed categories in
+     * a condition class or override this method when the condition does not depend on a category's context
+     */
     public ConditionResult checkDefault(Player player, Level level) {
         return ConditionResult.PASS;
     }

@@ -169,7 +169,7 @@ tasks {
 publishMods {
     file = loomx.modJar.map { it.archiveFile.get() }
 // Adds sources jar
-//    additionalFiles.from(loomx.modSourcesJar.map { it.archiveFile.get() })
+    additionalFiles.from(loomx.modSourcesJar.map { it.archiveFile.get() })
     displayName = "${property("mod.name")} ${property("mod.version")} for ${property("release_title")}"
     version = property("mod.version") as String
     changelog = rootProject.file("CHANGELOG.md").readText()
