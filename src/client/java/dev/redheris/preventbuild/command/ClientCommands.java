@@ -82,8 +82,10 @@ public class ClientCommands {
     }
 
     private static int updateConfigs(CommandContext<FabricClientCommandSource> context) {
-        Player player = context.getSource().getPlayer();
+        return updateConfigs(context.getSource().getPlayer(), context.getSource().registryAccess());
+    }
 
+    public static int updateConfigs(Player player, RegistryAccess registries) {
         String errorMessage = CustomTagsManager.read();
         if (errorMessage != null) {
             player.displayClientMessage(
@@ -96,7 +98,6 @@ public class ClientCommands {
             return -2;
         }
 
-        RegistryAccess registries = context.getSource().registryAccess();
         var failedFiles = conditionsManager.read(registries);
         int successCount = conditionsManager.getConfigs().size();
 
@@ -129,9 +130,10 @@ public class ClientCommands {
                 msg.append(Component.literal(description).withColor(CommonColors.SOFT_RED));
             }
             player.displayClientMessage(msg, false);
+            return -1;
         }
 
-        return successCount > 0 ? 0 : -1;
+        return 0;
     }
 
     private static int toggleConfig(CommandContext<FabricClientCommandSource> context) {

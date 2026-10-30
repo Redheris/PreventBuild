@@ -1,10 +1,10 @@
 package dev.redheris.preventbuild.gui;
 
 import dev.redheris.preventbuild.PreventBuildClient;
+import dev.redheris.preventbuild.command.ClientCommands;
 import dev.redheris.preventbuild.conditions.ConditionConfig;
 import dev.redheris.preventbuild.conditions.ConditionsManager;
 import dev.redheris.preventbuild.config.PreventBuildConfig;
-import dev.redheris.preventbuild.config.customtags.CustomTagsManager;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -115,11 +115,14 @@ public class ConditionConfigsScreen extends Screen {
                 font.width(updateConfigsLabel) + 7, 20,
                 updateConfigsLabel,
                 btn -> {
-                    CustomTagsManager.read();
                     if (minecraft.level != null) {
-                        conditionsManager.read(minecraft.level.registryAccess());
+                        int i = ClientCommands.updateConfigs(minecraft.player, minecraft.level.registryAccess());
+                        if (i < 0) {
+                            onClose();
+                        } else {
+                            rebuildWidgets();
+                        }
                     }
-                    rebuildWidgets();
                 },
                 font
         );
