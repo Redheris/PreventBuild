@@ -12,6 +12,7 @@ public class TagsLoadedTrigger {
             if (tagsLoaded) return;
             CustomTagsManager.read();
             PreventBuildClient.conditionsManager.read(registries);
+            PreventBuildClient.conditionsManager.save();
             tagsLoaded = true;
         });
     }

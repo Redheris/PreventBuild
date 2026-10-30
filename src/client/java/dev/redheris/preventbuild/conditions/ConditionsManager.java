@@ -54,33 +54,35 @@ public class ConditionsManager {
         configs.clear();
         activeConfigs.clear();
 
+        Set<String> activeConfigNames;
         Map<Path, String> failedConfigFiles = new HashMap<>();
         List<ConditionConfig> updated;
 
         try {
+            activeConfigNames = ActiveConfigsStorage.read();
+        } catch (Exception e) {
+            PreventBuild.LOGGER.error("Exception during reading active conditions config file", e);
+            failedConfigFiles.put(ActiveConfigsStorage.STORAGE_FILE_PATH, e.getMessage());
+            activeConfigNames = new HashSet<>();
+        }
+
+        try {
             updated = ConditionConfigsReader.readConditions(registries, failedConfigFiles);
+            configs.addAll(updated);
         } catch (IOException e) {
             PreventBuild.LOGGER.error("Exception during reading conditions directory", e);
             return failedConfigFiles;
         }
-        configs.addAll(updated);
 
-        try {
-            Set<String> activeConfigNames = ActiveConfigsStorage.read();
-            for (ConditionConfig config : configs) {
-                if (activeConfigNames.contains(config.name())) {
-                    activeConfigs.add(config);
-                }
+        for (ConditionConfig config : configs) {
+            if (activeConfigNames.contains(config.name())) {
+                activeConfigs.add(config);
             }
-        } catch (IOException e) {
-            PreventBuild.LOGGER.error("Exception during reading common conditions config file");
-            return failedConfigFiles;
         }
 
         PreventBuild.LOGGER.info("Found and read {} condition config file", updated.size());
         PreventBuild.LOGGER.info("Currently active condition configs count: {}", activeConfigs.size());
 
-        save();
         return failedConfigFiles;
     }
 

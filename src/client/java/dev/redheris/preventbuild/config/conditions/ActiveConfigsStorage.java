@@ -12,7 +12,7 @@ import java.util.Set;
 import static dev.redheris.preventbuild.config.PreventBuildConfig.gson;
 
 public class ActiveConfigsStorage {
-    public static final Path STORAGE_FILE_PATH = PreventBuildConfig.CONFIGS_DIR.resolve("conditions.json");
+    public static final Path STORAGE_FILE_PATH = PreventBuildConfig.CONFIGS_DIR.resolve("active_configs.json");
 
     public static Set<String> read() throws IOException {
         PreventBuildConfig.ensureConfigDirectoriesExists();

@@ -2,7 +2,7 @@
   "modmenu.descriptionTranslation.preventbuild": "A simple but flexible mod that prevents unwanted player actions described in the custom configs",
 
   "preventbuild.configs_read": "%d files were successfully read",
-  "preventbuild.failed_to_parse_configs": "Failed to read and parse %d configs:",
+  "preventbuild.failed_to_parse_configs": "Failed to read and parse %d file:",
   "preventbuild.open_file": "[Click to open the file]",
   "preventbuild.toggle_config": "[Click to toggle]",
   "preventbuild.unknown_config": "Unknown config: \"%s\"",

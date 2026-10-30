@@ -2,7 +2,7 @@
   "modmenu.descriptionTranslation.preventbuild": "Простой, но гибкий мод, предотвращающий нежелательные действия игрока, описанные в пользовательских конфигах",
 
   "preventbuild.configs_read": "%d конфига(-ов) успешно прочитано",
-  "preventbuild.failed_to_parse_configs": "Не удалось прочитать %d конфига(-ов):",
+  "preventbuild.failed_to_parse_configs": "Не удалось обработать %d файла(-ов):",
   "preventbuild.open_file": "[Нажмите, чтобы открыть файл]",
   "preventbuild.toggle_config": "[Нажмите, чтобы переключить]",
   "preventbuild.unknown_config": "Неизвестный конфиг: \"%s\"",
