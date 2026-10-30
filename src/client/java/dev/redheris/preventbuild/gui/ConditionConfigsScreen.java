@@ -5,6 +5,7 @@ import dev.redheris.preventbuild.command.ClientCommands;
 import dev.redheris.preventbuild.conditions.ConditionConfig;
 import dev.redheris.preventbuild.conditions.ConditionsManager;
 import dev.redheris.preventbuild.config.PreventBuildConfig;
+import dev.redheris.preventbuild.util.CompatUtils;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -14,7 +15,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.CommonColors;
-import net.minecraft.util.Util;
 
 public class ConditionConfigsScreen extends Screen {
     private ConditionConfigsListWidget listWidget;
@@ -51,7 +51,7 @@ public class ConditionConfigsScreen extends Screen {
                     0, 0,
                     font.width(configName), entryHeight,
                     configName,
-                    btn -> Util.getPlatform().openPath(config.filepath()),
+                    btn -> CompatUtils.openPath(config.filepath()),
                     font
             );
             configNameBtn.setUnderlineOnHover(true);
@@ -105,7 +105,7 @@ public class ConditionConfigsScreen extends Screen {
                 closeBtn.getRight() + 2, listWidget.getY() - 24,
                 font.width(openFolderLabel) + 7, 20,
                 openFolderLabel,
-                btn -> Util.getPlatform().openPath(PreventBuildConfig.CONDITIONS_DIR),
+                btn -> CompatUtils.openPath(PreventBuildConfig.CONDITIONS_DIR),
                 font
         );
 

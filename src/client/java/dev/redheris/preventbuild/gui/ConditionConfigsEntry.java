@@ -38,6 +38,7 @@ public class ConditionConfigsEntry extends AbstractWidget implements Layout {
         this.activeLabel = activeLabel;
     }
 
+    //~ gui_rendering
     @Override
     protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         float alpha = isHoveredOrFocused() ? 0.6f : 0.0f;
@@ -46,8 +47,10 @@ public class ConditionConfigsEntry extends AbstractWidget implements Layout {
         if (isMouseOver(mouseX, mouseY)) {
             guiGraphics.requestCursor(CursorTypes.POINTING_HAND);
 
+            //~ if >=26.1 'vLine' -> 'verticalLine' {
             guiGraphics.vLine(getX(), getY(), getBottom(), ARGB.white(0.6f));
             guiGraphics.vLine(getRight() - 1, getY(), getBottom(), ARGB.white(0.6f));
+            //~}
 
             if (configNameBtn.isMouseOver(mouseX, mouseY)) {
                 guiGraphics.setTooltipForNextFrame(Component.translatable("preventbuild.open_file"), mouseX, mouseY);
@@ -57,6 +60,7 @@ public class ConditionConfigsEntry extends AbstractWidget implements Layout {
         }
         layout.visitWidgets(w -> w.render(guiGraphics, mouseX, mouseY, partialTick));
     }
+    //~ !gui_rendering
 
     @Override
     public void setX(int x) {
@@ -78,6 +82,7 @@ public class ConditionConfigsEntry extends AbstractWidget implements Layout {
         visitor.accept(layout);
     }
 
+    //~ widget_events
     @Override
     public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
         for (GuiEventListener w : children) {
@@ -91,12 +96,21 @@ public class ConditionConfigsEntry extends AbstractWidget implements Layout {
         layout.arrangeElements();
         return true;
     }
+    //~ !widget_events
 
     @Override
     public void arrangeElements() {
         layout.setPosition(getX(), getY());
         layout.arrangeElements();
     }
+
+    //? if >=26.2 {
+    /*@Override
+    public void removeChildren() {
+        layout.removeChildren();
+        children.clear();
+    }
+    *///?}
 
     private void updateActiveLabel(boolean newStatus) {
         if (newStatus) {

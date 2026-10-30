@@ -35,6 +35,7 @@ public class ComponentButton extends Button {
         this.underlineOnHover = underlineOnHover;
     }
 
+    //~ render_button_contents
     @Override
     public void renderContents(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         if (renderBackground) {
@@ -42,6 +43,8 @@ public class ComponentButton extends Button {
             guiGraphics.fill(getX(), getY(), getRight(), getBottom(), ARGB.black(alpha));
         }
         Component component = underlineOnHover && this.isHoveredOrFocused() ? this.underlinedMessage : this.message;
+
+        //~ if >=26.1 'drawString' -> 'text'
         guiGraphics.drawString(
                 this.font, component,
                 this.getX() + ((width - font.width(component)) / 2) + 1,

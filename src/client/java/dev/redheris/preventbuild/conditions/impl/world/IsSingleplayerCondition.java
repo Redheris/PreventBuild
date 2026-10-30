@@ -6,6 +6,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
+//? if >=26.2
+//import net.minecraft.client.server.IntegratedServer;
+
 public class IsSingleplayerCondition extends ConditionBase {
     private final boolean isSingleplayer;
 
@@ -15,6 +18,12 @@ public class IsSingleplayerCondition extends ConditionBase {
 
     @Override
     public ConditionResult checkDefault(Player player, Level level) {
+        //? if <26.2 {
         return Minecraft.getInstance().isSingleplayer() == isSingleplayer ? ConditionResult.CANCEL : ConditionResult.PASS;
+        //?} else {
+        /*IntegratedServer integratedServer = Minecraft.getInstance().getSingleplayerServer();
+        boolean singleplayer = integratedServer != null && !integratedServer.isPublished();
+        return singleplayer == isSingleplayer ? ConditionResult.CANCEL : ConditionResult.PASS;
+        *///?}
     }
 }

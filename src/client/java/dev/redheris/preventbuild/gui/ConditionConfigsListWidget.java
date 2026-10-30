@@ -22,7 +22,7 @@ public class ConditionConfigsListWidget extends AbstractContainerWidget implemen
     private final int contentHeight;
 
     public ConditionConfigsListWidget(int x, int y, int width, int height, Component message, Layout layout) {
-        super(x, y, width, height, message);
+        super(x, y, width, height, message/*? if >=26.1 {*//*, defaultSettings(9)*//*?}*/);
         layout.setPosition(getX(), getY());
         layout.arrangeElements();
         this.contentHeight = layout.getHeight();
@@ -30,6 +30,7 @@ public class ConditionConfigsListWidget extends AbstractContainerWidget implemen
         layout.visitWidgets(this.children::add);
     }
 
+    //~ gui_rendering
     @Override
     protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         guiGraphics.enableScissor(getX(), getY(), getRight(), getBottom());
@@ -50,7 +51,9 @@ public class ConditionConfigsListWidget extends AbstractContainerWidget implemen
 
         guiGraphics.disableScissor();
     }
+    //~ !gui_rendering
 
+    //~ widget_events
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         if (isOverScrollbar(event.x(), event.y())) {
@@ -58,11 +61,20 @@ public class ConditionConfigsListWidget extends AbstractContainerWidget implemen
         }
         return super.mouseClicked(event, isDoubleClick);
     }
+    //~ !widget_events
 
     @Override
     public void arrangeElements() {
         layout.arrangeElements();
     }
+
+    //? if >=26.2 {
+    /*@Override
+    public void removeChildren() {
+        layout.removeChildren();
+        children.clear();
+    }
+    *///?}
 
     @Override
     public void visitChildren(@NotNull Consumer<LayoutElement> visitor) {

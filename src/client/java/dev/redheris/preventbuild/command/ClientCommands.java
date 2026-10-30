@@ -10,6 +10,7 @@ import dev.redheris.preventbuild.conditions.ConditionsManager;
 import dev.redheris.preventbuild.config.customtags.CustomTagsManager;
 import dev.redheris.preventbuild.gui.ConditionConfigsScreen;
 import dev.redheris.preventbuild.gui.RunCodeClickEvent;
+import dev.redheris.preventbuild.util.CompatUtils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
@@ -32,7 +33,7 @@ public class ClientCommands {
     private final static ConditionsManager conditionsManager = PreventBuildClient.conditionsManager;
 
     public static void registerCommands() {
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {
             var pbNode = dispatcher
                     .register(literal("pb")
                             .executes(ClientCommands::openConditionsConfigsScreen)
@@ -64,13 +65,15 @@ public class ClientCommands {
         Player player = context.getSource().getPlayer();
 
         if (PreventBuildClient.commonConfig.read(true)) {
-            player.displayClientMessage(
+            CompatUtils.sendMessage(
+                    player,
                     Component.translatable("preventbuild.common_config_updated")
                             .withColor(CommonColors.GREEN),
                     false
             );
         } else {
-            player.displayClientMessage(
+            CompatUtils.sendMessage(
+                    player,
                     Component.translatable("preventbuild.failed_to_update_common_config")
                             .withColor(CommonColors.GREEN),
                     false
@@ -88,7 +91,7 @@ public class ClientCommands {
     public static int updateConfigs(Player player, RegistryAccess registries) {
         String errorMessage = CustomTagsManager.read();
         if (errorMessage != null) {
-            player.displayClientMessage(
+            CompatUtils.sendMessage(player,
                     Component.translatable("preventbuild.failed_to_read_custom_tags")
                             .append(": ")
                             .append(Component.literal(errorMessage))
@@ -102,7 +105,7 @@ public class ClientCommands {
         int successCount = conditionsManager.getConfigs().size();
 
         if (successCount > 0) {
-            player.displayClientMessage(
+            CompatUtils.sendMessage(player,
                     Component.translatable("preventbuild.configs_read", successCount)
                             .withColor(CommonColors.GREEN),
                     false
@@ -129,7 +132,7 @@ public class ClientCommands {
                 msg.append(" : ");
                 msg.append(Component.literal(description).withColor(CommonColors.SOFT_RED));
             }
-            player.displayClientMessage(msg, false);
+            CompatUtils.sendMessage(player,msg, false);
             return -1;
         }
 
@@ -142,7 +145,8 @@ public class ClientCommands {
         Player player = context.getSource().getPlayer();
 
         if (config == null) {
-            player.displayClientMessage(
+            CompatUtils.sendMessage(
+                    player,
                     Component.translatable("preventbuild.unknown_config", configName)
                             .withColor(CommonColors.SOFT_RED),
                     false
@@ -159,7 +163,8 @@ public class ClientCommands {
         } else {
             status = Component.translatable("preventbuild.inactive").withColor(CommonColors.SOFT_RED);
         }
-        player.displayClientMessage(
+        CompatUtils.sendMessage(
+                    player,
                 Component.translatable("preventbuild.config_status_changed", configName, status),
                 true
         );
@@ -212,7 +217,9 @@ public class ClientCommands {
             msg.append(toggleActive);
             msg.append("\n");
         }
-        context.getSource().getPlayer().displayClientMessage(msg, false);
+
+        CompatUtils.sendMessage(context.getSource().getPlayer(), msg, false);
+
         return 0;
     }
 }

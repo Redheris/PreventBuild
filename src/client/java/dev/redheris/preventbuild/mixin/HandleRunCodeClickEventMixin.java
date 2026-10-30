@@ -16,8 +16,8 @@ public class HandleRunCodeClickEventMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private static void handleRunCodeClickEvent(ClickEvent clickEvent, Minecraft minecraft, Screen screen, CallbackInfo ci) {
-        if (clickEvent instanceof RunCodeClickEvent runCode) {
+    private static void handleRunCodeClickEvent(ClickEvent event, Minecraft minecraft, Screen activeScreen, CallbackInfo ci) {
+        if (event instanceof RunCodeClickEvent runCode) {
             runCode.run();
             ci.cancel();
         }
