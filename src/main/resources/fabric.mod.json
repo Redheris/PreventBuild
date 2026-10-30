@@ -20,6 +20,9 @@
     ],
     "main": [
       "dev.redheris.preventbuild.PreventBuild"
+    ],
+    "modmenu": [
+      "dev.redheris.preventbuild.modmenu.ModMenuIntegration"
     ]
   },
   "mixins": [

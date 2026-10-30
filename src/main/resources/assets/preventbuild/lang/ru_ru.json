@@ -14,6 +14,16 @@
   "preventbuild.common_config_updated": "[PreventBuild] Конфиг успешно обновлён",
   "preventbuild.failed_to_update_common_config": "[PreventBuild] Не удалось обновить конфиг",
 
+  "maparthelper.config.title": "Конфигурация PreventBuild",
+  "preventbuild.config.category.common": "Общие настройки",
+  "preventbuild.config.common.fixPickItemByBlock": "Фикс контекста при выборе блока",
+  "preventbuild.config.common.description.fixPickItemByBlock": "Исправляет проблему, из-за которой выбор блока (средняя кнопка мыши) может привести к разному значению выбранного слота между клиентом и сервером, приводя к неправильным проверкам условий. Данный фикс блокирует любые взаимодействия, пока клиент ждёт от сервера ответ с новым значением выбранного слота (прим.: обычно это занимает доли секунды)",
+  "preventbuild.config.common.maxWaitingTimeoutMs": "Максимальное время ожидания (мс) после выбора блока",
+  "preventbuild.config.common.description.maxWaitingTimeoutMs": "дополнительная настройка, чтобы гарантировать, что у клиент не окажутся навсегда заблокированы взаимодействия в случае проблемы на стороне сервера или сети. Когда достигнуто максимальное время ожидания и игрок пытается с чем-то взаимодействовать, мод прекращает ждать ответ от сервера",
+  "preventbuild.config.common.logWaitingTime": "Логировать время ожидания (сек) нового слота",
+  "preventbuild.config.common.description.logWaitingTime": "Печатает в логи время, прошедшее между запросом выбора блока и получением нового значения выбранного слота. Используйте, чтобы убедиться в количестве времени, на которое фикс блокирует все взаимодействия",
+
+
   "preventbuild.command_with_no_arguments": "Вызван /pb без аргументов",
   "preventbuild.help_line_1": "PreventBuild commands:",
   "preventbuild.help_line_2": "/pb help - вывести список команд",

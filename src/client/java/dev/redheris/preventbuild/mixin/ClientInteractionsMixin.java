@@ -144,7 +144,7 @@ public abstract class ClientInteractionsMixin {
             // Pick item by block packet can change the selected slot on the server side before the client
             // will be notified. It leads to a problem when client sends a useItemOn packet with
             // different context from the server-side data.
-            // Usually it takes fractions of a second (I got 5-60 ms in my tests with ~40-60 ms ping)
+            // Normally, it takes fractions of a second (I got 5-60 ms in my tests with ~40-60 ms ping)
             long maxWaitingTime = PreventBuildClient.commonConfig.maxWaitingTimeoutMs();
             long waitingTime = Util.getMillis() - pickItemFromBlockState.getWaitingStartTimeMs();
             if (waitingTime > maxWaitingTime) {

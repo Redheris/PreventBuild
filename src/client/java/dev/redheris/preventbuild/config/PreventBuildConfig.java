@@ -23,12 +23,14 @@ public class PreventBuildConfig {
             .registerTypeHierarchyAdapter(Identifier.class, new IdentifierAdapter())
             .create();
 
+    public static final Defaults DEFAULTS = new Defaults(true, 3000, false);
+
     @SerializedName("fix_pick_item_by_block")
-    private boolean fixPickItemByBlock = true;
-    @SerializedName("max_slot_change_waiting_timeout_ms")
-    private int maxWaitingTimeoutMs = 3000;
-    @SerializedName("log_slot_change_waiting_timeout")
-    private boolean logWaitingTime = false;
+    private boolean fixPickItemByBlock = DEFAULTS.fixPickItemByBlock;
+    @SerializedName("slot_change_waiting_timeout_ms")
+    private int maxWaitingTimeoutMs = DEFAULTS.maxWaitingTimeoutMs;
+    @SerializedName("log_slot_change_waiting_time")
+    private boolean logWaitingTime = DEFAULTS.logWaitingTime;
 
     public boolean fixPickItemByBlock() {
         return fixPickItemByBlock;
@@ -42,8 +44,25 @@ public class PreventBuildConfig {
         return logWaitingTime;
     }
 
+    public void setFixPickItemByBlock(boolean fixPickItemByBlock) {
+        this.fixPickItemByBlock = fixPickItemByBlock;
+    }
+
+    public void setMaxWaitingTimeoutMs(int maxWaitingTimeoutMs) {
+        this.maxWaitingTimeoutMs = maxWaitingTimeoutMs;
+    }
+
+    public void setLogWaitingTime(boolean logWaitingTime) {
+        this.logWaitingTime = logWaitingTime;
+    }
+
     public boolean read(boolean requestedByUser) {
         ensureConfigDirectoriesExists();
+
+        if (!Files.exists(COMMON_CONFIG)) {
+            save();
+            return true;
+        }
 
         PreventBuildConfig config;
         try (var reader = new FileReader(COMMON_CONFIG.toFile())) {
@@ -81,4 +100,10 @@ public class PreventBuildConfig {
             }
         }
     }
+
+    public record Defaults(
+            boolean fixPickItemByBlock,
+            int maxWaitingTimeoutMs,
+            boolean logWaitingTime
+    ) {}
 }

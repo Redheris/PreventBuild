@@ -51,12 +51,12 @@ repositories {
         }
     }
 
-//    maven("https://maven.isxander.dev/releases") {
-//        name = "Xander Maven"
-//    }
-//    maven("https://maven.gnomecraft.net/releases") {
-//        name = "GniftyGnome"
-//    }
+    maven("https://maven.isxander.dev/releases") {
+        name = "Xander Maven"
+    }
+    maven("https://maven.gnomecraft.net/releases") {
+        name = "GniftyGnome"
+    }
 }
 
 dependencies {
@@ -74,8 +74,8 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${property("mod.fabric_loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("fabric_api")}")
 
-//    modImplementation("dev.isxander:yet-another-config-lib:${property("yacl")}")
-//    modApi("com.terraformersmc:modmenu:${property("modmenu")}")
+    modImplementation("dev.isxander:yet-another-config-lib:${property("yacl")}")
+    modApi("com.terraformersmc:modmenu:${property("modmenu")}")
 
     include(implementation("org.snakeyaml:snakeyaml-engine:3.2")!!)
 }
@@ -191,8 +191,8 @@ publishMods {
             minecraftVersions.addAll(property("mc_targets").toString().split(' '))
 
             requires("fabric-api")
-//            requires("fabric-api", "yacl")
-//            optional("modmenu")
+            optional("yacl")
+            optional("modmenu")
 
             announcementTitle = "Modrinth"
         }
@@ -209,8 +209,8 @@ publishMods {
 //            server = true
 
             requires("fabric-api")
-//            requires("fabric-api", "yacl")
-//            optional("modmenu")
+            optional("yacl")
+            optional("modmenu")
 
             announcementTitle = "CurseForge"
         }
