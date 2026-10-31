@@ -58,6 +58,7 @@ public class ClientCommands {
     }
 
     private static int openConditionsConfigsScreen(CommandContext<FabricClientCommandSource> context) {
+        //~ if >1.21.1 'tell(' -> 'schedule('
         Minecraft.getInstance().schedule(() -> Minecraft.getInstance().setScreen(new ConditionConfigsScreen()));
         return 0;
     }

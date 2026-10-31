@@ -1,3 +1,8 @@
 classTweaker v1 named
 
 accessible field net/minecraft/world/item/BucketItem content Lnet/minecraft/world/level/material/Fluid;
+extendable method net/minecraft/client/gui/components/AbstractScrollWidget getScrollBarHeight ()I
+extendable method net/minecraft/client/gui/components/AbstractScrollWidget renderScrollBar (Lnet/minecraft/client/gui/GuiGraphics;)V
+accessible field net/minecraft/client/gui/components/AbstractScrollWidget SCROLLER_SPRITE Lnet/minecraft/resources/Identifier;
+accessible field net/minecraft/client/gui/components/AbstractScrollWidget scrollAmount D
+accessible field net/minecraft/client/gui/components/AbstractScrollWidget scrolling Z

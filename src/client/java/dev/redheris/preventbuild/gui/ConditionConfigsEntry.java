@@ -2,6 +2,7 @@ package dev.redheris.preventbuild.gui;
 
 import dev.redheris.preventbuild.PreventBuildClient;
 import dev.redheris.preventbuild.conditions.ConditionConfig;
+import dev.redheris.preventbuild.util.ARGB;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -12,7 +13,6 @@ import net.minecraft.client.gui.layouts.Layout;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,10 +46,6 @@ public class ConditionConfigsEntry extends AbstractWidget implements Layout {
     @Override
     protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         float alpha = isHoveredOrFocused() ? 0.6f : 0.0f;
-        //? if <=1.21.4
-        //int alphaInt = (int) (alpha * 255);
-
-        //~ if > 1.21.4 'ARGB.color(alphaInt, 0)' -> 'ARGB.black(alpha)'
         guiGraphics.fill(getX(), getY(), getRight(), getBottom(), ARGB.black(alpha));
         if (isMouseOver(mouseX, mouseY)) {
             //? if >1.21.4

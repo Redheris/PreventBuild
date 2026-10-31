@@ -22,6 +22,7 @@ public class ItemEnchantmentCondition extends ItemConditionBase {
 
     @Override
     protected ConditionResult checkItem(Player player, Level level, ItemStack itemStack) {
+        //~ if >1.21.1 'registryOrThrow' -> 'lookupOrThrow'
         var registry = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
         ItemEnchantments enchantments = itemStack.getEnchantments();
 

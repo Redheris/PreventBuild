@@ -1,5 +1,6 @@
 package dev.redheris.preventbuild.gui;
 
+import dev.redheris.preventbuild.util.ARGB;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Font;
@@ -8,7 +9,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.Style;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,10 +41,6 @@ public class ComponentButton extends Button {
     public void renderContents(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         if (renderBackground) {
             float alpha = this.isHoveredOrFocused() ? 0.9f : 0.65f;
-            //? if <=1.21.4
-            //int alphaInt = (int) (alpha * 255);
-
-            //~ if > 1.21.4 'ARGB.color(alphaInt, 0)' -> 'ARGB.black(alpha)'
             guiGraphics.fill(getX(), getY(), getRight(), getBottom(), ARGB.black(alpha));
         }
         Component component = underlineOnHover && this.isHoveredOrFocused() ? this.underlinedMessage : this.message;

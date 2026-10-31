@@ -131,10 +131,12 @@ public class Conditions {
 
         // World
         register("dimension", (regs, value) -> {
+            //~ if >1.21.1 'registryOrThrow' -> 'lookupOrThrow'
             var registry = regs.lookupOrThrow(Registries.DIMENSION_TYPE);
             return new DimensionCondition(extractIdentifierTagList("DIMENSION_TYPE", registry, value));
         });
         register("biome", (regs, value) -> {
+            //~ if >1.21.1 'registryOrThrow' -> 'lookupOrThrow'
             var registry = regs.lookupOrThrow(Registries.BIOME);
             return new BiomeCondition(extractIdentifierTagList("BIOME", registry, value));
         });
@@ -255,6 +257,7 @@ public class Conditions {
             }
             IdentifierTagWrapper<Enchantment> enchantment = extractIdentifierTag(
                     "ENCHANTMENT",
+                    //~ if >1.21.1 'registryOrThrow' -> 'lookupOrThrow'
                     regs.lookupOrThrow(Registries.ENCHANTMENT),
                     requireString(map.get("id"))
             );
@@ -262,6 +265,7 @@ public class Conditions {
         }
         IdentifierTagWrapper<Enchantment> enchantment = extractIdentifierTag(
                 "ENCHANTMENT",
+                //~ if >1.21.1 'registryOrThrow' -> 'lookupOrThrow'
                 regs.lookupOrThrow(Registries.ENCHANTMENT),
                 requireString(value)
         );

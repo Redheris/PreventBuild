@@ -27,6 +27,7 @@ public class BiomeCondition extends ConditionBase {
     }
 
     private ConditionResult checkBiome(Level level, Biome biome) {
+        //~ if >1.21.1 'registryOrThrow' -> 'lookupOrThrow'
         var registry = level.registryAccess().lookupOrThrow(Registries.BIOME);
         Identifier biomeId = registry.getKey(biome);
 

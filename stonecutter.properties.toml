@@ -1,8 +1,8 @@
 mod.id = "preventbuild"
 mod.name = "PreventBuild"
 mod.group = "dev.redheris"
-mod.version = "2.0.0-alpha.5"
-mod.version_type = "ALPHA"
+mod.version = "2.0.0-beta.1"
+mod.version_type = "BETA"
 mod.fabric_loader = "0.19.5"
 loomx.loom_version = "1.18-SNAPSHOT"
 

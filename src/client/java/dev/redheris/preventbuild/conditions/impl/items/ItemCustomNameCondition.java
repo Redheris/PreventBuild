@@ -2,6 +2,8 @@ package dev.redheris.preventbuild.conditions.impl.items;
 
 import dev.redheris.preventbuild.api.IllegalConditionValueException;
 import dev.redheris.preventbuild.conditions.ConditionResult;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -28,12 +30,12 @@ public class ItemCustomNameCondition extends ItemConditionBase {
 
     @Override
     protected ConditionResult checkItem(Player player, Level level, ItemStack itemStack) {
-        if (itemStack.getCustomName() == null) {
+        Component customName = itemStack.get(DataComponents.CUSTOM_NAME);
+        if (customName == null) {
             return ConditionResult.PASS;
         }
-        String customName = itemStack.getCustomName().getString();
 
-        boolean check = isRegex ? customName.matches(value) : customName.equals(value);
+        boolean check = isRegex ? customName.getString().matches(value) : customName.getString().equals(value);
 
         return check ? ConditionResult.CANCEL : ConditionResult.PASS;
     }

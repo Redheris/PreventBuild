@@ -20,6 +20,7 @@ public class DimensionCondition extends ConditionBase {
 
     @Override
     public ConditionResult checkDefault(Player player, Level level) {
+        //~ if >1.21.1 'registryOrThrow' -> 'lookupOrThrow'
         var registry = level.registryAccess().lookupOrThrow(Registries.DIMENSION_TYPE);
         Identifier dimensionId = registry.getKey(level.dimensionType());
 
