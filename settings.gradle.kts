@@ -19,7 +19,7 @@ stonecutter {
         fun fabric(vararg versions: String) {
             versions(versions.toList()).buildscript("build.fabric.gradle.kts")
         }
-        fabric("1.21.11", "26.1.2", "26.2", "26.3")
+        fabric("1.21.11", "26.1.2", "26.2", "26.3", "1.21.1", "1.21.4")
         vcsVersion = "1.21.11"
     }
 }

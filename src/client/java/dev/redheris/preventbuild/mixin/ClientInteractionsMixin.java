@@ -26,7 +26,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -56,7 +56,10 @@ public abstract class ClientInteractionsMixin {
             method = "startAttack",
             at = @At(
                     value = "INVOKE",
+                    //? if >1.21.4 {
                     target = "Lnet/minecraft/world/item/ItemStack;get(Lnet/minecraft/core/component/DataComponentType;)Ljava/lang/Object;",
+                    //?} else
+                    //target = "Lnet/minecraft/world/phys/HitResult;getType()Lnet/minecraft/world/phys/HitResult$Type;",
                     ordinal = 0
             ),
             cancellable = true
@@ -272,6 +275,7 @@ public abstract class ClientInteractionsMixin {
             return placeBlockCondition.checkPlaceBlock(placeContext);
         }
 
+        //~ if <=1.21.4 'bucketItem.getContent()' -> 'bucketItem.content' {
         if (item instanceof BucketItem bucketItem && bucketItem.getContent() != Fluids.EMPTY) {
             boolean useSamePos = false;
             BlockState blockState = level.getBlockState(blockHitResult.getBlockPos());
@@ -281,6 +285,7 @@ public abstract class ClientInteractionsMixin {
                         player, level, blockHitResult.getBlockPos(), blockState, bucketItem.getContent()
                 );
             }
+            //~}
 
             if (useSamePos) {
                 placeContext = new UseIntoBlockContext(player, hand, itemStack, blockHitResult);

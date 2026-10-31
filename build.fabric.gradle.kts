@@ -5,7 +5,7 @@ import me.modmuss50.mpp.ReleaseType
 plugins {
     id("dev.kikugie.loom-back-compat")
     id("me.modmuss50.mod-publish-plugin")
-    // `maven-publish`
+    `maven-publish`
 }
 
 val isObfuscated = !loomx.isUnobfuscated
@@ -92,7 +92,9 @@ loom {
 
     fabricModJsonPath = rootProject.file("src/main/resources/fabric.mod.json") // Useful for interface injection
 // For mods with access wideners
-//    accessWidenerPath = rootProject.file("src/main/resources/aw/${sc.current.version}.classtweaker")
+    if (sc.current.parsed <= "1.21.4") {
+        accessWidenerPath = rootProject.file("src/main/resources/aw/${sc.current.version}.classtweaker")
+    }
 
     decompilerOptions.named("vineflower") {
         options.put("mark-corresponding-synthetics", "1") // Adds names to lambdas - useful for mixins
@@ -239,7 +241,6 @@ publishMods {
     }
 }
 
-/*
 // Publishes builds to a maven repository
 publishing {
     publications {
@@ -252,4 +253,3 @@ publishing {
         }
     }
 }
-*/

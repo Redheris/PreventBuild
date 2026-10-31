@@ -17,7 +17,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.player.Player;
@@ -26,6 +25,8 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import static dev.redheris.preventbuild.util.CompatUtils.clickEvent;
+import static dev.redheris.preventbuild.util.CompatUtils.textHoverEvent;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
@@ -57,7 +58,7 @@ public class ClientCommands {
     }
 
     private static int openConditionsConfigsScreen(CommandContext<FabricClientCommandSource> context) {
-        Minecraft.getInstance().execute(() -> Minecraft.getInstance().setScreen(new ConditionConfigsScreen()));
+        Minecraft.getInstance().schedule(() -> Minecraft.getInstance().setScreen(new ConditionConfigsScreen()));
         return 0;
     }
 
@@ -125,14 +126,13 @@ public class ClientCommands {
                         .withStyle(style -> style
                                 .withColor(CommonColors.LIGHT_GRAY)
                                 .withUnderlined(true)
-                                .withClickEvent(new ClickEvent.OpenFile(filepath))
-                                .withHoverEvent(new HoverEvent.ShowText(
-                                        Component.translatable("preventbuild.open_file")
-                                ))));
+                                .withClickEvent(clickEvent(ClickEvent.Action.OPEN_FILE, filepath.toString()))
+                                .withHoverEvent(textHoverEvent(Component.translatable("preventbuild.open_file")))
+                        ));
                 msg.append(" : ");
                 msg.append(Component.literal(description).withColor(CommonColors.SOFT_RED));
             }
-            CompatUtils.sendMessage(player,msg, false);
+            CompatUtils.sendMessage(player, msg, false);
             return -1;
         }
 
@@ -164,7 +164,7 @@ public class ClientCommands {
             status = Component.translatable("preventbuild.inactive").withColor(CommonColors.SOFT_RED);
         }
         CompatUtils.sendMessage(
-                    player,
+                player,
                 Component.translatable("preventbuild.config_status_changed", configName, status),
                 true
         );
@@ -192,10 +192,9 @@ public class ClientCommands {
                     .withStyle(style -> style
                             .withColor(CommonColors.LIGHT_GRAY)
                             .withUnderlined(true)
-                            .withClickEvent(new ClickEvent.OpenFile(config.filepath()))
-                            .withHoverEvent(new HoverEvent.ShowText(
-                                    Component.translatable("preventbuild.open_file")
-                            ))));
+                            .withClickEvent(clickEvent(ClickEvent.Action.OPEN_FILE, config.filepath().toString()))
+                            .withHoverEvent(textHoverEvent(Component.translatable("preventbuild.open_file")))
+                    ));
             msg.append(" : ");
             MutableComponent toggleActive;
 
@@ -211,9 +210,8 @@ public class ClientCommands {
                         conditionsManager.setActive(config, !active);
                         configsList(context);
                     }))
-                    .withHoverEvent(new HoverEvent.ShowText(
-                            Component.translatable("preventbuild.toggle_config")
-                    )));
+                    .withHoverEvent(textHoverEvent(Component.translatable("preventbuild.toggle_config")))
+            );
             msg.append(toggleActive);
             msg.append("\n");
         }

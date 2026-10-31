@@ -24,6 +24,7 @@ public class ComponentButton extends Button {
         super(x, y, width, height, message, onPress, DEFAULT_NARRATION);
         this.font = font;
         this.message = message;
+        //~ if >1.21.4 'message.copy()' -> 'message'
         this.underlinedMessage = ComponentUtils.mergeStyles(message, Style.EMPTY.withUnderlined(true));
     }
 
@@ -40,6 +41,10 @@ public class ComponentButton extends Button {
     public void renderContents(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         if (renderBackground) {
             float alpha = this.isHoveredOrFocused() ? 0.9f : 0.65f;
+            //? if <=1.21.4
+            //int alphaInt = (int) (alpha * 255);
+
+            //~ if > 1.21.4 'ARGB.color(alphaInt, 0)' -> 'ARGB.black(alpha)'
             guiGraphics.fill(getX(), getY(), getRight(), getBottom(), ARGB.black(alpha));
         }
         Component component = underlineOnHover && this.isHoveredOrFocused() ? this.underlinedMessage : this.message;

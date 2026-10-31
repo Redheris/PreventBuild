@@ -1,8 +1,8 @@
 package dev.redheris.preventbuild.gui;
 
-import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import dev.redheris.preventbuild.PreventBuildClient;
 import dev.redheris.preventbuild.conditions.ConditionConfig;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -11,7 +11,6 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.Layout;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
@@ -20,6 +19,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
+//? if >1.21.4 {
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
+import net.minecraft.client.input.MouseButtonEvent;
+//?}
 
 public class ConditionConfigsEntry extends AbstractWidget implements Layout {
     private final Layout layout;
@@ -42,9 +46,13 @@ public class ConditionConfigsEntry extends AbstractWidget implements Layout {
     @Override
     protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         float alpha = isHoveredOrFocused() ? 0.6f : 0.0f;
+        //? if <=1.21.4
+        //int alphaInt = (int) (alpha * 255);
 
+        //~ if > 1.21.4 'ARGB.color(alphaInt, 0)' -> 'ARGB.black(alpha)'
         guiGraphics.fill(getX(), getY(), getRight(), getBottom(), ARGB.black(alpha));
         if (isMouseOver(mouseX, mouseY)) {
+            //? if >1.21.4
             guiGraphics.requestCursor(CursorTypes.POINTING_HAND);
 
             //~ if >=26.1 'vLine' -> 'verticalLine' {
@@ -52,11 +60,13 @@ public class ConditionConfigsEntry extends AbstractWidget implements Layout {
             guiGraphics.vLine(getRight() - 1, getY(), getBottom(), ARGB.white(0.6f));
             //~}
 
+            //~ if >1.21.4 'renderTooltip(Minecraft.getInstance().font, ' -> 'setTooltipForNextFrame(' {
             if (configNameBtn.isMouseOver(mouseX, mouseY)) {
                 guiGraphics.setTooltipForNextFrame(Component.translatable("preventbuild.open_file"), mouseX, mouseY);
             } else {
                 guiGraphics.setTooltipForNextFrame(Component.translatable("preventbuild.toggle_config"), mouseX, mouseY);
             }
+            //~}
         }
         layout.visitWidgets(w -> w.render(guiGraphics, mouseX, mouseY, partialTick));
     }
@@ -84,10 +94,10 @@ public class ConditionConfigsEntry extends AbstractWidget implements Layout {
 
     //~ widget_events
     @Override
-    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+    public boolean mouseClicked(@NotNull MouseButtonEvent mouseEvent, boolean isDoubleClick) {
         for (GuiEventListener w : children) {
-            if (w.isMouseOver(event.x(), event.y())) {
-                return w.mouseClicked(event, isDoubleClick);
+            if (w.isMouseOver(mouseEvent.x(), mouseEvent.y())) {
+                return w.mouseClicked(mouseEvent, isDoubleClick);
             }
         }
         boolean isActive = PreventBuildClient.conditionsManager.isActive(conditionConfig);
@@ -118,5 +128,6 @@ public class ConditionConfigsEntry extends AbstractWidget implements Layout {
         } else {
             activeLabel.setMessage(Component.translatable("preventbuild.inactive").withColor(CommonColors.SOFT_RED));
         }
+        activeLabel.setWidth(Minecraft.getInstance().font.width(activeLabel.getMessage()));
     }
 }

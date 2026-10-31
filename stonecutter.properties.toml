@@ -1,7 +1,7 @@
 mod.id = "preventbuild"
 mod.name = "PreventBuild"
 mod.group = "dev.redheris"
-mod.version = "2.0.0-alpha.4"
+mod.version = "2.0.0-alpha.5"
 mod.version_type = "ALPHA"
 mod.fabric_loader = "0.19.5"
 loomx.loom_version = "1.18-SNAPSHOT"
@@ -27,6 +27,36 @@ yacl = "3.8.2+1.21.11-fabric"
 modmenu = "17.0.0"
 # Mappings
 parchment = "1.21.11:2025.12.20"
+
+["1.21.1"]
+# Minecraft dependency for fabric.mod.json e.g. ">=1.21.6 <=1.21.8"
+mc_dep = "1.21.1"
+# Release title for Modrinth and Curseforge
+release_title = "1.21.1"
+# Space-separated compatible versions for publishing e.g. "1.21.8 1.21.11 26.1"
+mc_targets = "1.21 1.21.1"
+# Dependencies
+fabric_api = "0.116.17+1.21.1"
+yacl = "3.8.2+1.21.1-fabric"
+modmenu = "11.0.5"
+# Mappings
+parchment = "1.21.1:2024.11.17"
+mojbackward = "1.21.1+build.3"
+
+["1.21.4"]
+# Minecraft dependency for fabric.mod.json e.g. ">=1.21.6 <=1.21.8"
+mc_dep = "1.21.4"
+# Release title for Modrinth and Curseforge
+release_title = "1.21.4"
+# Space-separated compatible versions for publishing e.g. "1.21.8 1.21.11 26.1"
+mc_targets = "1.21.4"
+# Dependencies
+fabric_api = "0.119.4+1.21.4"
+yacl = "3.8.2+1.21.4-fabric"
+modmenu = "13.0.4"
+# Mappings
+parchment = "1.21.4:2025.03.23"
+mojbackward = "1.21.4+build.3"
 
 ["26.1.2"]
 mc_dep = "26.1.2"

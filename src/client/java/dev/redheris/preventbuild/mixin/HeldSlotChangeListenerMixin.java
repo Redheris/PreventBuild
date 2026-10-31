@@ -18,7 +18,10 @@ public class HeldSlotChangeListenerMixin {
             method = "handleSetHeldSlot",
             at = @At(
                     value = "INVOKE",
+                    //? if >1.21.4 {
                     target = "Lnet/minecraft/world/entity/player/Inventory;setSelectedSlot(I)V",
+                    //?} else
+                    //target = "Lnet/minecraft/client/player/LocalPlayer;getInventory()Lnet/minecraft/world/entity/player/Inventory;",
                     shift = At.Shift.AFTER
             )
     )

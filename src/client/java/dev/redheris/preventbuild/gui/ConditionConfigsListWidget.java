@@ -7,7 +7,6 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.Layout;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +14,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
+//? if >1.21.4
+import net.minecraft.client.input.MouseButtonEvent;
 
 public class ConditionConfigsListWidget extends AbstractContainerWidget implements Layout {
     private final Layout layout;
@@ -35,9 +37,15 @@ public class ConditionConfigsListWidget extends AbstractContainerWidget implemen
     protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         guiGraphics.enableScissor(getX(), getY(), getRight(), getBottom());
 
+        float alpha = 0.5f;
+        //? if <=1.21.4
+        //int alphaInt = (int) (alpha * 255);
+
+        //~ if > 1.21.4 'ARGB.color(alphaInt, 0)' -> 'ARGB.black(alpha)'
+        int color = ARGB.black(alpha);
         guiGraphics.fill(
                 getX(), getY(), getRight(), getBottom(),
-                ARGB.black(0.5f)
+                color
         );
         for (AbstractWidget child : children) {
             if (isOverScrollbar(mouseX, mouseY)) {
@@ -47,6 +55,7 @@ public class ConditionConfigsListWidget extends AbstractContainerWidget implemen
             }
         }
 
+        //~ if >1.21.4 'guiGraphics' -> 'guiGraphics, mouseX, mouseY'
         renderScrollbar(guiGraphics, mouseX, mouseY);
 
         guiGraphics.disableScissor();
@@ -55,11 +64,12 @@ public class ConditionConfigsListWidget extends AbstractContainerWidget implemen
 
     //~ widget_events
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
-        if (isOverScrollbar(event.x(), event.y())) {
-            return updateScrolling(event);
+    public boolean mouseClicked(@NotNull MouseButtonEvent mouseEvent, boolean isDoubleClick) {
+        if (isOverScrollbar(mouseEvent.x(), mouseEvent.y())) {
+            //~ if >1.21.4 'mouseX, mouseY, button' -> 'mouseEvent'
+            return updateScrolling(mouseEvent);
         }
-        return super.mouseClicked(event, isDoubleClick);
+        return super.mouseClicked(mouseEvent, isDoubleClick);
     }
     //~ !widget_events
 
@@ -105,4 +115,10 @@ public class ConditionConfigsListWidget extends AbstractContainerWidget implemen
     public @NotNull List<? extends GuiEventListener> children() {
         return children;
     }
+
+    //? if <=1.21.4 {
+    /*private boolean isOverScrollbar(double mouseX, double mouseY) {
+        return mouseX >= (double)this.scrollBarX() && mouseX <= (double)(this.scrollBarX() + 6) && mouseY >= (double)this.getY() && mouseY < (double)this.getBottom();
+    }
+    *///?}
 }
