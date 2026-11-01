@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import dev.redheris.preventbuild.PreventBuild;
 import dev.redheris.preventbuild.config.gson.IdentifierAdapter;
+import dev.redheris.preventbuild.config.gson.PathAdapter;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
 
@@ -21,6 +22,7 @@ public class PreventBuildConfig {
     public static final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeHierarchyAdapter(Identifier.class, new IdentifierAdapter())
+            .registerTypeHierarchyAdapter(Path.class, new PathAdapter())
             .create();
 
     public static final Defaults DEFAULTS = new Defaults(true, 3000, false);

@@ -54,7 +54,7 @@ public class ConditionsManager {
         configs.clear();
         activeConfigs.clear();
 
-        Set<String> activeConfigNames;
+        Set<Path> activeConfigNames;
         Map<Path, String> failedConfigFiles = new HashMap<>();
         List<ConditionConfig> updated;
 
@@ -75,10 +75,12 @@ public class ConditionsManager {
         }
 
         for (ConditionConfig config : configs) {
-            if (activeConfigNames.contains(config.name())) {
+            if (activeConfigNames.contains(config.filepath())) {
                 activeConfigs.add(config);
             }
         }
+
+        configs.sort(Comparator.comparing(ConditionConfig::name));
 
         PreventBuild.LOGGER.info("Found and read {} condition config file", updated.size());
         PreventBuild.LOGGER.info("Currently active condition configs count: {}", activeConfigs.size());
@@ -88,8 +90,8 @@ public class ConditionsManager {
 
     public void save() {
         try {
-            Set<String> activeConfigNames = activeConfigs.stream()
-                    .map(ConditionConfig::name)
+            Set<Path> activeConfigNames = activeConfigs.stream()
+                    .map(ConditionConfig::filepath)
                     .collect(Collectors.toSet());
             ActiveConfigsStorage.save(activeConfigNames);
         } catch (IOException e) {
