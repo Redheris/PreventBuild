@@ -45,6 +45,11 @@ public class ComponentButton extends Button {
         }
         Component component = underlineOnHover && this.isHoveredOrFocused() ? this.underlinedMessage : this.message;
 
+        if (font.width(component) > width) {
+            String trimmed = font.substrByWidth(component, width).getString() + "...";
+            component = Component.literal(trimmed).withStyle(component.getStyle());
+        }
+
         //~ if >=26.1 'drawString' -> 'text'
         guiGraphics.drawString(
                 this.font, component,

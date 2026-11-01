@@ -37,15 +37,9 @@ public class ConditionConfigsScreen extends Screen {
             GridLayout entry = new GridLayout();
             entry.defaultCellSetting()
                     .alignVerticallyMiddle()
-                    .alignHorizontallyLeft()
-                    .paddingTop(1)
-                    .paddingHorizontal(5);
+                    .alignHorizontallyLeft();
             GridLayout.RowHelper entryAdder = entry.createRowHelper(2);
-            entryAdder.addChild(
-                    SpacerElement.width(boxWidth), 2,
-                    entry.newCellSettings().padding(0)
-            );
-            int entryHeight = 26;
+            int entryHeight = 27;
 
             Component configName = Component.literal(config.name());
             ComponentButton configNameBtn = new ComponentButton(
@@ -58,7 +52,7 @@ public class ConditionConfigsScreen extends Screen {
             configNameBtn.setUnderlineOnHover(true);
             configNameBtn.setRenderBackground(false);
 
-            entryAdder.addChild(configNameBtn);
+            entryAdder.addChild(configNameBtn, entry.newCellSettings().paddingLeft(5));
 
             boolean active = conditionsManager.isActive(config);
             MutableComponent activeComponent = Component.translatable("preventbuild.active").withColor(CommonColors.GREEN);
@@ -69,12 +63,19 @@ public class ConditionConfigsScreen extends Screen {
                     entry.newCellSettings()
                             .alignHorizontallyRight()
                             .paddingRight(10)
+                            .paddingTop(1)
+            );
+
+            configNameBtn.setWidth(Math.min(boxWidth - font.width(inactiveComponent) - 5 - 22, configNameBtn.getWidth()));
+            entry.addChild(
+                    SpacerElement.width(boxWidth - configNameBtn.getWidth() - 5), 1, 1,
+                    entry.newCellSettings().padding(0)
             );
 
             list.addChild(new ConditionConfigsEntry(
                     config, configNameBtn, activeLabel,
                     0, 0,
-                    boxWidth, entryHeight + 1,
+                    boxWidth, entryHeight,
                     Component.literal(config.name()),
                     entry
             ));
