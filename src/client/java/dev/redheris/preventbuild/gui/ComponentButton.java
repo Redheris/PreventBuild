@@ -53,7 +53,7 @@ public class ComponentButton extends Button {
         //~ if >=26.1 'drawString' -> 'text'
         guiGraphics.drawString(
                 this.font, component,
-                this.getX() + ((width - font.width(component)) / 2) + 1,
+                this.getX() + Math.max(0, (width - font.width(component)) / 2) + 1,
                 this.getY() + ((height - 9) / 2) + 1,
                 16777215 | Mth.ceil(this.alpha * 255.0F) << 24
         );

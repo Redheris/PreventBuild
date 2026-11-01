@@ -69,12 +69,12 @@ public class ConditionConfigsListWidget extends AbstractContainerWidget implemen
             }
         }
 
-        //? if 1.21.1 {
-        /*renderDecorations(guiGraphics);
-        *///?} else {
-        //~ if >1.21.4 'guiGraphics' -> 'guiGraphics, mouseX, mouseY'
-        //renderScrollbar(guiGraphics, mouseX, mouseY);
-        //?}
+        //? if 1.21.1
+        //renderDecorations(guiGraphics);
+        //? if 1.21.4
+        //renderScrollbar(guiGraphics);
+        //? if >1.21.4
+        renderScrollbar(guiGraphics, mouseX, mouseY);
 
         guiGraphics.disableScissor();
     }
