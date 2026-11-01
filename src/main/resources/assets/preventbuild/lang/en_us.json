@@ -15,6 +15,9 @@
   "preventbuild.failed_to_update_common_config": "[PreventBuild] Failed to update config",
 
   "preventbuild.gui.condition_configs_screen": "Condition configs screen",
+  "preventbuild.gui.open_conditions_folder": "Condition configs folder",
+  "preventbuild.gui.edit_custom_tags": "Custom tags",
+  "preventbuild.gui.update": "Update",
 
   "maparthelper.config.title": "PreventBuild Configuration",
   "preventbuild.config.category.common": "General Settings",

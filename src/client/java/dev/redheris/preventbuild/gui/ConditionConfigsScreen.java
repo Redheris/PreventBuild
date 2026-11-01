@@ -5,6 +5,7 @@ import dev.redheris.preventbuild.command.ClientCommands;
 import dev.redheris.preventbuild.conditions.ConditionConfig;
 import dev.redheris.preventbuild.conditions.ConditionsManager;
 import dev.redheris.preventbuild.config.PreventBuildConfig;
+import dev.redheris.preventbuild.config.customtags.CustomTagsManager;
 import dev.redheris.preventbuild.util.CompatUtils;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
@@ -59,14 +60,10 @@ public class ConditionConfigsScreen extends Screen {
 
             entryAdder.addChild(configNameBtn);
 
-            MutableComponent toggleActive;
             boolean active = conditionsManager.isActive(config);
-            if (active) {
-                toggleActive = Component.translatable("preventbuild.active").withColor(CommonColors.GREEN);
-            } else {
-                toggleActive = Component.translatable("preventbuild.inactive").withColor(CommonColors.SOFT_RED);
-            }
-            StringWidget activeLabel = new StringWidget(toggleActive, font);
+            MutableComponent activeComponent = Component.translatable("preventbuild.active").withColor(CommonColors.GREEN);
+            MutableComponent inactiveComponent = Component.translatable("preventbuild.inactive").withColor(CommonColors.SOFT_RED);
+            StringWidget activeLabel = new StringWidget(active ? activeComponent : inactiveComponent, font);
             entryAdder.addChild(
                     activeLabel,
                     entry.newCellSettings()
@@ -84,7 +81,7 @@ public class ConditionConfigsScreen extends Screen {
         }
 
         listWidget = new ConditionConfigsListWidget(
-                (width - boxWidth) / 2, (height - boxHeight) / 2, boxWidth, boxHeight, Component.literal("Hello yopta"),
+                (width - boxWidth) / 2, (height - boxHeight) / 2, boxWidth, boxHeight, Component.empty(),
                 list
         );
 
@@ -100,7 +97,7 @@ public class ConditionConfigsScreen extends Screen {
                 font
         );
 
-        Component openFolderLabel = Component.literal("Открыть папку с конфигами");
+        Component openFolderLabel = Component.translatable("preventbuild.gui.open_conditions_folder");
         Button openFolderBtn = new ComponentButton(
                 closeBtn.getRight() + 2, listWidget.getY() - 24,
                 font.width(openFolderLabel) + 7, 20,
@@ -109,9 +106,18 @@ public class ConditionConfigsScreen extends Screen {
                 font
         );
 
-        Component updateConfigsLabel = Component.literal("Обновить");
+        Component customTagsLabel = Component.translatable("preventbuild.gui.edit_custom_tags");
+        Button customTagsBtn = new ComponentButton(
+                openFolderBtn.getRight() + 2, listWidget.getY() - 24,
+                font.width(customTagsLabel) + 7, 20,
+                customTagsLabel,
+                btn -> CompatUtils.openPath(CustomTagsManager.TAGS_FILE_PATH),
+                font
+        );
+
+        Component updateConfigsLabel = Component.translatable("preventbuild.gui.update");
         Button updateConfigsBtn = new ComponentButton(
-                openFolderBtn.getRight() + 2, openFolderBtn.getY(),
+                customTagsBtn.getRight() + 2, openFolderBtn.getY(),
                 font.width(updateConfigsLabel) + 7, 20,
                 updateConfigsLabel,
                 btn -> {
@@ -128,6 +134,7 @@ public class ConditionConfigsScreen extends Screen {
         );
         this.addRenderableWidget(closeBtn);
         this.addRenderableWidget(openFolderBtn);
+        this.addRenderableWidget(customTagsBtn);
         this.addRenderableWidget(updateConfigsBtn);
     }
 

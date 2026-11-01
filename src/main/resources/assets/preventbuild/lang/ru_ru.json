@@ -15,6 +15,9 @@
   "preventbuild.failed_to_update_common_config": "[PreventBuild] Не удалось обновить конфиг",
 
   "preventbuild.gui.condition_configs_screen": "Экран списка конфигов",
+  "preventbuild.gui.open_conditions_folder": "Папка с конфигами",
+  "preventbuild.gui.edit_custom_tags": "Кастомные теги",
+  "preventbuild.gui.update": "Обновить",
 
   "maparthelper.config.title": "Конфигурация PreventBuild",
   "preventbuild.config.category.common": "Общие настройки",

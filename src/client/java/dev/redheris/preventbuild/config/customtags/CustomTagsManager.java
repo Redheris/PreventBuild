@@ -23,7 +23,7 @@ import static dev.redheris.preventbuild.config.PreventBuildConfig.gson;
  * and binding to a specific registry
  */
 public class CustomTagsManager {
-    private static final Path TAGS_FILE_PATH = PreventBuildConfig.CONFIGS_DIR.resolve("custom_tags.json");
+    public static final Path TAGS_FILE_PATH = PreventBuildConfig.CONFIGS_DIR.resolve("custom_tags.json");
     private static final Map<String, List<Identifier>> tags = new HashMap<>();
 
     public static boolean isIn(String tagName, Identifier value) {
