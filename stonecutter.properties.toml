@@ -6,9 +6,9 @@ mod.version_type = "BETA"
 mod.fabric_loader = "0.19.5"
 loomx.loom_version = "1.18-SNAPSHOT"
 
-publish.modrinth = "# Modrinth mod slug"
-publish.curseforge_id = "# Curseforge numeric mod ID"
-publish.curseforge_slug = "# Curseforge mod slug"
+publish.modrinth = "preventbuild"
+publish.curseforge_id = "1774372"
+publish.curseforge_slug = "preventbuild"
 publish.github_repo = "Redheris/PreventBuild"
 publish.mod_icon_url = "https://cdn.modrinth.com/data/VYOvHxMm/45dbf9384e4b5cab665388eed65141b7fa8a4238.png"
 publish.announce_for = "none" # "none" if no announcement
@@ -29,11 +29,8 @@ modmenu = "17.0.0"
 parchment = "1.21.11:2025.12.20"
 
 ["1.21.1"]
-# Minecraft dependency for fabric.mod.json e.g. ">=1.21.6 <=1.21.8"
 mc_dep = "1.21.1"
-# Release title for Modrinth and Curseforge
 release_title = "1.21.1"
-# Space-separated compatible versions for publishing e.g. "1.21.8 1.21.11 26.1"
 mc_targets = "1.21 1.21.1"
 # Dependencies
 fabric_api = "0.116.17+1.21.1"
@@ -44,11 +41,8 @@ parchment = "1.21.1:2024.11.17"
 mojbackward = "1.21.1+build.3"
 
 ["1.21.4"]
-# Minecraft dependency for fabric.mod.json e.g. ">=1.21.6 <=1.21.8"
 mc_dep = "1.21.4"
-# Release title for Modrinth and Curseforge
 release_title = "1.21.4"
-# Space-separated compatible versions for publishing e.g. "1.21.8 1.21.11 26.1"
 mc_targets = "1.21.4"
 # Dependencies
 fabric_api = "0.119.4+1.21.4"
