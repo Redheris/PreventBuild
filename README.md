@@ -35,7 +35,7 @@ Here are essential points that differ 2.x from 1.x:
 
 ## Official links to download the mod
 - [Modrinth](https://modrinth.com/project/VYOvHxMm)
-- [Curseforge] (https://www.curseforge.com/minecraft/mc-mods/preventbuild)
+- [Curseforge](https://www.curseforge.com/minecraft/mc-mods/preventbuild)
 - [GitHub](https://github.com/Redheris/PreventBuild)
 
 ## Contacts

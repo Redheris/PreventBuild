@@ -31,6 +31,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.GameType;
 
+import java.util.List;
 import java.util.Map;
 
 import static dev.redheris.preventbuild.conditions.util.ConditionValueExtractor.*;
@@ -51,7 +52,12 @@ public class Conditions {
                 new OrCondition(extractConditionList(regs, value))
         );
         register("not", (regs, value) -> {
-            var entry = extractEntry(value);
+            Map.Entry<String, Object> entry;
+            if (value instanceof List<?> list) {
+                entry = extractEntry(list.getFirst());
+            } else {
+                entry = extractEntry(value);
+            }
             return new NotCondition(registry.parseCondition(regs, entry.getKey(), entry.getValue()));
         });
 
