@@ -4,6 +4,7 @@ import dev.redheris.preventbuild.command.ClientCommands;
 import dev.redheris.preventbuild.conditions.ConditionsManager;
 import dev.redheris.preventbuild.conditions.impl.Conditions;
 import dev.redheris.preventbuild.config.PreventBuildConfig;
+import dev.redheris.preventbuild.event.JoinWorldEvent;
 import dev.redheris.preventbuild.event.TagsLoadedTrigger;
 import net.fabricmc.api.ClientModInitializer;
 
@@ -14,9 +15,13 @@ public class PreventBuildClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         Conditions.registerAll();
+
         TagsLoadedTrigger.init();
+        JoinWorldEvent.init();
+
         commonConfig.read(false);
         commonConfig.save();
+
         ClientCommands.registerCommands();
     }
 }

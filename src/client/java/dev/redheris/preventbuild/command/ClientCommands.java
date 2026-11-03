@@ -11,6 +11,7 @@ import dev.redheris.preventbuild.config.customtags.CustomTagsManager;
 import dev.redheris.preventbuild.gui.ConditionConfigsScreen;
 import dev.redheris.preventbuild.gui.RunCodeClickEvent;
 import dev.redheris.preventbuild.util.CompatUtils;
+import dev.redheris.preventbuild.util.PlayerMessages;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
@@ -21,8 +22,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.player.Player;
 
-import java.nio.file.Path;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import static dev.redheris.preventbuild.util.CompatUtils.clickEvent;
@@ -115,25 +114,7 @@ public class ClientCommands {
         }
 
         if (!failedFiles.isEmpty()) {
-            var msg = Component.translatable(
-                    "preventbuild.failed_to_parse_configs", failedFiles.size()
-            );
-            for (Map.Entry<Path, String> entry : failedFiles.entrySet()) {
-                msg.append("\n");
-                Path filepath = entry.getKey();
-                String filename = filepath.getFileName().toString();
-                String description = entry.getValue();
-                msg.append(Component.literal(filename)
-                        .withStyle(style -> style
-                                .withColor(CommonColors.LIGHT_GRAY)
-                                .withUnderlined(true)
-                                .withClickEvent(clickEvent(ClickEvent.Action.OPEN_FILE, filepath.toString()))
-                                .withHoverEvent(textHoverEvent(Component.translatable("preventbuild.open_file")))
-                        ));
-                msg.append(" : ");
-                msg.append(Component.literal(description).withColor(CommonColors.SOFT_RED));
-            }
-            CompatUtils.sendMessage(player, msg, false);
+            PlayerMessages.displayFailedFilesMessage(player, failedFiles);
             return -1;
         }
 
