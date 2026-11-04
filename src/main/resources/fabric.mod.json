@@ -8,7 +8,7 @@
     "Redheris"
   ],
   "contact": {
-    "homepage": "https://modrinth.com/project/VYOvHxMm",
+    "homepage": "https://modrinth.com/project/preventbuild",
     "sources": "https://github.com/Redheris/PreventBuild"
   },
   "license": "MIT",
@@ -24,6 +24,14 @@
     "modmenu": [
       "dev.redheris.preventbuild.modmenu.ModMenuIntegration"
     ]
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/QTykTF8D5p",
+        "modmenu.wiki": "https://github.com/Redheris/PreventBuild/wiki"
+      }
+    }
   },
   "mixins": [
     "template.mixins.json"

@@ -153,6 +153,27 @@ tasks {
 
         filesMatching("fabric.mod.json") { expand(props) }
         filesMatching("*.mixins.json") { expand("java" to mixinJava) }
+
+        val accessWidenerFile = "${project.property("mod.id")}.classtweaker"
+        val hasAccessWidener = loom.accessWidenerPath.isPresent
+        doLast {
+            if (hasAccessWidener) {
+                val jsonFile = destinationDir.resolve("fabric.mod.json")
+
+                @Suppress("UNCHECKED_CAST")
+                val json = groovy.json.JsonSlurper().parse(jsonFile) as MutableMap<String, Any>
+
+                accessWidenerFile.let {
+                    json["accessWidener"] = it
+                }
+
+                jsonFile.writeText(
+                    groovy.json.JsonOutput.prettyPrint(
+                        groovy.json.JsonOutput.toJson(json)
+                    )
+                )
+            }
+        }
     }
     named<ProcessResources>("processClientResources") {
         filesMatching("*.mixins.json") { expand("java" to mixinJava) }
